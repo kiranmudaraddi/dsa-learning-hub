@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Array Stack – PUSH, POP, DISPLAY</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+header{background:linear-gradient(135deg,#172554,#2563eb);color:white;padding:24px 18px;text-align:center}
+header h1{margin:0 0 6px;font-size:28px}
+header p{margin:0;opacity:.9}
+.container{max-width:1150px;margin:auto;padding:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:white;border-radius:16px;padding:18px;box-shadow:0 5px 20px rgba(0,0,0,.08);margin-bottom:18px}
+h2{margin-top:0;color:#173b8f}
+h3{color:#2563eb}
+.code{background:#111827;color:#e5e7eb;padding:16px;border-radius:12px;overflow:auto;font-family:Consolas,monospace;font-size:14px;line-height:1.55}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+input{padding:12px;border:2px solid #dbe3ef;border-radius:9px;font-size:16px;width:150px}
+button{border:0;border-radius:9px;padding:11px 18px;font-weight:bold;cursor:pointer}
+.push{background:#16a34a;color:white}.pop{background:#dc2626;color:white}
+.display{background:#2563eb;color:white}.reset{background:#64748b;color:white}
+button:hover{opacity:.88}
+.stack-area{display:flex;justify-content:center;align-items:flex-end;min-height:330px;padding:20px}
+.stack{display:flex;flex-direction:column-reverse;border-left:4px solid #334155;border-right:4px solid #334155;border-bottom:4px solid #334155}
+.cell{width:190px;height:48px;border-top:1px solid #cbd5e1;background:#f8fafc;display:flex;align-items:center;justify-content:center;position:relative;font-weight:bold}
+.cell.empty{color:#94a3b8}
+.cell.filled{background:#dbeafe;color:#1e3a8a}
+.index{position:absolute;left:-55px;color:#64748b;font-size:13px}
+.topmark{position:absolute;right:-72px;color:#dc2626;font-size:13px;font-weight:bold}
+.status{padding:13px;border-radius:10px;background:#eef2ff;margin-top:10px;font-weight:bold}
+.info{padding:12px;border-left:5px solid #2563eb;background:#eff6ff;border-radius:8px;margin:10px 0}
+.warning{background:#fef2f2;border-left-color:#dc2626;color:#991b1b}
+.success{background:#f0fdf4;border-left-color:#16a34a;color:#166534}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:9px;border:1px solid #dbe3ef;text-align:left}
+th{background:#eff6ff}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e0e7ff;color:#3730a3;font-weight:bold}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.cell{width:150px}.topmark{right:-65px}}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Array Representation of Stack</h1>
+<p>Learn and visualize PUSH, POP, DISPLAY, Overflow and Underflow</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>1. Basic Idea</h2>
+<div class="info">
+<strong>Stack follows LIFO:</strong> Last In, First Out.<br>
+Insertion and deletion take place only at the <strong>TOP</strong>.
+</div>
+<p>For an array stack:</p>
+<div class="code">#define MAX 5
+int stack[MAX];
+int top = -1;</div>
+<p><span class="badge">top = -1</span> means the stack is empty.</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>2. Interactive Stack</h2>
+<p>Enter a value and observe exactly what happens.</p>
+
+<div class="controls">
+<input id="value" type="number" placeholder="Enter value">
+<button class="push" onclick="push()">PUSH</button>
+<button class="pop" onclick="pop()">POP</button>
+<button class="display" onclick="displayStack()">DISPLAY</button>
+<button class="reset" onclick="resetStack()">RESET</button>
+</div>
+
+<div id="status" class="status">Stack is empty. top = -1</div>
+
+<div class="stack-area">
+<div id="stackVisual" class="stack"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>3. What is happening?</h2>
+<div id="explanation" class="info">
+Click PUSH, POP or DISPLAY to see the operation.
+</div>
+<h3>Current Variables</h3>
+<table>
+<tr><th>Variable</th><th>Value</th></tr>
+<tr><td>MAX</td><td>5</td></tr>
+<tr><td>top</td><td id="topValue">-1</td></tr>
+<tr><td>Stack status</td><td id="stackStatus">EMPTY</td></tr>
+</table>
+</div>
+
+</div>
+
+<div class="card">
+<h2>4. PUSH Function</h2>
+<p>To insert an element, first check whether the stack is full.</p>
+<div class="code">void push()
+{
+    int value;
+
+    if (top == MAX - 1)
+    {
+        printf("Stack Overflow");
+        return;
+    }
+
+    printf("Enter value: ");
+    scanf("%d", &value);
+
+    top++;
+    stack[top] = value;
+}</div>
+
+<div class="info">
+<strong>Logic:</strong><br>
+1. Check <code>top == MAX - 1</code>.<br>
+2. If true → Overflow.<br>
+3. Otherwise increment <code>top</code>.<br>
+4. Store the value at <code>stack[top]</code>.
+</div>
+</div>
+
+<div class="card">
+<h2>5. POP Function</h2>
+<p>To delete an element, remove the element at TOP.</p>
+<div class="code">void pop()
+{
+    int value;
+
+    if (top == -1)
+    {
+        printf("Stack Underflow");
+        return;
+    }
+
+    value = stack[top];
+    top--;
+
+    printf("Deleted = %d", value);
+}</div>
+
+<div class="info">
+<strong>Logic:</strong><br>
+1. Check <code>top == -1</code>.<br>
+2. If true → Underflow.<br>
+3. Otherwise access <code>stack[top]</code>.<br>
+4. Decrement <code>top</code>.
+</div>
+</div>
+
+<div class="card">
+<h2>6. DISPLAY Function</h2>
+<p>Display starts from TOP and moves towards index 0.</p>
+<div class="code">void display()
+{
+    int i;
+
+    if (top == -1)
+    {
+        printf("Stack is Empty");
+        return;
+    }
+
+    for (i = top; i >= 0; i--)
+    {
+        printf("%d ", stack[i]);
+    }
+}</div>
+<div class="info">
+<strong>Important:</strong> A stack is normally displayed from <strong>TOP → bottom</strong>.
+</div>
+</div>
+
+<div class="card">
+<h2>7. Overflow</h2>
+<div class="warning">
+<strong>Overflow:</strong> Trying to PUSH when the stack is already full.
+</div>
+<div class="code">if (top == MAX - 1)
+{
+    printf("Stack Overflow");
+    return;
+}</div>
+<p>For <strong>MAX = 5</strong>, valid indexes are <strong>0, 1, 2, 3, 4</strong>.</p>
+<p>When <code>top = 4</code>, the stack is full.</p>
+</div>
+
+<div class="card">
+<h2>8. Underflow</h2>
+<div class="warning">
+<strong>Underflow:</strong> Trying to POP when the stack is empty.
+</div>
+<div class="code">if (top == -1)
+{
+    printf("Stack Underflow");
+    return;
+}</div>
+<p>Initially <code>top = -1</code>, so there is no element to delete.</p>
+</div>
+
+<div class="card">
+<h2>9. Complete C Program</h2>
+<div class="code">#include &lt;stdio.h&gt;
+
+#define MAX 5
+
+int stack[MAX];
+int top = -1;
+
+void push()
+{
+    int value;
+
+    if (top == MAX - 1)
+    {
+        printf("\nStack Overflow");
+        return;
+    }
+
+    printf("Enter value: ");
+    scanf("%d", &amp;value);
+
+    top++;
+    stack[top] = value;
+
+    printf("Pushed successfully.");
+}
+
+void pop()
+{
+    int value;
+
+    if (top == -1)
+    {
+        printf("\nStack Underflow");
+        return;
+    }
+
+    value = stack[top];
+    top--;
+
+    printf("\nDeleted = %d", value);
+}
+
+void display()
+{
+    int i;
+
+    if (top == -1)
+    {
+        printf("\nStack is Empty");
+        return;
+    }
+
+    printf("\nStack elements (TOP to bottom): ");
+
+    for (i = top; i &gt;= 0; i--)
+    {
+        printf("%d ", stack[i]);
+    }
+}
+
+int main()
+{
+    int choice;
+
+    do
+    {
+        printf("\n\n--- ARRAY STACK ---");
+        printf("\n1. PUSH");
+        printf("\n2. POP");
+        printf("\n3. DISPLAY");
+        printf("\n4. EXIT");
+
+        printf("\nEnter choice: ");
+        scanf("%d", &amp;choice);
+
+        switch(choice)
+        {
+            case 1: push(); break;
+            case 2: pop(); break;
+            case 3: display(); break;
+            case 4: printf("\nExit"); break;
+            default: printf("\nInvalid choice");
+        }
+
+    } while(choice != 4);
+
+    return 0;
+}</div>
+</div>
+
+<div class="card">
+<h2>10. Classroom Demonstration Sequence</h2>
+<table>
+<tr><th>Step</th><th>Operation</th><th>top</th><th>Stack</th></tr>
+<tr><td>1</td><td>Initial</td><td>-1</td><td>Empty</td></tr>
+<tr><td>2</td><td>PUSH 10</td><td>0</td><td>10</td></tr>
+<tr><td>3</td><td>PUSH 20</td><td>1</td><td>20, 10</td></tr>
+<tr><td>4</td><td>PUSH 30</td><td>2</td><td>30, 20, 10</td></tr>
+<tr><td>5</td><td>POP</td><td>1</td><td>20, 10</td></tr>
+<tr><td>6</td><td>DISPLAY</td><td>1</td><td>20, 10</td></tr>
+</table>
+</div>
+
+</div>
+
+<script>
+const MAX = 5;
+let stack = [];
+let top = -1;
+
+function render(){
+    const visual = document.getElementById("stackVisual");
+    visual.innerHTML = "";
+
+    for(let i=0;i<MAX;i++){
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.innerHTML = `<span class="index">[${i}]</span>`;
+        if(i <= top){
+            cell.classList.add("filled");
+            cell.innerHTML += stack[i];
+        }else{
+            cell.classList.add("empty");
+            cell.innerHTML += "empty";
+        }
+        if(i === top){
+            cell.innerHTML += `<span class="topmark">← TOP</span>`;
+        }
+        visual.appendChild(cell);
+    }
+
+    document.getElementById("topValue").textContent = top;
+    document.getElementById("stackStatus").textContent =
+        top === -1 ? "EMPTY" : top === MAX-1 ? "FULL" : "NOT FULL";
+
+    document.getElementById("status").textContent =
+        top === -1 ? "Stack is empty. top = -1" :
+        `Stack contains ${top+1} element(s). top = ${top}`;
+}
+
+function explain(text, cls="info"){
+    const e=document.getElementById("explanation");
+    e.className=cls;
+    e.innerHTML=text;
+}
+
+function push(){
+    const input=document.getElementById("value");
+    const value=input.value;
+
+    if(value === ""){
+        explain("Please enter a value before PUSH.", "info");
+        return;
+    }
+
+    if(top === MAX-1){
+        explain(`<strong>OVERFLOW!</strong><br>
+        top = ${top} and MAX - 1 = ${MAX-1}.<br>
+        The stack is full, so the new value cannot be inserted.`, "warning");
+        document.getElementById("status").textContent="Stack Overflow!";
+        return;
+    }
+
+    top++;
+    stack[top]=Number(value);
+
+    explain(`<strong>PUSH ${value}</strong><br>
+    Step 1: top is increased → top = ${top}.<br>
+    Step 2: stack[top] = ${value}.<br>
+    Therefore, ${value} is inserted at index ${top}.`, "success");
+
+    input.value="";
+    render();
+}
+
+function pop(){
+    if(top === -1){
+        explain(`<strong>UNDERFLOW!</strong><br>
+        top = -1, so the stack is empty.<br>
+        There is no element available for POP.`, "warning");
+        document.getElementById("status").textContent="Stack Underflow!";
+        return;
+    }
+
+    const removed=stack[top];
+    const oldTop=top;
+    top--;
+
+    explain(`<strong>POP</strong><br>
+    Step 1: Element at stack[${oldTop}] = ${removed} is removed.<br>
+    Step 2: top is decreased → top = ${top}.`, "success");
+
+    render();
+}
+
+function displayStack(){
+    if(top === -1){
+        explain("<strong>DISPLAY:</strong> Stack is empty. Nothing to display.", "warning");
+        return;
+    }
+
+    const values=[];
+    for(let i=top;i>=0;i--) values.push(stack[i]);
+
+    explain(`<strong>DISPLAY</strong><br>
+    Starting from TOP and moving down:<br>
+    <strong>${values.join(" → ")}</strong>`, "success");
+}
+
+function resetStack(){
+    stack=[];
+    top=-1;
+    explain("Stack reset. <strong>top = -1</strong>. The stack is empty.", "info");
+    render();
+}
+
+render();
+</script>
+</body>
+</html>

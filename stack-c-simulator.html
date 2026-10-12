@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Array Stack Live Coding</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef3f9;color:#172033}
+header{background:#172554;color:#fff;padding:18px;text-align:center}header h1{margin:0;font-size:26px}
+.wrap{max-width:1250px;margin:auto;padding:14px}.toolbar,.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 4px 16px #0001}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,select,input{padding:10px 13px;border-radius:8px;border:1px solid #cbd5e1;font-weight:bold}
+button{cursor:pointer}.run{background:#16a34a;color:#fff}.step{background:#2563eb;color:#fff}.reset{background:#64748b;color:#fff}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+h2{margin:0 0 10px;color:#173b8f;font-size:20px}
+.editor{background:#0b1220;border-radius:11px;overflow:hidden}
+.editorbar{background:#1e293b;color:#cbd5e1;padding:9px 12px;font-size:13px}
+.code{width:100%;min-height:430px;background:#0b1220;color:#e5e7eb;border:0;outline:0;padding:16px;font:15px/1.7 Consolas,monospace;resize:vertical}
+.info{padding:12px;border-left:5px solid #2563eb;background:#eff6ff;border-radius:8px;margin-top:10px}
+.status{font-weight:bold;padding:11px;border-radius:8px;background:#eef2ff;margin-bottom:12px}
+.stack{width:240px;margin:22px auto;border-left:5px solid #334155;border-right:5px solid #334155;border-bottom:5px solid #334155;display:flex;flex-direction:column-reverse}
+.cell{height:55px;border-top:1px solid #cbd5e1;display:flex;align-items:center;justify-content:center;position:relative;background:#f8fafc}
+.cell.filled{background:#bfdbfe;color:#1e3a8a;font-weight:bold;font-size:18px}
+.idx{position:absolute;left:-48px;color:#64748b;font-size:12px}
+.top{position:absolute;right:-68px;color:#dc2626;font-size:12px;font-weight:bold}
+.trace{max-height:190px;overflow:auto;font:13px Consolas,monospace;background:#f8fafc;padding:10px;border-radius:8px}
+.trace div{padding:5px;border-bottom:1px solid #e2e8f0}
+.good{color:#166534;background:#f0fdf4}.bad{color:#991b1b;background:#fef2f2}
+.small{font-size:13px;color:#64748b}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.stack{width:190px}.code{min-height:330px}}
+</style>
+</head>
+<body>
+<header><h1>Array Representation of Stack — Live C Coding</h1></header>
+
+<div class="wrap">
+<div class="toolbar">
+<label>Operation:</label>
+<select id="operation" onchange="loadCode()">
+<option value="push">PUSH</option><option value="pop">POP</option><option value="display">DISPLAY</option>
+</select>
+<input id="value" type="number" placeholder="Value for PUSH">
+<button class="run" onclick="runCode()">▶ Run Code</button>
+<button class="step" onclick="stepCode()">Next Statement</button>
+<button class="reset" onclick="resetStack()">↻ Reset</button>
+<span class="small">MAX = 5</span>
+</div>
+
+<div class="layout">
+<div>
+<div class="card">
+<h2>Write / Edit C Code</h2>
+<div class="editor">
+<div class="editorbar">C source — edit the code and then use Run Code</div>
+<textarea id="code" spellcheck="false"></textarea>
+</div>
+<div id="message" class="info">Choose an operation. The code is shown here and the stack is live on the right.</div>
+</div>
+
+<div class="card">
+<h2>What the program is doing</h2>
+<div id="trace" class="trace">No execution yet.</div>
+</div>
+</div>
+
+<div>
+<div class="card">
+<h2>Live Array Stack</h2>
+<div id="state" class="status">top = -1 | EMPTY</div>
+<div id="stack" class="stack"></div>
+<div class="info">
+<strong>Remember:</strong><br>
+PUSH → increase TOP → store value<br>
+POP → read TOP → decrease TOP<br>
+DISPLAY → TOP to 0
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const MAX=5;
+let stack=[],top=-1;
+let steps=[],stepIndex=0;
+
+const templates={
+push:`void push()
+{
+    int value;
+
+    if (top == MAX - 1)
+    {
+        printf("Stack Overflow");
+        return;
+    }
+
+    printf("Enter value: ");
+    scanf("%d", &value);
+
+    top++;
+    stack[top] = value;
+}`,
+pop:`void pop()
+{
+    int value;
+
+    if (top == -1)
+    {
+        printf("Stack Underflow");
+        return;
+    }
+
+    value = stack[top];
+    top--;
+
+    printf("Deleted = %d", value);
+}`,
+display:`void display()
+{
+    int i;
+
+    if (top == -1)
+    {
+        printf("Stack is Empty");
+        return;
+    }
+
+    for (i = top; i >= 0; i--)
+    {
+        printf("%d ", stack[i]);
+    }
+}`
+};
+
+function loadCode(){
+document.getElementById('code').value=templates[document.getElementById('operation').value];
+steps=[];stepIndex=0;
+document.getElementById('trace').innerHTML="Code loaded. Click <b>Next Statement</b> or <b>Run Code</b>.";
+document.getElementById('message').className='info';
+document.getElementById('message').innerHTML='The code is editable. Teach one statement at a time and watch the array.';
+}
+
+function render(){
+let s=document.getElementById('stack');s.innerHTML='';
+for(let i=0;i<MAX;i++){
+let c=document.createElement('div');c.className='cell '+(i<=top?'filled':'');
+c.innerHTML='<span class="idx">['+i+']</span>'+(i<=top?stack[i]:'empty')+(i===top?'<span class="top">← TOP</span>':'');
+s.appendChild(c);
+}
+document.getElementById('state').textContent='top = '+top+' | '+(top===-1?'EMPTY':top===MAX-1?'FULL':(top+1)+' element(s)');
+}
+
+function addTrace(t,cls=''){
+let box=document.getElementById('trace');
+if(box.innerHTML==="No execution yet.")box.innerHTML="";
+let d=document.createElement('div');d.className=cls;d.innerHTML=t;box.prepend(d);
+}
+
+function runCode(){
+let op=document.getElementById('operation').value;
+if(op==='push')doPush();
+if(op==='pop')doPop();
+if(op==='display')doDisplay();
+render();
+}
+
+function doPush(){
+let input=document.getElementById('value');
+if(input.value===""){show('Enter a value first.','bad');return}
+let v=Number(input.value);
+if(top===MAX-1){
+show('OVERFLOW: top == MAX - 1. PUSH cannot be performed.','bad');
+addTrace('<b>if (top == MAX - 1)</b> → TRUE → return;','bad');return;
+}
+addTrace('<b>top++;</b> → top becomes '+(top+1));
+top++;
+addTrace('<b>stack[top] = value;</b> → stack['+top+'] = '+v,'good');
+stack[top]=v;input.value="";
+show('PUSH completed: top++ then stack[top] = value.','good');
+}
+function doPop(){
+if(top===-1){
+show('UNDERFLOW: top == -1. POP cannot be performed.','bad');
+addTrace('<b>if (top == -1)</b> → TRUE → return;','bad');return;
+}
+let v=stack[top],old=top;
+addTrace('<b>value = stack[top];</b> → value = '+v);
+top--;
+addTrace('<b>top--;</b> → top becomes '+top,'good');
+show('POP completed: '+v+' removed from index '+old+'.','good');
+}
+function doDisplay(){
+if(top===-1){show('Stack is empty.','bad');addTrace('<b>if (top == -1)</b> → TRUE → return;','bad');return}
+let out=[];
+for(let i=top;i>=0;i--)out.push(stack[i]);
+addTrace('<b>for (i = top; i >= 0; i--)</b> → '+out.join(' → '),'good');
+show('DISPLAY: '+out.join(' → '),'good');
+}
+function show(t,cls){
+let m=document.getElementById('message');m.className='info '+cls;m.innerHTML=t;
+}
+
+function stepCode(){
+let op=document.getElementById('operation').value;
+if(op==='push')stepPush();
+if(op==='pop')stepPop();
+if(op==='display')stepDisplay();
+render();
+}
+
+function stepPush(){
+if(stepIndex===0){
+steps=[
+['Check','if (top == MAX - 1)','Check whether stack is full.'],
+['Input','scanf("%d", &value);','Read the value to insert.'],
+['Move TOP','top++;','Move TOP to next position.'],
+['Store','stack[top] = value;','Store the value at TOP.']
+];
+}
+if(stepIndex>=steps.length){show('PUSH sequence finished. Click Run Code to execute normally.');return}
+let x=steps[stepIndex++];
+addTrace('<b>'+x[0]+'</b> → '+x[1]+'<br>'+x[2]);
+show('<strong>'+x[0]+'</strong><br>'+x[2]);
+}
+function stepPop(){
+if(stepIndex===0){
+steps=[
+['Check','if (top == -1)','Check whether stack is empty.'],
+['Read TOP','value = stack[top];','Take the element at TOP.'],
+['Move TOP','top--;','Move TOP one position down.']
+];
+}
+if(stepIndex>=steps.length){show('POP sequence finished. Click Run Code to execute normally.');return}
+let x=steps[stepIndex++];
+addTrace('<b>'+x[0]+'</b> → '+x[1]+'<br>'+x[2]);
+show('<strong>'+x[0]+'</strong><br>'+x[2]);
+}
+function stepDisplay(){
+if(stepIndex===0){
+steps=[
+['Check','if (top == -1)','Check whether stack is empty.'],
+['Start','i = top','Start from TOP.'],
+['Loop','i >= 0','Continue until index 0.'],
+['Print','printf("%d ", stack[i]);','Display each element.'],
+['Update','i--','Move towards bottom.']
+];
+}
+if(stepIndex>=steps.length){show('DISPLAY sequence finished.');return}
+let x=steps[stepIndex++];
+addTrace('<b>'+x[0]+'</b> → '+x[1]+'<br>'+x[2]);
+show('<strong>'+x[0]+'</strong><br>'+x[2]);
+}
+
+function resetStack(){
+stack=[];top=-1;steps=[];stepIndex=0;
+render();loadCode();
+show('Reset complete: top = -1 and stack is empty.');
+}
+loadCode();render();
+</script>
+</body>
+</html>

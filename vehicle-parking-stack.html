@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Stack - Real World Vehicle Parking</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef3f7;color:#172b3a}
+header{background:#123b5d;color:white;padding:22px;text-align:center}
+header h1{margin:0;font-size:clamp(25px,5vw,42px)}
+header p{margin:8px 0 0;color:#ffd84d;font-weight:bold}
+.wrap{max-width:1150px;margin:auto;padding:18px}
+.controls,.parking,.info{background:white;border-radius:18px;box-shadow:0 7px 24px #0001;padding:18px;margin-bottom:18px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input{padding:13px;border:2px solid #ccd7df;border-radius:10px;font-size:16px;width:190px}
+button{border:0;border-radius:10px;padding:13px 18px;font-weight:bold;color:white;cursor:pointer;font-size:15px}
+.park{background:#16834b}.remove{background:#d94c4c}.display{background:#176b87}.reset{background:#697784}
+button:disabled{opacity:.45;cursor:not-allowed}
+h2{margin:5px 0 15px;color:#123b5d}
+.parking-area{position:relative;min-height:370px;background:linear-gradient(#4a5055,#353a3e);border-radius:16px;overflow:hidden;border:8px solid #c5c9cc}
+.lane{position:absolute;left:0;right:0;top:18px;bottom:18px;border:3px dashed #eee9;display:flex;align-items:center;padding:20px;gap:8px}
+.entry{width:80px;text-align:center;color:#fff;font-weight:bold;font-size:13px;flex:none}
+.entry .arrow{font-size:34px;color:#ffd84d}
+.cars{display:flex;align-items:center;gap:8px;flex:1;overflow:hidden;height:230px}
+.car{width:100px;height:145px;flex:none;border-radius:18px 18px 10px 10px;position:relative;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;box-shadow:0 8px 15px #0006;animation:park .65s ease}
+@keyframes park{from{transform:translateX(180px);opacity:0}to{transform:translateX(0);opacity:1}}
+.car:before,.car:after{content:"";position:absolute;background:#20262b;width:20px;height:35px;border-radius:5px;top:25px}
+.car:before{left:-5px}.car:after{right:-5px}
+.window{position:absolute;top:14px;width:62px;height:48px;background:#b8d7e8;border-radius:9px;opacity:.9}
+.carid{position:relative;z-index:2;margin-top:65px;background:#123b5d;padding:7px 6px;border-radius:6px}
+.wheel{position:absolute;width:18px;height:30px;background:#15191c;border-radius:5px;left:-4px;bottom:25px}
+.wheel.r{left:auto;right:-4px}
+.topbadge{position:absolute;top:8px;right:12px;background:#ffcc3d;color:#372d00;padding:8px 12px;border-radius:20px;font-weight:bold}
+.empty{color:#fff8;text-align:center;width:100%;font-size:20px}
+.status{margin-top:14px;padding:12px;background:#fff8dc;border:2px solid #e6c85c;border-radius:10px;font-weight:bold}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.info-box{background:#f5f9fc;border-radius:12px;padding:15px}
+.info-box code{background:#e7eef3;padding:3px 6px;border-radius:4px}
+.stack-view{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.stack-item{padding:10px;border-radius:7px;background:#dcecf5;font-weight:bold;text-align:center}
+.stack-item:first-child{background:#b7e2c7;border:2px solid #3b9b63}
+@media(max-width:700px){
+ .controls{display:grid;grid-template-columns:1fr 1fr}
+ input{width:100%;grid-column:1/-1}
+ button{width:100%}
+ .info-grid{grid-template-columns:1fr}
+ .lane{padding:10px}.entry{width:55px}.cars{gap:5px}
+ .car{width:78px;height:120px}.window{width:48px;height:38px}.carid{font-size:12px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>🚗 STACK — VEHICLE PARKING SIMULATOR</h1>
+<p>LIFO: Last Parked → First to Leave</p>
+</header>
+
+<div class="wrap">
+<section class="controls">
+<input id="vehicleId" placeholder="Enter Vehicle ID e.g. KA01AB1234" maxlength="14">
+<button class="park" onclick="parkVehicle()">🚗 PARK (PUSH)</button>
+<button class="remove" onclick="removeVehicle()">🚘 REMOVE (POP)</button>
+<button class="display" onclick="showStack()">📋 DISPLAY</button>
+<button class="reset" onclick="resetParking()">↻ RESET</button>
+</section>
+
+<section class="parking">
+<h2>🅿️ Narrow Parking Area — MAX 6 Vehicles</h2>
+<div class="parking-area">
+<div class="topbadge" id="topBadge">TOP = -1</div>
+<div class="lane">
+<div class="entry">ENTRY<div class="arrow">→</div></div>
+<div class="cars" id="cars"><div class="empty">Parking area is empty<br>Enter a Vehicle ID and click PARK</div></div>
+</div>
+</div>
+<div class="status" id="status">Ready. The last parked vehicle will be the first vehicle removed.</div>
+</section>
+
+<section class="info-grid">
+<div class="info-box">
+<h2>How Stack Works Here</h2>
+<p>Each vehicle is an element in the stack.</p>
+<p><b>PUSH:</b> Park a vehicle at the end of the narrow parking area.</p>
+<p><b>POP:</b> Remove the vehicle at TOP — the last vehicle parked.</p>
+<p><b>Overflow:</b> Trying to park when MAX = 6 is reached.</p>
+<p><b>Underflow:</b> Trying to remove when the parking area is empty.</p>
+</div>
+<div class="info-box">
+<h2>Stack View — TOP → Bottom</h2>
+<div class="stack-view" id="stackView"></div>
+</div>
+</section>
+</div>
+
+<script>
+const MAX=6;
+let stack=[];
+
+function render(){
+ const cars=document.getElementById("cars");
+ const view=document.getElementById("stackView");
+ const badge=document.getElementById("topBadge");
+ cars.innerHTML="";
+ view.innerHTML="";
+ badge.textContent="TOP = "+(stack.length-1);
+
+ if(stack.length===0){
+   cars.innerHTML='<div class="empty">Parking area is empty<br>Enter a Vehicle ID and click PARK</div>';
+   return;
+ }
+
+ stack.forEach((id,i)=>{
+   const car=document.createElement("div");
+   car.className="car";
+   car.style.background=["#1976a8","#2e8b57","#9b59b6","#d9772a","#c74646","#445c8a"][i%6];
+   car.innerHTML='<div class="window"></div><div class="wheel"></div><div class="wheel r"></div><div class="carid">'+id+'</div>';
+   cars.appendChild(car);
+ });
+ [...stack].reverse().forEach((id,i)=>{
+   const item=document.createElement("div");
+   item.className="stack-item";
+   item.textContent=(i===0?"TOP → ":"")+id;
+   view.appendChild(item);
+ });
+}
+
+function parkVehicle(){
+ const input=document.getElementById("vehicleId");
+ const id=input.value.trim();
+ const status=document.getElementById("status");
+ if(!id){status.textContent="⚠️ Enter a Vehicle ID first.";return;}
+ if(stack.length===MAX){
+   status.textContent="🛑 STACK OVERFLOW — Parking area is FULL. Vehicle "+id+" cannot enter.";
+   return;
+ }
+ stack.push(id);
+ input.value="";
+ status.textContent="✅ Vehicle "+id+" parked using PUSH. TOP is now "+(stack.length-1)+".";
+ render();
+}
+
+function removeVehicle(){
+ const status=document.getElementById("status");
+ if(stack.length===0){
+   status.textContent="🛑 STACK UNDERFLOW — Parking area is EMPTY. No vehicle can be removed.";
+   return;
+ }
+ const id=stack.pop();
+ status.textContent="🚘 Vehicle "+id+" removed using POP. It was the last vehicle parked.";
+ render();
+}
+
+function showStack(){
+ const status=document.getElementById("status");
+ if(stack.length===0){
+   status.textContent="Parking area is EMPTY.";
+   return;
+ }
+ status.textContent="📋 DISPLAY TOP → bottom: "+[...stack].reverse().join("  →  ");
+}
+
+function resetParking(){
+ stack=[];
+ document.getElementById("status").textContent="Reset complete. Parking area is empty.";
+ render();
+}
+
+render();
+</script>
+</body>
+</html>

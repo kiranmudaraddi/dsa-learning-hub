@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Expression Step-by-Step Solver</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef5f8;color:#17324a}
+header{background:#123b5d;color:#fff;padding:24px 16px;text-align:center}
+header h1{margin:0;font-size:clamp(24px,5vw,40px)}
+header p{margin:8px 0 0;color:#ffd84d;font-weight:bold}
+.container{max-width:1150px;margin:auto;padding:18px}
+.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 7px 25px #0001}
+.controls{display:grid;grid-template-columns:1fr auto auto;gap:10px}
+input{width:100%;padding:14px;border:2px solid #ccd8df;border-radius:10px;font-size:17px}
+button{border:0;border-radius:10px;padding:13px 18px;font-size:15px;font-weight:bold;color:#fff;cursor:pointer}
+.solve{background:#176b87}.next{background:#4b7bec}.reset{background:#697784}.auto{background:#16834b}
+.mode{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.mode button{background:#dcecf3;color:#123b5d}
+.mode button.active{background:#123b5d;color:#fff}
+h2{color:#123b5d;margin-top:0}
+h3{color:#176b87}
+.message{background:#fff8dc;border:2px solid #e6c85c;border-radius:12px;padding:14px;font-size:18px;min-height:55px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.visual{background:#f5f8fa;border-radius:14px;padding:15px;min-height:300px}
+.stack{width:220px;margin:15px auto;border:4px solid #40515d;border-top:0;border-radius:0 0 10px 10px}
+.stack-item{height:55px;border-top:2px solid #8997a0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;background:#dcecf5}
+.stack-item.top{background:#b8e2c8;border:2px solid #32905a}
+.empty{padding:80px 10px;text-align:center;color:#7a8992}
+.output{min-height:80px;background:#edf6fa;border-radius:10px;padding:15px;font-family:Consolas,monospace;font-size:24px;word-break:break-all}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th{background:#123b5d;color:white}td,th{padding:9px;border:1px solid #ccd7df;text-align:left}
+tr.current{background:#fff4c2;font-weight:bold}
+.badge{display:inline-block;padding:7px 12px;border-radius:20px;background:#e5eef3;margin:3px;font-weight:bold}
+.progress{height:10px;background:#dfe7ec;border-radius:20px;overflow:hidden;margin-top:15px}
+.progress div{height:100%;background:#176b87;width:0%;transition:.3s}
+@media(max-width:750px){
+ .controls{grid-template-columns:1fr 1fr}
+ .controls input{grid-column:1/-1}
+ .grid{grid-template-columns:1fr}
+ button{padding:12px 10px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>🧠 Stack Expression Step-by-Step Solver</h1>
+<p>Students enter an expression and solve it one step at a time</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>1. Choose the Application</h2>
+<div class="mode">
+<button id="m1" class="active" onclick="setMode('infix')">Infix → Postfix</button>
+<button id="m2" onclick="setMode('suffix')">Suffix Evaluation</button>
+</div>
+
+<div class="controls">
+<input id="expr" placeholder="Example: A+B*(C-D)/E">
+<button class="solve" onclick="solve()">Generate Steps</button>
+<button class="reset" onclick="resetAll()">Reset</button>
+</div>
+
+<div style="margin-top:10px">
+<span class="badge">Infix examples: A+B*C</span>
+<span class="badge">(A+B)*C</span>
+<span class="badge">A+B*(C-D)/E</span>
+<span class="badge">Suffix: 23*54*+</span>
+</div>
+</div>
+
+<div class="card">
+<h2 id="operationTitle">Infix → Postfix</h2>
+<div id="message" class="message">Enter an expression and click <b>Generate Steps</b>.</div>
+<div class="progress"><div id="progress"></div></div>
+</div>
+
+<div class="grid">
+<div class="visual">
+<h3>📚 Stack</h3>
+<div id="stack" class="stack"><div class="empty">Stack is empty</div></div>
+</div>
+
+<div class="visual">
+<h3 id="outputTitle">Postfix Output</h3>
+<div id="output" class="output">—</div>
+<h3 style="margin-top:18px">Current Symbol</h3>
+<div id="current" class="output" style="text-align:center">—</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Step Controls</h2>
+<button class="next" onclick="nextStep()">➜ Next Step</button>
+<button class="auto" onclick="autoPlay()">▶ Auto Play Slowly</button>
+<button class="reset" onclick="resetSteps()">↻ Restart Steps</button>
+<p id="stepInfo">No expression loaded.</p>
+</div>
+
+<div class="card">
+<h2>📋 Step-by-Step Record</h2>
+<table>
+<thead><tr><th>Step</th><th>Symbol</th><th>Action</th><th>Stack</th><th>Output / Result</th></tr></thead>
+<tbody id="history"><tr><td colspan="5">Generate an expression to begin.</td></tr></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+let mode="infix";
+let steps=[];
+let pos=0;
+let timer=null;
+
+function setMode(m){
+ mode=m;
+ document.getElementById("m1").classList.toggle("active",m==="infix");
+ document.getElementById("m2").classList.toggle("active",m==="suffix");
+ document.getElementById("expr").placeholder=m==="infix"?"Example: A+B*(C-D)/E":"Example: 23*54*+";
+ document.getElementById("operationTitle").innerText=m==="infix"?"Infix → Postfix":"Suffix Expression Evaluation";
+ document.getElementById("outputTitle").innerText=m==="infix"?"Postfix Output":"Result / Stack";
+ resetAll();
+}
+
+function precedence(c){
+ if(c==="^") return 3;
+ if("* / %".includes(c)) return 2;
+ if("+ -".includes(c)) return 1;
+ return 0;
+}
+function isOp(c){return "+-*/%^".includes(c)}
+function isAlphaNum(c){return /[A-Za-z0-9]/.test(c)}
+
+function makeInfixSteps(exp){
+ let stack=[], out="", arr=[], i=0, step=0;
+ while(i<exp.length){
+  let ch=exp[i++];
+  if(ch===" ") continue;
+  let action="";
+  if(isAlphaNum(ch)){out+=ch;action="Operand → add directly to postfix output."}
+  else if(ch==="("){stack.push(ch);action="Opening parenthesis → PUSH onto operator stack."}
+  else if(ch===")"){
+   while(stack.length && stack[stack.length-1]!=="("){
+    out+=stack.pop();
+   }
+   if(stack.length) stack.pop();
+   action="Closing parenthesis → POP until '(' and remove '('."; 
+  }else if(isOp(ch)){
+   while(stack.length && stack[stack.length-1]!=="(" && precedence(stack[stack.length-1])>=precedence(ch)){
+    out+=stack.pop();
+   }
+   stack.push(ch);
+   action="Operator → POP higher/equal precedence operators, then PUSH "+ch+".";
+  }else{
+   action="Ignored unsupported symbol: "+ch;
+  }
+  arr.push({n:++step,ch,action,stack:[...stack],out,final:false});
+ }
+ while(stack.length){out+=stack.pop();arr.push({n:++step,ch:"END",action:"End → POP remaining operators.",stack:[...stack],out,final:false});}
+ arr.push({n:++step,ch:"✓",action:"Conversion complete.",stack:[],out,final:true});
+ return arr;
+}
+
+function makeSuffixSteps(exp){
+ let stack=[], arr=[], step=0;
+ for(let ch of exp){
+  if(ch===" ") continue;
+  let action="", out="";
+  if(/[0-9]/.test(ch)){
+   stack.push(Number(ch));
+   action="Operand → PUSH "+ch+" onto stack.";
+  }else if(isOp(ch)){
+   if(stack.length<2){
+    action="Invalid expression: not enough operands.";
+    arr.push({n:++step,ch,action,stack:[...stack],out:"ERROR",final:true});
+    return arr;
+   }
+   let b=stack.pop(),a=stack.pop(),r;
+   switch(ch){
+    case "+":r=a+b;break;case "-":r=a-b;break;case "*":r=a*b;break;
+    case "/":r=Math.trunc(a/b);break;case "%":r=a%b;break;case "^":r=Math.pow(a,b);break;
+   }
+   stack.push(r);
+   action="Operator → POP "+b+" and "+a+"; calculate "+a+" "+ch+" "+b+" = "+r+"; PUSH result.";
+  }else{
+   action="Invalid symbol: "+ch;
+  }
+  arr.push({n:++step,ch,action,stack:[...stack],out:stack.length===1?stack[0]:"",final:false});
+ }
+ if(stack.length!==1){
+  arr.push({n:++step,ch:"✓",action:"Invalid suffix expression: final stack must contain exactly one result.",stack:[...stack],out:"ERROR",final:true});
+ }else{
+  arr.push({n:++step,ch:"✓",action:"Evaluation complete. Final result = "+stack[0],stack:[...stack],out:stack[0],final:true});
+ }
+ return arr;
+}
+
+function solve(){
+ let exp=document.getElementById("expr").value.trim();
+ if(!exp){
+  document.getElementById("message").innerHTML="⚠️ Please enter an expression first.";
+  return;
+ }
+ clearInterval(timer);
+ steps=mode==="infix"?makeInfixSteps(exp):makeSuffixSteps(exp);
+ pos=0;
+ document.getElementById("history").innerHTML="";
+ render();
+}
+
+function render(){
+ if(!steps.length)return;
+ let idx=Math.min(pos,steps.length-1);
+ let s=steps[idx];
+ document.getElementById("message").innerHTML="<b>Step "+s.n+":</b> "+s.action;
+ document.getElementById("current").innerText=s.ch;
+ document.getElementById("output").innerText=s.out===""?"—":s.out;
+ document.getElementById("stepInfo").innerText="Step "+(idx+1)+" of "+steps.length;
+ document.getElementById("progress").style.width=((idx+1)/steps.length*100)+"%";
+
+ let st=document.getElementById("stack"); st.innerHTML="";
+ if(!s.stack.length){st.innerHTML='<div class="empty">Stack is empty</div>'}
+ else{
+  [...s.stack].reverse().forEach((v,i)=>{
+   let d=document.createElement("div");d.className="stack-item"+(i===0?" top":"");
+   d.innerText=(i===0?"TOP → ":"")+v;st.appendChild(d);
+  });
+ }
+
+ let h=document.getElementById("history");
+ h.innerHTML="";
+ steps.slice(0,idx+1).forEach((x,j)=>{
+  let tr=document.createElement("tr");if(j===idx)tr.className="current";
+  tr.innerHTML="<td>"+x.n+"</td><td>"+x.ch+"</td><td>"+x.action+"</td><td>"+(x.stack.length?x.stack.join(" , "):"—")+"</td><td>"+(x.out===""?"—":x.out)+"</td>";
+  h.appendChild(tr);
+ });
+}
+
+function nextStep(){
+ if(!steps.length)return;
+ if(pos<steps.length-1){pos++;render()}
+ else clearInterval(timer);
+}
+
+function autoPlay(){
+ if(!steps.length)return;
+ clearInterval(timer);
+ timer=setInterval(()=>{
+  if(pos<steps.length-1){pos++;render()}
+  else clearInterval(timer);
+ },1800);
+}
+
+function resetSteps(){
+ clearInterval(timer);
+ if(steps.length){pos=0;render()}
+}
+function resetAll(){
+ clearInterval(timer);steps=[];pos=0;
+ document.getElementById("message").innerHTML="Enter an expression and click <b>Generate Steps</b>.";
+ document.getElementById("stack").innerHTML='<div class="empty">Stack is empty</div>';
+ document.getElementById("output").innerText="—";
+ document.getElementById("current").innerText="—";
+ document.getElementById("history").innerHTML='<tr><td colspan="5">Generate an expression to begin.</td></tr>';
+ document.getElementById("stepInfo").innerText="No expression loaded.";
+ document.getElementById("progress").style.width="0%";
+}
+</script>
+</body>
+</html>

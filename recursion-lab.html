@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursion Explained | DSA 1BCS305</title>
+<style>
+:root{--navy:#17365d;--blue:#2673b8;--cyan:#e8f6ff;--green:#18794e;--greenbg:#e9f7ef;--orange:#a94d00;--orangebg:#fff3e6;--red:#b42318;--ink:#202938;--muted:#5c6878;--line:#d9e2ec;--paper:#fff;--bg:#f3f6fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55}
+header{background:linear-gradient(120deg,#17365d,#2673b8);color:white;padding:28px 18px 24px}
+.wrap{max-width:1150px;margin:auto;padding:0 16px}header h1{margin:0;font-size:clamp(1.7rem,4vw,2.7rem)}header p{margin:8px 0 0;max-width:800px;color:#eaf4ff}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.pill{border:1px solid #ffffff77;border-radius:999px;padding:4px 11px;font-size:.88rem}
+main{padding:22px 0 50px}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 5px 18px #17365d0b;min-width:0}.span12{grid-column:span 12}.span7{grid-column:span 7}.span5{grid-column:span 5}.span6{grid-column:span 6}
+h2{color:var(--navy);font-size:1.3rem;margin:0 0 12px}h3{margin:0 0 8px;color:var(--navy);font-size:1.02rem}.muted{color:var(--muted)}.highlight{background:var(--cyan);border-left:4px solid var(--blue);padding:12px 14px;border-radius:8px}
+.definition{font-size:1.12rem}.code{font-family:Consolas,Monaco,monospace;background:#101d32;color:#edf5ff;border-radius:12px;padding:16px;overflow:auto;white-space:pre;line-height:1.7;font-size:.94rem}.code .comment{color:#a8d7b8}.code .key{color:#91d7ff}.code .base{color:#ffd28c}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini{padding:13px;border-radius:12px;background:#f8fafc;border:1px solid var(--line)}.mini.basecase{background:var(--greenbg);border-color:#a6dfbd}.mini.recursive{background:var(--orangebg);border-color:#ffd1a3}
+label{font-weight:650;display:block;margin-bottom:6px}input,select{font:inherit;padding:10px 12px;border:1px solid #b9c7d6;border-radius:9px;background:white;color:var(--ink);max-width:100%}input[type=number]{width:100px}button{font:inherit;font-weight:650;border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:white;cursor:pointer}button:hover{filter:brightness(.95)}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#eaf0f7;color:var(--navy);border:1px solid #cbd8e6}.controls{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:12px 0}.controls>div{display:flex;flex-direction:column;gap:4px}.status{font-weight:650;margin:8px 0;color:var(--navy)}.trace{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.stack{min-height:190px;border:2px dashed #aebdce;border-radius:12px;padding:12px;display:flex;flex-direction:column-reverse;gap:7px;justify-content:flex-start;background:#f8fafc}.frame{padding:10px;border-radius:8px;border:1px solid #8ab7e4;background:#e8f4ff;font-family:Consolas,monospace;text-align:center;animation:pop .2s ease-out}.frame.current{background:#fff0c9;border-color:#e7ae3b;box-shadow:0 0 0 2px #ffe3a0}.frame.returned{background:#e7f7ed;border-color:#79c69a}@keyframes pop{from{transform:translateY(5px);opacity:.5}to{transform:translateY(0);opacity:1}}.trace-table{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:12px}.trace-table th,.trace-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left}.trace-table th{background:#f1f6fb;color:var(--navy)}.trace-table tr.active{background:#fff4d7}.stepbar{height:8px;background:#e3eaf2;border-radius:999px;overflow:hidden;margin:10px 0}.stepbar div{height:100%;width:0;background:#2a9d68;transition:width .2s}.result{font-size:1.25rem;font-weight:750;color:var(--green)}.quizq{padding:12px;border:1px solid var(--line);border-radius:10px;margin:10px 0}.quizq label{font-weight:400;margin:5px 0}.feedback{margin-top:8px;font-weight:650}.correct{color:var(--green)}.wrong{color:var(--red)}.footer{text-align:center;color:var(--muted);padding:20px 0;font-size:.9rem}
+@media(max-width:780px){.span7,.span5,.span6{grid-column:span 12}.two,.trace{grid-template-columns:1fr}.card{padding:15px}.wrap{padding:0 12px}.trace-table{font-size:.8rem}.trace-table th,.trace-table td{padding:6px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Recursion — See How It Works</h1>
+<p>Data Structures and Applications · 1BCS305 · Module 2. Explore the base case, recursive calls, the call stack, and the return journey.</p>
+<div class="pills"><span class="pill">Beginner-friendly</span><span class="pill">Interactive trace</span><span class="pill">C examples</span><span class="pill">Practice quiz</span></div>
+</div></header>
+<main class="wrap"><div class="grid">
+<section class="card span12">
+<h2>1. What is recursion?</h2>
+<p class="definition"><b>Recursion</b> is a problem-solving technique in which a function calls itself to solve a smaller version of the same problem.</p>
+<div class="two">
+<div class="mini basecase"><h3>🛑 Base case — stop</h3><p>The condition that ends the recursive calls. Without a valid base case, recursion may continue until a stack overflow occurs.</p><code>if (n &lt;= 1) return 1;</code></div>
+<div class="mini recursive"><h3>🔁 Recursive case — reduce</h3><p>The function calls itself with a smaller input that moves toward the base case.</p><code>return n * factorial(n - 1);</code></div>
+</div>
+<div class="highlight" style="margin-top:14px"><b>Remember:</b> Every recursive function needs a stopping condition and progress toward that condition.</div>
+</section>
+
+<section class="card span5">
+<h2>2. C program: factorial</h2>
+<div class="code"><span class="key">int</span> factorial(int n)
+{
+    <span class="base">if (n &lt;= 1)</span>
+        <span class="base">return 1;</span>  <span class="comment">// base case</span>
+
+    <span class="key">return</span> n * factorial(n - 1);
+    <span class="comment">// recursive case</span>
+}</div>
+<p class="muted">Factorial: 4! = 4 × 3 × 2 × 1 = 24</p>
+</section>
+
+<section class="card span7">
+<h2>3. Follow the calls and returns</h2>
+<p>Change <b>n</b>, then step through the function. First, calls go down toward the base case. Then values return upward.</p>
+<div class="controls">
+<div><label for="nValue">Factorial input (0–8)</label><input id="nValue" type="number" min="0" max="8" value="4"></div>
+<button id="buildBtn">Build trace</button>
+</div>
+<div class="controls">
+<button id="prevBtn" class="secondary">← Previous</button><button id="nextBtn">Next step →</button><button id="autoBtn" class="secondary">Auto play</button><button id="resetBtn" class="secondary">Restart</button>
+</div>
+<div class="stepbar"><div id="progress"></div></div>
+<div id="stepStatus" class="status" aria-live="polite">Press “Build trace” to begin.</div>
+<div class="trace">
+<div><h3>Call stack (top shown last)</h3><div id="stackView" class="stack"><div class="muted">No calls yet</div></div></div>
+<div><h3>What the function is doing</h3><div id="explain" class="highlight">The calls are placed on the call stack. Each waits for the smaller call to return.</div><p id="result" class="result"></p></div>
+</div>
+<table class="trace-table"><thead><tr><th>Step</th><th>Event</th><th>Value / calculation</th></tr></thead><tbody id="traceBody"><tr><td colspan="3" class="muted">Trace appears here.</td></tr></tbody></table>
+</section>
+
+<section class="card span6">
+<h2>4. Visualize the call sequence</h2>
+<p>For <code>factorial(4)</code>, calls move downward until <code>factorial(1)</code>. Return values then move upward.</p>
+<div class="code">factorial(4)
+  = 4 × factorial(3)
+      = 3 × factorial(2)
+          = 2 × factorial(1)
+              = 1  <span class="comment">// base case</span>
+          = 2 × 1 = 2
+      = 3 × 2 = 6
+  = 4 × 6 = 24</div>
+<p class="highlight">The call stack follows <b>LIFO</b>: the most recent call is the first one to finish.</p>
+</section>
+
+<section class="card span6">
+<h2>5. Another example: sum from 1 to n</h2>
+<div class="code">int sum(int n)
+{
+    if (n &lt;= 0)
+        return 0;  <span class="comment">// base case</span>
+
+    return n + sum(n - 1);
+}</div>
+<p>Example: <code>sum(4) = 4 + 3 + 2 + 1 + 0 = 10</code>.</p>
+<div class="mini"><b>Try to explain:</b> Why does <code>sum(0)</code> return 0? What would happen if the base case were removed?</div>
+</section>
+
+<section class="card span12">
+<h2>6. Check your understanding</h2>
+<div class="quizq"><b>Q1. Which part stops recursive calls?</b><label><input type="radio" name="q1" value="a"> Recursive case</label><label><input type="radio" name="q1" value="b"> Base case</label><label><input type="radio" name="q1" value="c"> Function name</label><div id="f1" class="feedback"></div></div>
+<div class="quizq"><b>Q2. What is factorial(4)?</b><label><input type="radio" name="q2" value="a"> 10</label><label><input type="radio" name="q2" value="b"> 16</label><label><input type="radio" name="q2" value="c"> 24</label><div id="f2" class="feedback"></div></div>
+<div class="quizq"><b>Q3. Why can recursion cause stack overflow?</b><label><input type="radio" name="q3" value="a"> Too many calls remain on the call stack</label><label><input type="radio" name="q3" value="b"> It always uses an array</label><label><input type="radio" name="q3" value="c"> It cannot return values</label><div id="f3" class="feedback"></div></div>
+<button id="checkQuiz">Check answers</button><span id="quizScore" style="font-weight:750;margin-left:12px"></span>
+</section>
+</div>
+<div class="footer">Prepared for classroom explanation · Data Structures and Applications (1BCS305) · Prof. Kiran Mudaraddi</div>
+</main>
+<script>
+let events=[],idx=-1,autoTimer=null;
+const $=id=>document.getElementById(id);
+function buildEvents(n){
+ const e=[];let calls=[];
+ function add(type,event,calc,explain,stack,ret=null){e.push({type,event,calc,explain,stack:[...stack],ret});}
+ function rec(k){
+   calls.push(k);
+   if(k<=1){add('base','Base case reached',`factorial(${k}) = 1`,`No more recursive call is needed. This call returns 1.`,calls,1);calls.pop();return 1;}
+   add('call','Recursive call',`factorial(${k}) calls factorial(${k-1})`,`The current call waits for factorial(${k-1}) to return.`,calls);
+   const v=rec(k-1),ans=k*v;
+   add('return','Return and calculate',`${k} × ${v} = ${ans}`,`The smaller call returned ${v}. Now factorial(${k}) can calculate its answer.`,calls,ans);
+   calls.pop();return ans;
+ }
+ const answer=rec(n);
+ add('done','Completed',`factorial(${n}) = ${answer}`,`All calls have returned. The final answer is ${answer}.`,[],answer);
+ return e;
+}
+function render(){
+ $('prevBtn').disabled=idx<=0;$('nextBtn').disabled=idx>=events.length-1||!events.length;
+ $('progress').style.width=events.length?`${((idx+1)/events.length)*100}%`:'0%';
+ if(idx<0||!events.length){$('stepStatus').textContent='Press “Build trace” to begin.';$('stackView').innerHTML='<div class="muted">No calls yet</div>';$('explain').textContent='The calls are placed on the call stack. Each waits for the smaller call to return.';$('result').textContent='';$('traceBody').innerHTML='<tr><td colspan="3" class="muted">Trace appears here.</td></tr>';return;}
+ const ev=events[idx];$('stepStatus').textContent=`Step ${idx+1} of ${events.length}: ${ev.event}`;$('explain').textContent=ev.explain;$('result').textContent=ev.ret!==null?`Returned value: ${ev.ret}`:'';
+ $('stackView').innerHTML=ev.stack.length?ev.stack.map((k,i)=>`<div class="frame ${i===ev.stack.length-1?'current':''}">factorial(${k})${i===ev.stack.length-1?'  ← current':''}</div>`).join(''):'<div class="frame returned">Call stack is empty</div>';
+ const rows=events.slice(0,idx+1).map((x,i)=>`<tr class="${i===idx?'active':''}"><td>${i+1}</td><td>${x.event}</td><td>${x.calc}</td></tr>`).join('');
+ $('traceBody').innerHTML=rows;
+}
+function stopAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null;}$('autoBtn').textContent='Auto play';}
+function build(){stopAuto();let n=Number($('nValue').value);if(!Number.isInteger(n)||n<0||n>8){alert('Please enter an integer from 0 to 8.');return;}events=buildEvents(n);idx=0;render();}
+$('buildBtn').addEventListener('click',build);
+$('nextBtn').addEventListener('click',()=>{if(idx<events.length-1){idx++;render();}});
+$('prevBtn').addEventListener('click',()=>{if(idx>0){idx--;render();}});
+$('resetBtn').addEventListener('click',()=>{stopAuto();idx=-1;render();});
+$('autoBtn').addEventListener('click',()=>{if(autoTimer){stopAuto();return;}if(!events.length)build();$('autoBtn').textContent='Pause';autoTimer=setInterval(()=>{if(idx>=events.length-1){stopAuto();return;}idx++;render();},1100);});
+$('checkQuiz').addEventListener('click',()=>{const ans={q1:'b',q2:'c',q3:'a'};let score=0;for(let i=1;i<=3;i++){let picked=document.querySelector(`input[name="q${i}"]:checked`);let good=picked&&picked.value===ans['q'+i];if(good)score++;$('f'+i).textContent=picked?(good?'Correct!':'Not quite — try again.'):'Choose an answer first.';$('f'+i).className='feedback '+(good?'correct':'wrong');}$('quizScore').textContent=`Score: ${score}/3`;});
+build();idx=-1;render();
+</script>
+</body>
+</html>

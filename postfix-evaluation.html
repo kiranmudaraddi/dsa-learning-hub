@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Suffix Expression Evaluation - Prof. Kiran Mudaraddi</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#172033}
+.wrap{max-width:1150px;margin:auto;padding:18px}
+.header{background:linear-gradient(135deg,#7c2d12,#ea580c,#f59e0b);color:white;border-radius:22px;padding:24px;box-shadow:0 8px 25px #cbd5e1}
+.badge{display:inline-block;background:#fde68a;color:#431407;font-weight:800;border-radius:30px;padding:7px 12px;font-size:12px}
+.header h1{margin:10px 0 5px;font-size:30px}
+.header p{margin:0 0 12px}
+.teacher{display:inline-block;background:#ffffff22;border:1px solid #ffffff44;padding:9px 14px;border-radius:12px}
+.layout{display:grid;grid-template-columns:390px 1fr;gap:18px;margin-top:18px}
+.card{background:white;border-radius:18px;padding:18px;border:1px solid #dbe3ef;box-shadow:0 5px 18px #dbe3ef}
+.card.left{border-top:6px solid #f97316}
+.card.right{border-top:6px solid #eab308}
+h2{margin:0 0 15px;font-size:20px}
+h3{font-size:15px;margin:18px 0 9px}
+label{font-weight:700;font-size:14px}
+input{width:100%;margin-top:7px;padding:13px;border:2px solid #cbd5e1;border-radius:12px;font-size:18px;font-family:monospace;outline:none}
+input:focus{border-color:#ea580c}
+button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer;font-size:14px;margin:5px 4px 0 0}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:#ea580c;color:#fff}.green{background:#16a34a;color:#fff}.orange{background:#f59e0b;color:#431407}.gray{background:#e2e8f0}
+.example{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;font-family:monospace}
+.info{background:#fff7ed;border-left:5px solid #ea580c;padding:12px;border-radius:8px;margin-top:14px;line-height:1.5}
+.status{background:#f1f5f9;border-radius:11px;padding:12px;font-weight:600;margin-bottom:12px}
+.good{background:#dcfce7;color:#166534}
+.bad{background:#fee2e2;color:#991b1b}
+.progress{height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin:10px 0 15px}
+.progress div{height:100%;background:linear-gradient(90deg,#f97316,#eab308,#16a34a);width:0}
+.visual{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.panel{border-radius:15px;padding:15px;min-height:250px;border:1px solid #dbe3ef}
+.stack-panel{background:linear-gradient(180deg,#fff7ed,#fff)}
+.result-panel{background:linear-gradient(180deg,#f0fdf4,#fff)}
+.smalltitle{text-transform:uppercase;color:#64748b;font-size:12px;font-weight:900;letter-spacing:.08em}
+.stack{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:195px;gap:6px;margin-top:10px}
+.token{background:linear-gradient(135deg,#fed7aa,#fdba74);color:#9a3412;border:2px solid #f97316;border-radius:9px;padding:9px 18px;font-weight:900;font-family:monospace;font-size:19px;min-width:60px;text-align:center}
+.empty{color:#94a3b8;margin-top:75px}
+.result{font-size:38px;font-weight:900;color:#15803d;margin-top:65px;text-align:center}
+.currentbox{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:10px;margin-top:12px}
+.trace{margin-top:15px;border:1px solid #dbe3ef;border-radius:12px;overflow:auto;max-height:330px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left}
+th{background:#f8fafc;position:sticky;top:0}
+.active{background:#fff7ed}
+.quiz{margin-top:15px;padding:14px;background:#fefce8;border:1px solid #fde68a;border-radius:12px}
+.qbtn{background:white;border:1px solid #facc15;display:block;width:100%;text-align:left;margin:6px 0}
+.footer{text-align:center;margin-top:18px;padding:12px;color:#64748b}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.visual{grid-template-columns:1fr}.header h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="header">
+  <span class="badge">DATA STRUCTURES & APPLICATIONS • 1BCS305</span>
+  <h1>🧮 Suffix (Postfix) Expression Evaluation</h1>
+  <p>Learn by doing — watch every operand and operator move through the stack.</p>
+  <div class="teacher">👨‍🏫 Designed & Developed by <strong>Prof. Kiran Mudaraddi</strong></div>
+</header>
+
+<div class="layout">
+<section class="card left">
+<h2>🎯 Problem Input</h2>
+<label for="expression">Enter Suffix / Postfix Expression</label>
+<input id="expression" value="23*54*+" autocomplete="off">
+
+<div>
+<button class="primary" id="startBtn">▶ Start / Generate Steps</button>
+<button class="gray" id="resetBtn">↻ Reset</button>
+</div>
+
+<h3>✨ Try Examples</h3>
+<button class="example" data-expression="23*54*+">23*54*+</button>
+<button class="example" data-expression="23+5*">23+5*</button>
+<button class="example" data-expression="82/3-">82/3-</button>
+<button class="example" data-expression="56+72-*">56+72-*</button>
+
+<div class="info">
+<strong>Rules</strong><br>
+🟢 Operand / digit → <b>PUSH</b> into stack<br>
+🟠 Operator → <b>POP operand2</b><br>
+🔵 Then <b>POP operand1</b><br>
+🟣 Calculate <b>operand1 operator operand2</b><br>
+🟢 PUSH the result back into stack
+</div>
+
+<h3>⚠️ Important</h3>
+<div class="info">
+For <b>-</b> and <b>/</b>, order matters:<br>
+<strong>operand1 = POP()</strong><br>
+<strong>operand2 = POP()</strong><br>
+<strong>result = operand1 OP operand2</strong>
+</div>
+
+<div class="quiz">
+<strong>💡 Quick Check</strong>
+<p>For suffix expression <b>23-</b>, what is the answer?</p>
+<button class="qbtn" data-correct="false">1</button>
+<button class="qbtn" data-correct="true">-1</button>
+<button class="qbtn" data-correct="false">5</button>
+<div id="quizResult"></div>
+</div>
+</section>
+
+<section class="card right">
+<h2>🔬 Live Stack Evaluation</h2>
+<div id="status" class="status">Enter a suffix expression and click <b>Start</b>.</div>
+<div class="progress"><div id="progressBar"></div></div>
+
+<div class="visual">
+<div class="panel stack-panel">
+<div class="smalltitle">STACK — TOP</div>
+<div id="stackView" class="stack"><div class="empty">Empty Stack</div></div>
+</div>
+<div class="panel result-panel">
+<div class="smalltitle">FINAL RESULT</div>
+<div id="resultView" class="result">—</div>
+</div>
+</div>
+
+<div class="currentbox">
+<strong>Current Step:</strong>
+<span id="currentStep">Click Start to generate the solution.</span>
+</div>
+
+<div>
+<button class="green" id="nextBtn" disabled>▶ Next Step</button>
+<button class="orange" id="autoBtn" disabled>⏩ Auto Play</button>
+</div>
+
+<div class="trace">
+<table>
+<thead><tr><th>#</th><th>Symbol</th><th>Action</th><th>Stack</th><th>Result</th></tr></thead>
+<tbody id="traceBody"></tbody>
+</table>
+</div>
+</section>
+</div>
+
+<div class="footer">
+<strong>Prof. Kiran Mudaraddi</strong> • Data Structures & Applications • Suffix (Postfix) Evaluation
+</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var expression=document.getElementById('expression');
+var startBtn=document.getElementById('startBtn');
+var resetBtn=document.getElementById('resetBtn');
+var nextBtn=document.getElementById('nextBtn');
+var autoBtn=document.getElementById('autoBtn');
+var status=document.getElementById('status');
+var currentStep=document.getElementById('currentStep');
+var stackView=document.getElementById('stackView');
+var resultView=document.getElementById('resultView');
+var traceBody=document.getElementById('traceBody');
+var progressBar=document.getElementById('progressBar');
+var quizResult=document.getElementById('quizResult');
+
+var steps=[];
+var position=0;
+var timer=null;
+
+function isDigit(ch){
+  return /^[0-9]$/.test(ch);
+}
+
+function isOperator(ch){
+  return '+-*/%'.indexOf(ch)!==-1;
+}
+
+function calculate(a,b,op){
+  if(op==='+') return a+b;
+  if(op==='-') return a-b;
+  if(op==='*') return a*b;
+  if(op==='/') return Math.trunc(a/b);
+  if(op==='%') return a%b;
+  return 0;
+}
+
+function makeSteps(input){
+  var s=input.replace(/\s/g,'');
+  var stack=[];
+  var result=[];
+  var answer=null;
+  var list=[];
+  var count=0;
+
+  function save(symbol,action){
+    count++;
+    list.push({
+      number:count,
+      symbol:symbol,
+      action:action,
+      stack:stack.slice(),
+      result:answer
+    });
+  }
+
+  for(var i=0;i<s.length;i++){
+    var ch=s.charAt(i);
+
+    if(isDigit(ch)){
+      var value=Number(ch);
+      stack.push(value);
+      save(ch,"Operand → PUSH "+value+" into stack");
+    }
+    else if(isOperator(ch)){
+      if(stack.length<2){
+        throw new Error("Not enough operands for operator '"+ch+"'.");
+      }
+
+      var operand2=stack.pop();
+      save(ch,"POP operand2 = "+operand2);
+
+      var operand1=stack.pop();
+      save(ch,"POP operand1 = "+operand1);
+
+      answer=calculate(operand1,operand2,ch);
+      save(ch,operand1+" "+ch+" "+operand2+" = "+answer);
+
+      stack.push(answer);
+      save(ch,"PUSH result "+answer+" into stack");
+    }
+    else{
+      throw new Error("Only single-digit operands and + - * / % operators are supported.");
+    }
+  }
+
+  if(stack.length!==1){
+    throw new Error("Invalid suffix expression. At the end, exactly one result must remain.");
+  }
+
+  answer=stack[0];
+  save('END',"Final result = "+answer);
+
+  return list;
+}
+
+function validate(input){
+  if(!input) return 'Please enter a suffix expression.';
+  if(!/^[0-9+*/%\\-\\s]+$/.test(input))
+    return 'This version accepts single-digit operands and + - * / % operators.';
+  return '';
+}
+
+function render(){
+  var state=position>0 ? steps[position-1] : {stack:[],result:null};
+
+  stackView.innerHTML='';
+
+  if(state.stack.length===0){
+    var empty=document.createElement('div');
+    empty.className='empty';
+    empty.textContent='Empty Stack';
+    stackView.appendChild(empty);
+  }else{
+    for(var i=state.stack.length-1;i>=0;i--){
+      var token=document.createElement('div');
+      token.className='token';
+      token.textContent=state.stack[i];
+      stackView.appendChild(token);
+    }
+  }
+
+  if(position>=steps.length || state.result!==null)
+    resultView.textContent=state.result===null?'—':state.result;
+  else
+    resultView.textContent='—';
+
+  traceBody.innerHTML='';
+  for(var j=0;j<position;j++){
+    var row=steps[j];
+    var tr=document.createElement('tr');
+    if(j===position-1) tr.className='active';
+    tr.innerHTML='<td>'+row.number+'</td>'+
+      '<td><strong>'+row.symbol+'</strong></td>'+
+      '<td>'+row.action+'</td>'+
+      '<td>'+(row.stack.length?row.stack.join(' '):'—')+'</td>'+
+      '<td><strong>'+(row.result===null?'—':row.result)+'</strong></td>';
+    traceBody.appendChild(tr);
+  }
+
+  progressBar.style.width=(steps.length ? position/steps.length*100 : 0)+'%';
+
+  if(steps.length===0){
+    nextBtn.disabled=true;
+    autoBtn.disabled=true;
+    currentStep.textContent='Click Start to generate the solution.';
+  }else if(position<steps.length){
+    nextBtn.disabled=false;
+    autoBtn.disabled=false;
+    currentStep.innerHTML='<b>'+steps[position].symbol+'</b> → '+steps[position].action;
+    status.className='status';
+    status.innerHTML='Step <b>'+(position+1)+'</b> of <b>'+steps.length+'</b>';
+  }else{
+    nextBtn.disabled=true;
+    autoBtn.disabled=true;
+    currentStep.innerHTML='🎉 <b>Evaluation completed!</b>';
+    status.className='status good';
+    status.innerHTML='✅ Final Result: <b>'+steps[steps.length-1].result+'</b>';
+  }
+}
+
+function start(){
+  stopAuto();
+
+  var input=expression.value.trim();
+  var error=validate(input);
+
+  if(error){
+    status.className='status bad';
+    status.textContent='⚠️ '+error;
+    return;
+  }
+
+  try{
+    steps=makeSteps(input);
+    position=0;
+    status.className='status';
+    status.innerHTML='Ready! Click <b>Next Step</b> to evaluate one operation at a time.';
+    render();
+  }catch(err){
+    steps=[];
+    position=0;
+    status.className='status bad';
+    status.textContent='⚠️ '+err.message;
+    render();
+  }
+}
+
+function next(){
+  if(position<steps.length){
+    position++;
+    render();
+  }
+}
+
+function stopAuto(){
+  if(timer!==null){
+    clearInterval(timer);
+    timer=null;
+  }
+  autoBtn.textContent='⏩ Auto Play';
+}
+
+function autoPlay(){
+  if(timer!==null){
+    stopAuto();
+    return;
+  }
+  if(position>=steps.length) return;
+
+  autoBtn.textContent='⏸ Pause';
+
+  timer=setInterval(function(){
+    if(position>=steps.length){
+      stopAuto();
+      return;
+    }
+    position++;
+    render();
+  },900);
+}
+
+function reset(){
+  stopAuto();
+  expression.value='23*54*+';
+  steps=[];
+  position=0;
+  status.className='status';
+  status.innerHTML='Enter a suffix expression and click <b>Start</b>.';
+  stackView.innerHTML='<div class="empty">Empty Stack</div>';
+  resultView.textContent='—';
+  currentStep.textContent='Click Start to generate the solution.';
+  traceBody.innerHTML='';
+  progressBar.style.width='0%';
+  nextBtn.disabled=true;
+  autoBtn.disabled=true;
+}
+
+startBtn.addEventListener('click',start);
+nextBtn.addEventListener('click',next);
+autoBtn.addEventListener('click',autoPlay);
+resetBtn.addEventListener('click',reset);
+
+expression.addEventListener('keydown',function(e){
+  if(e.key==='Enter') start();
+});
+
+document.querySelectorAll('.example').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    expression.value=btn.getAttribute('data-expression');
+    start();
+  });
+});
+
+document.querySelectorAll('.qbtn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    if(btn.getAttribute('data-correct')==='true'){
+      quizResult.innerHTML='<p style="color:#15803d;font-weight:800">✅ Correct! 2 − 3 = -1.</p>';
+    }else{
+      quizResult.innerHTML='<p style="color:#b91c1c;font-weight:800">❌ Try again. POP the second operand first, then the first operand.</p>';
+    }
+  });
+});
+})();
+</script>
+</body>
+</html>
