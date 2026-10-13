@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Complete DSA Modules 1 & 2 | 1BCS305</title>
+<style>
+:root{--blue:#2457d6;--teal:#087f8c;--ink:#17233d;--muted:#5d6b82;--line:#dbe5f1}*{box-sizing:border-box}body{margin:0;background:#f4f7fc;color:var(--ink);font:16px/1.6 Arial,sans-serif}header{background:linear-gradient(125deg,#142c65,#2457d6,#078a9c);color:white;padding:30px 4%}header h1{font-size:clamp(1.8rem,4vw,2.8rem);margin:8px 0}nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:7px;overflow:auto;padding:9px 3%}nav a{white-space:nowrap;text-decoration:none;color:var(--blue);font-weight:bold;padding:7px 9px;border-radius:8px}main{max-width:1120px;margin:auto;padding:18px}.card{background:white;border:1px solid var(--line);border-radius:15px;padding:20px;margin:15px 0;box-shadow:0 5px 18px #17233d0a}.module{border-left:6px solid var(--blue)}.module2{border-left-color:var(--teal)}h2{color:var(--blue);margin-top:0}h3{color:var(--teal)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.sub{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff}.code{background:#101827;color:#e5edff;border-radius:11px;padding:15px;overflow-x:auto;white-space:pre;tab-size:4;font:13.5px/1.55 Consolas,monospace;max-width:100%}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:7px}.step{border:2px solid #93b4f4;background:#edf4ff;border-radius:9px;padding:8px 11px;font-weight:bold}.decision{background:#fff7dc;border-color:#d89a20}.io{background:#dcfce7;border-color:#159447}.arrow{color:#64748b;font-weight:bold}.controls{display:flex;gap:8px;flex-wrap:wrap}.controls input{padding:10px;border:1px solid #bdcbe0;border-radius:8px;width:150px}.controls button,button{padding:10px 14px;border:0;border-radius:8px;background:var(--blue);color:white;font-weight:bold;cursor:pointer}.controls .alt{background:#475569}.slots{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.slot{border:2px solid #a9b8ce;background:#f8fafc;border-radius:9px;min-width:70px;text-align:center;padding:9px}.slot.front{border-color:#0f766e;background:#ccfbf1}.slot.rear{box-shadow:inset 0 -4px #2457d6}.note{background:#fff8e7;border-left:4px solid #e5a11a;padding:12px;border-radius:8px}.result{font-weight:bold;color:#12613b}.pill{display:inline-block;background:#e0eaff;color:#2146a0;border-radius:20px;padding:3px 10px;font-weight:bold;font-size:.8rem}table{width:100%;border-collapse:collapse}td,th{border:1px solid var(--line);padding:9px;text-align:left}th{background:#edf4ff}footer{text-align:center;color:var(--muted);padding:24px}@media(max-width:700px){.grid{grid-template-columns:1fr}.card{padding:15px}.code{font-size:12.5px}}
+</style></head><body>
+<header><span class="pill">1BCS305 · III Semester · CSE (AI)</span><h1>Complete DSA Learning Hub — Modules 1 & 2</h1><p>One combined learning resource: theory notes, algorithms, flowchart logic, readable C snippets, interactive stack and queue labs, expression tools, recursion and real-world examples.</p></header>
+<nav><a href="#m1">Module 1</a><a href="#ds">Data structures</a><a href="#stack">Stack</a><a href="#m2">Module 2</a><a href="#expr">Expressions</a><a href="#recursion">Recursion</a><a href="#queue">Queue</a><a href="#lab">Interactive labs</a><a href="#practice">Practice</a></nav><main>
+<section class="card module" id="m1"><h2>MODULE 1 — Foundations, Structures and Stacks</h2><p>Study data structures and their classifications, basic operations, structures and arrays of structures, stacks, stack operations, array representation, expression forms and real-world stack applications.</p></section>
+<section class="card" id="ds"><h2>1. Introduction to Data Structures</h2><p>A data structure organizes data so it can be accessed and modified efficiently.</p><div class="grid"><div class="sub"><h3>Linear</h3><p>Elements form a sequence: arrays, linked lists, stacks and queues.</p></div><div class="sub"><h3>Non-linear</h3><p>Elements form hierarchical or network relationships: trees and graphs.</p></div><div class="sub"><h3>Common operations</h3><p>Traversing, inserting, deleting, searching and sorting.</p></div><div class="sub"><h3>Structures in C</h3><p>A <code>struct</code> groups related fields, possibly of different data types, under one name.</p></div></div><h3>Structure and array of structures — C snippet</h3><pre class="code">struct Student {
+    int usn;
+    char name[40];
+    float marks;
+};
+
+struct Student classList[60];</pre><h3>Traversal example</h3><pre class="code">for (int i = 0; i < n; i++) {
+    printf("%d %s %.2f\\n",
+           classList[i].usn,
+           classList[i].name,
+           classList[i].marks);
+}</pre></section>
+<section class="card" id="stack"><h2>2. Stack — LIFO</h2><p>A stack follows <b>LIFO (Last In, First Out)</b>. Insertion is PUSH; deletion is POP. Both happen at TOP. Applications include function calls, undo operations, expression conversion/evaluation and browser history.</p><h3>Array representation</h3><pre class="code">#define MAX 5
+int stack[MAX];
+int top = -1;  /* empty stack */</pre><div class="grid"><div class="sub"><h3>PUSH algorithm</h3><ol><li>If top == MAX−1, report overflow.</li><li>Otherwise top = top + 1.</li><li>stack[top] = item.</li></ol></div><div class="sub"><h3>POP algorithm</h3><ol><li>If top == −1, report underflow.</li><li>Save stack[top].</li><li>Decrement top and return saved value.</li></ol></div></div><h3>Flowchart logic: PUSH</h3><div class="flow"><span class="step">START</span><span class="arrow">→</span><span class="step decision">top == MAX−1?</span><span class="arrow">YES →</span><span class="step io">Overflow</span><span class="arrow">→</span><span class="step">STOP</span></div><p>NO: top++ → stack[top] = item → STOP.</p><h3>Flowchart logic: POP</h3><div class="flow"><span class="step">START</span><span class="arrow">→</span><span class="step decision">top == −1?</span><span class="arrow">YES →</span><span class="step io">Underflow</span><span class="arrow">→</span><span class="step">STOP</span></div><p>NO: item = stack[top] → top-- → return item → STOP.</p><h3>Readable C snippets</h3><pre class="code">void push(int item) {
+    if (top == MAX - 1) {
+        puts("Stack Overflow");
+        return;
+    }
+    stack[++top] = item;
+}
+
+void pop(void) {
+    if (top == -1) {
+        puts("Stack Underflow");
+        return;
+    }
+    int item = stack[top--];
+    printf("Removed: %d\\n", item);
+}</pre><p>Try the existing <a href="stack-push-pop.html">interactive Stack PUSH/POP simulator</a> and <a href="stack-c-simulator.html">Stack C simulator</a>.</p></section>
+<section class="card module module2" id="m2"><h2>MODULE 2 — Stack Applications, Recursion and Queues</h2><p>Work through infix/postfix/prefix forms, expression conversion and evaluation, recursion, queue operations, circular queues, deque and priority queue applications.</p></section>
+<section class="card" id="expr"><h2>3. Infix, Postfix and Prefix Expressions</h2><p><b>Infix:</b> operator between operands, e.g. <code>A+B</code>. <b>Postfix:</b> operator after operands, e.g. <code>AB+</code>. <b>Prefix:</b> operator before operands, e.g. <code>+AB</code>.</p><p>Parentheses and operator precedence determine the order of operations. A stack temporarily holds operators during conversion and operands during evaluation.</p><h3>Infix to postfix — algorithm outline</h3><ol><li>Scan the expression from left to right.</li><li>Send operands directly to output.</li><li>Push '(' onto the stack.</li><li>For an operator, pop higher-precedence operators (and equal precedence when left-associative) before pushing it.</li><li>On ')', pop until '('; discard the parentheses.</li><li>Pop remaining operators to output.</li></ol><h3>Postfix evaluation — algorithm outline</h3><ol><li>Scan tokens from left to right.</li><li>Push each operand.</li><li>For an operator, pop right operand first, then left operand; apply the operator.</li><li>Push the result back.</li><li>The final stack item is the answer for a valid expression.</li></ol><h3>Example</h3><p>Infix <code>(2 + 3) * 4</code> → postfix <code>2 3 + 4 *</code> → result <b>20</b>.</p><p>Open the existing <a href="infix-to-postfix.html">Infix to Postfix solver</a>, <a href="stack-expression-solver.html">Expression solver</a>, and <a href="postfix-evaluation.html">Postfix evaluation lab</a>.</p></section>
+<section class="card" id="recursion"><h2>4. Recursion</h2><p>Recursion occurs when a function calls itself to solve a smaller version of the same problem. Every correct recursive solution needs a base case and progress toward that case.</p><div class="grid"><div class="sub"><h3>Base case</h3><p>Stops the recursive calls.</p></div><div class="sub"><h3>Recursive case</h3><p>Reduces the problem and calls the function again.</p></div></div><h3>Factorial algorithm</h3><p><code>factorial(n) = 1</code> when n ≤ 1; otherwise <code>n * factorial(n-1)</code>.</p><pre class="code">long factorial(int n) {
+    if (n <= 1) {
+        return 1;       /* base case */
+    }
+    return n * factorial(n - 1);
+}</pre><p>For factorial(4): 4 × factorial(3) → 4 × 3 × factorial(2) → 4 × 3 × 2 × factorial(1) → 24.</p><p>Open the <a href="recursion-lab.html">interactive Recursion teaching lab</a> to trace calls and returns.</p></section>
+<section class="card" id="queue"><h2>5. Queue — FIFO</h2><p>A queue follows <b>FIFO (First In, First Out)</b>. Insert at REAR and remove from FRONT. Applications include ticket lines, printer queues, server requests and network buffers.</p><h3>Linear queue representation</h3><pre class="code">#define MAX 5
+int q[MAX];
+int front = -1, rear = -1;</pre><div class="grid"><div class="sub"><h3>Enqueue algorithm</h3><ol><li>If rear == MAX−1, report overflow.</li><li>If front == −1, set front = 0.</li><li>Increment rear and store Q[rear] = item.</li></ol></div><div class="sub"><h3>Dequeue algorithm</h3><ol><li>If front == −1 or front &gt; rear, report underflow.</li><li>Save Q[front].</li><li>If front == rear, reset both to −1; otherwise increment front.</li></ol></div></div><h3>Enqueue flowchart logic</h3><div class="flow"><span class="step">START</span><span class="arrow">→</span><span class="step decision">rear == MAX−1?</span><span class="arrow">YES →</span><span class="step io">OVERFLOW</span><span class="arrow">→</span><span class="step">STOP</span></div><p>NO: if front == −1 set front=0 → rear++ → Q[rear]=item → STOP.</p><h3>Dequeue flowchart logic</h3><div class="flow"><span class="step">START</span><span class="arrow">→</span><span class="step decision">Queue empty?</span><span class="arrow">YES →</span><span class="step io">UNDERFLOW</span><span class="arrow">→</span><span class="step">STOP</span></div><p>NO: item=Q[front] → if front==rear reset both to −1, else front++ → return item → STOP.</p><h3>Linear queue C code snippets</h3><pre class="code">void enqueue(int item) {
+    if (rear == MAX - 1) {
+        puts("Queue Overflow");
+        return;
+    }
+    if (front == -1) front = 0;
+    q[++rear] = item;
+}
+
+void dequeue(void) {
+    if (front == -1 || front > rear) {
+        puts("Queue Underflow");
+        return;
+    }
+    printf("Removed: %d\\n", q[front]);
+    if (front == rear) front = rear = -1;
+    else front++;
+}</pre><h3>Circular queue</h3><p>Empty: <code>front == -1</code>. Full: <code>(rear + 1) % MAX == front</code>. The modulo operator lets indices wrap around and reuse freed slots.</p><pre class="code">/* Circular enqueue */
+if ((rear + 1) % MAX == front) {
+    puts("Queue Overflow");
+    return;
+}
+if (front == -1) front = rear = 0;
+else rear = (rear + 1) % MAX;
+q[rear] = item;
+
+/* Circular dequeue */
+if (front == -1) {
+    puts("Queue Underflow");
+    return;
+}
+int item = q[front];
+if (front == rear) front = rear = -1;
+else front = (front + 1) % MAX;</pre><h3>Deque and priority queue</h3><p><b>Deque:</b> insertion and deletion can happen at both ends. Input-restricted deque limits insertion to one end; output-restricted deque limits deletion to one end.</p><p><b>Priority queue:</b> items are served according to priority rather than arrival order alone. Examples include hospital triage and task scheduling. Define a tie-breaking rule for equal priorities.</p><p>Open the <a href="queue-chapter.html">Queue chapter interactive lab</a> for a circular queue simulator and more examples.</p></section>
+<section class="card" id="lab"><h2>6. Interactive Circular Queue Lab</h2><p>Capacity is five. Insert and delete values to observe FRONT, REAR, overflow, underflow and wrap-around.</p><div class="controls"><input id="val" type="number" placeholder="Value to insert"><button onclick="enq()">Enqueue</button><button onclick="deq()">Dequeue</button><button onclick="peek()">Peek</button><button onclick="resetQ()" style="background:#475569">Reset</button></div><div id="slots" class="slots"></div><p id="state">Queue empty.</p><p id="msg" class="result"></p></section>
+<section class="card" id="practice"><h2>7. Real-world applications and practice</h2><div class="grid"><div class="sub"><h3>Stack: vehicle parking</h3><p>In a narrow parking lane, the last vehicle parked may be the first one that can leave: LIFO.</p><a href="vehicle-parking-stack.html">Open vehicle parking simulator ↗</a></div><div class="sub"><h3>Queue: campus token counter</h3><p>Tokens are served in arrival order: FIFO. Peek shows the next token without removing it.</p></div><div class="sub"><h3>Practice questions</h3><ol><li>Compare LIFO and FIFO.</li><li>Differentiate overflow and underflow.</li><li>Why is circular queue more space-efficient than a simple linear array queue?</li><li>Convert (A+B)*C to postfix.</li><li>Trace factorial(4).</li></ol></div><div class="sub"><h3>Lab checklist</h3><p>Implement stack PUSH/POP, linear queue, circular queue, and expression conversion. Test empty and full cases and document each trace.</p></div></div></section>
+</main><footer>DSA Learning Hub · 1BCS305 · Modules 1 & 2 · BITM, Ballari</footer>
+<script>const MAX=5;let a=Array(MAX).fill(null),f=-1,r=-1;function logical(){let o=[];if(f!==-1){let i=f;while(true){o.push(a[i]);if(i===r)break;i=(i+1)%MAX}}return o}function render(){let e=document.getElementById('slots');e.innerHTML='';a.forEach((v,i)=>{let d=document.createElement('div');d.className='slot'+(i===f&&f!==-1?' front':'')+(i===r&&r!==-1?' rear':'');d.innerHTML='<b>Index '+i+'</b><br>'+(v===null?'empty':v)+(i===f&&f!==-1?'<br>FRONT':'')+(i===r&&r!==-1?'<br>REAR':'');e.appendChild(d)});document.getElementById('state').textContent=f===-1?'Queue empty.':'front = '+f+', rear = '+r+' | order: '+logical().join(' → ')}function say(t){document.getElementById('msg').textContent=t}function enq(){let v=document.getElementById('val').value;if(v===''){say('Enter a value first.');return}if((r+1)%MAX===f){say('OVERFLOW: circular queue is full.');return}if(f===-1)f=r=0;else r=(r+1)%MAX;a[r]=Number(v);document.getElementById('val').value='';say('Inserted '+v+'.');render()}function deq(){if(f===-1){say('UNDERFLOW: queue is empty.');return}let v=a[f];a[f]=null;if(f===r)f=r=-1;else f=(f+1)%MAX;say('Removed '+v+'.');render()}function peek(){say(f===-1?'Queue is empty.':'Front item = '+a[f])}function resetQ(){a=Array(MAX).fill(null);f=r=-1;say('Queue reset.');render()}render();</script></body></html>
