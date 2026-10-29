@@ -15,7 +15,7 @@ int top = -1;
 
 void push(int value) {
     if (top == MAX - 1) {
-        printf("Stack Overflow\\n");
+        printf("Stack Overflow\n");
         return;
     }
     stack[++top] = value;
@@ -23,7 +23,7 @@ void push(int value) {
 
 int pop(int *value) {
     if (top == -1) {
-        printf("Stack Underflow\\n");
+        printf("Stack Underflow\n");
         return 0;
     }
     *value = stack[top--];
@@ -36,8 +36,8 @@ int main(void) {
     push(20);
     push(30);
     if (pop(&value))
-        printf("Popped: %d\\n", value);
-    printf("Top: %d\\n", stack[top]);
+        printf("Popped: %d\n", value);
+    printf("Top: %d\n", stack[top]);
     return 0;
 }</code></pre><h3>Expected output</h3><pre class="code">Popped: 30
 Top: 20</pre><h3>Common mistakes to avoid</h3><ul><li>Using <code>top == MAX</code> as the overflow test; the last valid index is <code>MAX - 1</code>.</li><li>Decrementing <code>top</code> before reading the popped value.</li><li>Calling PEEK or POP on an empty stack without checking underflow.</li><li>Forgetting <code>#include &lt;stdio.h&gt;</code> when using <code>printf()</code>.</li></ul></div><div class="card"><h2>Complexity quick reference</h2><div class="grid"><div class="mini"><strong>Array traversal</strong>O(n)</div><div class="mini"><strong>Binary search</strong>O(log n), sorted array required</div><div class="mini"><strong>Array insertion/deletion</strong>O(n) worst case due to shifting</div><div class="mini"><strong>Stack push/pop/peek</strong>O(1) each, array implementation</div></div><p class="muted small">Complexity describes how work grows with input size; it is not a direct measurement of seconds.</p></div></section>
