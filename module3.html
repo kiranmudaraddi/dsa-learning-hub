@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Module 3 notes on pointers, dynamic memory allocation, self-referential structures and linked lists for 1BCS305.">
+<title>Module 3 · Pointers and Linked Lists · DSA Learning Hub</title>
+<style>
+:root{--bg:#f7f8fc;--card:#fff;--text:#18212f;--muted:#637083;--line:#e4e8ef;--accent:#3776ab;--code:#111827;--codeText:#e5e7eb}*{box-sizing:border-box}body{margin:0;font:16px/1.7 Inter,system-ui,Arial;background:var(--bg);color:var(--text)}a{color:var(--accent)}header{position:sticky;top:0;background:#f7f8fcee;backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:13px 20px;z-index:5}.nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.wrap{max-width:1100px;margin:auto;padding:25px 20px 70px}.hero{padding:38px;border-radius:20px;background:linear-gradient(120deg,#203d79,#393c83 60%,#65428c);color:white}.hero h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin:12px 0}.hero p{max-width:800px;color:#edf0ff}.pill{display:inline-block;border:1px solid #ffffff66;border-radius:30px;padding:5px 12px;font-size:12px;margin:3px}.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:25px;margin-top:25px}aside{position:sticky;top:75px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;max-height:calc(100vh - 95px);overflow:auto}aside a{display:block;padding:7px 5px;text-decoration:none;font-size:13px;border-bottom:1px solid var(--line)}section{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:22px;margin-bottom:17px;scroll-margin-top:85px}h2{color:#203d79;margin:0 0 10px;font-size:1.5rem}h3{margin:20px 0 7px;color:#315b91}h4{margin:14px 0 5px}.code{background:var(--code);color:var(--codeText);padding:15px;border-radius:11px;overflow:auto;white-space:pre;font:13px/1.6 Consolas,monospace}.callout{background:#edf4ff;border-left:4px solid var(--accent);padding:12px 15px;border-radius:8px;margin:13px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#f8faff;border:1px solid var(--line);border-radius:12px;padding:14px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}th{background:#eef3fb}.btn{display:inline-block;background:var(--accent);color:white;padding:9px 13px;border-radius:9px;text-decoration:none;font-weight:750;font-size:13px}.quiz{padding:14px;border:1px solid var(--line);border-radius:12px;margin:12px 0}.quiz label{display:block;margin:7px 0}.quiz button{background:var(--accent);color:white;border:0;border-radius:8px;padding:8px 12px;cursor:pointer}.feedback{font-weight:750;margin-top:8px}.muted{color:var(--muted)}footer{font-size:12px;color:var(--muted);padding:20px 0}@media(max-width:800px){.layout{grid-template-columns:1fr}aside{position:relative;top:auto;max-height:none;display:flex;gap:8px;overflow-x:auto}aside a{white-space:nowrap;border:1px solid var(--line);border-radius:8px;padding:8px}.hero{padding:25px}.grid{grid-template-columns:1fr}}
+</style></head><body>
+<header><div class="nav"><a href="index.html">← DSA Learning Hub</a><strong>Module 3 · 1BCS305</strong></div></header>
+<main class="wrap">
+<div class="hero"><span class="pill">MODULE 3 · 9 HOURS</span><h1>Pointers, Dynamic Memory<br>and Linked Lists</h1><p>Understand how pointers connect data stored at different memory locations. Learn dynamic allocation, self-referential structures, singly, doubly and circular linked lists, and the linked-list implementation of stacks and queues.</p><span class="pill">Topic-wise notes</span><span class="pill">C programs</span><span class="pill">Algorithms</span><span class="pill">Practice</span></div>
+<div class="layout"><aside><b>On this page</b>
+<a href="#plan">9-hour plan</a><a href="#pointers">1. Pointers</a><a href="#memory">2. Dynamic memory</a><a href="#self">3. Self-referential structures</a><a href="#intro">4. Linked-list basics</a><a href="#singly">5. Singly linked list</a><a href="#doubly">6. Doubly linked list</a><a href="#circular">7. Circular linked list</a><a href="#stackqueue">8. Stack and queue</a><a href="#case">9. Real-world case study</a><a href="#practice">10. Practice</a></aside>
+<div>
+<section id="plan"><h2>Module learning plan</h2><div class="tablewrap"><table><tr><th>Hour</th><th>Topics and activity</th></tr><tr><td>1</td><td>Pointer declaration, initialization, dereferencing and pointer arithmetic</td></tr><tr><td>2</td><td>malloc(), calloc(), realloc() and free(); dynamic array exercise</td></tr><tr><td>3</td><td>Self-referential structures and linked-list representation</td></tr><tr><td>4</td><td>Types of linked lists; singly linked list traversal</td></tr><tr><td>5</td><td>Singly linked list insertion and deletion</td></tr><tr><td>6</td><td>Doubly linked list operations and traversal</td></tr><tr><td>7</td><td>Circular linked list operations</td></tr><tr><td>8</td><td>Stack and queue using linked lists</td></tr><tr><td>9</td><td>Real-world applications and mini-project case study</td></tr></table></div></section>
+<section id="pointers"><h2>1. Pointers in C</h2><p>A pointer is a variable that stores the memory address of another variable. Pointers are used to access data indirectly, pass addresses to functions, allocate memory dynamically and connect linked-list nodes.</p><h3>Declaration and initialization</h3><pre class="code">int number = 25;
+int *ptr = &number;
+
+printf("%d", number);  /* 25 */
+printf("%d", *ptr);    /* 25: value at the address */
+*ptr = 40;             /* number becomes 40 */</pre><div class="callout"><b>Remember:</b> <code>&amp;</code> obtains an object's address; <code>*</code> dereferences a pointer. Initialize a pointer before using it and check for NULL before dereferencing dynamically allocated memory.</div><h3>Pointer arithmetic</h3><pre class="code">int values[] = {10, 20, 30};
+int *p = values;
+printf("%d", *p);       /* 10 */
+printf("%d", *(p + 1)); /* 20 */</pre><p>Adding one to a pointer advances by the size of its pointed-to type. Pointer arithmetic is valid within an array object and one position past its end; the one-past pointer must not be dereferenced.</p><h3>Pointer errors to avoid</h3><ul><li>Uninitialized pointer: may contain an invalid address.</li><li>NULL dereference: check allocation results.</li><li>Dangling pointer: do not use memory after it is freed.</li><li>Out-of-bounds access: remain within valid array/object limits.</li><li>Memory leak: release allocated memory when it is no longer needed.</li></ul></section>
+<section id="memory"><h2>2. Dynamic memory allocation</h2><p>Dynamic memory is requested at runtime. Include <code>&lt;stdlib.h&gt;</code> to use the standard allocation functions.</p><div class="tablewrap"><table><tr><th>Function</th><th>Purpose</th><th>Important point</th></tr><tr><td><code>malloc(n)</code></td><td>Allocates n bytes</td><td>Contents are uninitialized</td></tr><tr><td><code>calloc(count,size)</code></td><td>Allocates an array of count elements</td><td>Allocated bytes are zero-initialized</td></tr><tr><td><code>realloc(ptr,n)</code></td><td>Changes allocation size</td><td>Use a temporary pointer to handle failure safely</td></tr><tr><td><code>free(ptr)</code></td><td>Releases allocated memory</td><td>Do not access the block after freeing</td></tr></table></div><h3>Example: dynamic array</h3><pre class="code">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void)
+{
+    int n, i;
+    if (scanf("%d", &n) != 1 || n &lt;= 0) return 1;
+
+    int *a = malloc((size_t)n * sizeof *a);
+    if (a == NULL) {
+        printf("Allocation failed\n");
+        return 1;
+    }
+
+    for (i = 0; i &lt; n; i++) scanf("%d", &a[i]);
+    for (i = 0; i &lt; n; i++) printf("%d ", a[i]);
+
+    free(a);
+    a = NULL;
+    return 0;
+}</pre><h3>Safe realloc pattern</h3><pre class="code">int *temp = realloc(a, (size_t)new_n * sizeof *a);
+if (temp != NULL) {
+    a = temp;
+} else {
+    /* a still refers to the original allocation */
+}</pre><div class="callout">Do not write <code>a = realloc(a, ...)</code> directly when a is your only pointer to the allocation. If realloc fails, the original block remains allocated but its address would be lost.</div></section>
+<section id="self"><h2>3. Self-referential structures</h2><p>A self-referential structure contains a pointer to another structure of the same type. It cannot contain a direct member of its own type because that would require an infinitely large object.</p><pre class="code">struct Node {
+    int data;
+    struct Node *next;
+};</pre><p>The <code>next</code> member stores the address of another <code>struct Node</code>. This structure is the foundation of a singly linked list. A NULL next pointer means there is no next node.</p></section>
+<section id="intro"><h2>4. Linked-list representation and types</h2><p>A linked list is a dynamic linear data structure made of nodes. Each node contains data and one or more links. The head pointer identifies the first node.</p><pre class="code">head
+ |
+ v
++------+------+	+------+------+	+------+------+
+|  10  |  o---+-->|  20  |  o---+-->|  30  | NULL |
++------+------+  +------+------+  +------+------+
+</pre><div class="grid"><div class="card"><b>Singly linked list</b><p>One next pointer; last node points to NULL.</p></div><div class="card"><b>Doubly linked list</b><p>prev and next pointers; traversal in both directions.</p></div><div class="card"><b>Circular singly linked list</b><p>Last node points back to the first node.</p></div><div class="card"><b>Circular doubly linked list</b><p>Previous and next links form a circle.</p></div></div><p>Linked-list nodes need not be contiguous in memory. Access by position requires traversal from the head, while insertion or deletion can be efficient when the required link is already known.</p></section>
+<section id="singly"><h2>5. Singly linked list operations</h2><h3>Traversal / display</h3><pre class="code">void display(struct Node *head)
+{
+    struct Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current-&gt;data);
+        current = current-&gt;next;
+    }
+}</pre><h3>Insert at beginning</h3><pre class="code">void insertFront(struct Node **head, int value)
+{
+    struct Node *n = malloc(sizeof *n);
+    if (n == NULL) return;
+    n-&gt;data = value;
+    n-&gt;next = *head;
+    *head = n;
+}</pre><p>Time complexity: O(1). A pointer to the head pointer is used because the function may change the head itself.</p><h3>Insert at end</h3><pre class="code">void insertEnd(struct Node **head, int value)
+{
+    struct Node *n = malloc(sizeof *n);
+    if (n == NULL) return;
+    n-&gt;data = value;
+    n-&gt;next = NULL;
+
+    if (*head == NULL) {
+        *head = n;
+        return;
+    }
+    struct Node *cur = *head;
+    while (cur-&gt;next != NULL) cur = cur-&gt;next;
+    cur-&gt;next = n;
+}</pre><p>Without a tail pointer, insertion at end takes O(n). With a maintained tail pointer it can take O(1).</p><h3>Delete first node</h3><pre class="code">void deleteFront(struct Node **head)
+{
+    if (*head == NULL) return;
+    struct Node *temp = *head;
+    *head = (*head)-&gt;next;
+    free(temp);
+}</pre><h3>Delete first matching value</h3><pre class="code">int deleteValue(struct Node **head, int key)
+{
+    struct Node *cur = *head, *prev = NULL;
+    while (cur != NULL &amp;&amp; cur-&gt;data != key) {
+        prev = cur;
+        cur = cur-&gt;next;
+    }
+    if (cur == NULL) return 0;
+    if (prev == NULL) *head = cur-&gt;next;
+    else prev-&gt;next = cur-&gt;next;
+    free(cur);
+    return 1;
+}</pre><div class="tablewrap"><table><tr><th>Operation</th><th>Time</th><th>Reason</th></tr><tr><td>Search / access by position</td><td>O(n)</td><td>Sequential traversal</td></tr><tr><td>Insert at head</td><td>O(1)</td><td>Update head link</td></tr><tr><td>Delete at head</td><td>O(1)</td><td>Move head and free old node</td></tr><tr><td>Insert at end</td><td>O(n), or O(1) with tail</td><td>Find final node if no tail</td></tr><tr><td>Delete at end</td><td>O(n)</td><td>Find predecessor</td></tr></table></div></section>
+<section id="doubly"><h2>6. Doubly linked list</h2><p>Each node contains data, a pointer to the previous node and a pointer to the next node. The first node has prev = NULL; the last node has next = NULL.</p><pre class="code">struct DNode {
+    int data;
+    struct DNode *prev;
+    struct DNode *next;
+};</pre><h3>Insert at front</h3><pre class="code">void dInsertFront(struct DNode **head, int value)
+{
+    struct DNode *n = malloc(sizeof *n);
+    if (n == NULL) return;
+    n-&gt;data = value;
+    n-&gt;prev = NULL;
+    n-&gt;next = *head;
+    if (*head != NULL) (*head)-&gt;prev = n;
+    *head = n;
+}</pre><h3>Delete a known node</h3><pre class="code">void dDeleteNode(struct DNode **head, struct DNode *p)
+{
+    if (p == NULL) return;
+    if (p-&gt;prev != NULL) p-&gt;prev-&gt;next = p-&gt;next;
+    else *head = p-&gt;next;
+    if (p-&gt;next != NULL) p-&gt;next-&gt;prev = p-&gt;prev;
+    free(p);
+}</pre><p>Doubly linked lists allow backward traversal and O(1) deletion of a known node. They use extra memory and require careful maintenance of both links.</p></section>
+<section id="circular"><h2>7. Circular linked list</h2><p>In a circular singly linked list, the final node points to the head rather than NULL. Traversal must stop when it returns to its starting node.</p><pre class="code">void circularDisplay(struct Node *head)
+{
+    if (head == NULL) return;
+    struct Node *cur = head;
+    do {
+        printf("%d ", cur-&gt;data);
+        cur = cur-&gt;next;
+    } while (cur != head);
+}</pre><h3>Insert at end using a tail pointer</h3><pre class="code">/* tail points to the last node; head is tail-&gt;next */
+void circularInsertEnd(struct Node **tail, int value)
+{
+    struct Node *n = malloc(sizeof *n);
+    if (n == NULL) return;
+    n-&gt;data = value;
+    if (*tail == NULL) {
+        n-&gt;next = n;
+        *tail = n;
+    } else {
+        n-&gt;next = (*tail)-&gt;next;
+        (*tail)-&gt;next = n;
+        *tail = n;
+    }
+}</pre><p>With a tail pointer, insertion at the end is O(1). A one-node circular list points to itself. Always handle empty, one-node and multi-node cases separately.</p></section>
+<section id="stackqueue"><h2>8. Stack and queue using linked lists</h2><h3>Stack using linked list</h3><p>A stack follows LIFO. Keep the top at the head so push and pop are O(1).</p><pre class="code">void push(struct Node **top, int value)
+{
+    struct Node *n = malloc(sizeof *n);
+    if (n == NULL) return;
+    n-&gt;data = value;
+    n-&gt;next = *top;
+    *top = n;
+}
+
+int pop(struct Node **top, int *out)
+{
+    if (*top == NULL) return 0; /* underflow */
+    struct Node *temp = *top;
+    *out = temp-&gt;data;
+    *top = temp-&gt;next;
+    free(temp);
+    return 1;
+}</pre><h3>Queue using linked list</h3><p>A queue follows FIFO. Maintain front and rear pointers. Enqueue at rear and dequeue at front; both are O(1).</p><pre class="code">struct QueueNode {
+    int data;
+    struct QueueNode *next;
+};
+struct Queue {
+    struct QueueNode *front, *rear;
+};
+
+void enqueue(struct Queue *q, int value)
+{
+    struct QueueNode *n = malloc(sizeof *n);
+    if (n == NULL) return;
+    n-&gt;data = value;
+    n-&gt;next = NULL;
+    if (q-&gt;rear == NULL) q-&gt;front = q-&gt;rear = n;
+    else { q-&gt;rear-&gt;next = n; q-&gt;rear = n; }
+}
+
+int dequeue(struct Queue *q, int *out)
+{
+    if (q-&gt;front == NULL) return 0;
+    struct QueueNode *temp = q-&gt;front;
+    *out = temp-&gt;data;
+    q-&gt;front = temp-&gt;next;
+    if (q-&gt;front == NULL) q-&gt;rear = NULL;
+    free(temp);
+    return 1;
+}</pre><div class="callout">When the last queue node is removed, set both <code>front</code> and <code>rear</code> to NULL. Always check underflow and allocation failure.</div></section>
+<section id="case"><h2>9. Case study: Music Playlist Manager</h2><p><b>Problem:</b> Build a playlist in which users can add a song, remove a song, play the next or previous song and repeat playback.</p><p><b>Data model:</b> Each node stores a song ID/title and prev/next pointers. A current pointer identifies the playing song. A circular doubly linked list supports next/previous movement and repeat mode.</p><div class="tablewrap"><table><tr><th>Feature</th><th>Linked-list operation</th></tr><tr><td>Add a song</td><td>Insert a new node into the playlist</td></tr><tr><td>Remove a song</td><td>Reconnect neighbours and free the node</td></tr><tr><td>Next song</td><td>Move current to current-&gt;next</td></tr><tr><td>Previous song</td><td>Move current to current-&gt;prev</td></tr><tr><td>Repeat playlist</td><td>Circular links wrap at the end/start</td></tr></table></div><p><b>Edge cases:</b> removing the only song makes the list empty; removing the current song should select a valid neighbour; a missing song should not change the playlist.</p><p><b>Other applications:</b> browser back/forward history (doubly linked list), round-robin scheduling (circular list), dynamic memory free lists, undo/redo history and polynomial representation.</p></section>
+<section id="practice"><h2>10. Practice and revision</h2><h3>Short-answer questions</h3><ol><li>Define a pointer. Explain address-of and dereference operators.</li><li>Differentiate malloc() and calloc().</li><li>What is a self-referential structure?</li><li>Differentiate singly, doubly and circular linked lists.</li><li>State two advantages and two limitations of linked lists.</li></ol><h3>Programming exercises</h3><ol><li>Create and display a singly linked list.</li><li>Implement insertion and deletion at the beginning, end and a specified position.</li><li>Implement forward and backward traversal of a doubly linked list.</li><li>Implement a circular linked list and explain its termination condition.</li><li>Implement stack and queue using linked lists.</li><li>Develop a music playlist manager using a doubly linked list.</li></ol>
+<div class="quiz" data-answer="b"><b>1. Which function releases dynamically allocated memory?</b><label><input type="radio" name="q1" value="a"> malloc()</label><label><input type="radio" name="q1" value="b"> free()</label><label><input type="radio" name="q1" value="c"> calloc()</label><button onclick="check(this,'q1','b')">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="a"><b>2. What does the next pointer of the final node in a normal singly linked list contain?</b><label><input type="radio" name="q2" value="a"> NULL</label><label><input type="radio" name="q2" value="b"> Address of head</label><label><input type="radio" name="q2" value="c"> Zero data node always</label><button onclick="check(this,'q2','a')">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="c"><b>3. Which linked list supports forward and backward traversal?</b><label><input type="radio" name="q3" value="a"> Singly linked</label><label><input type="radio" name="q3" value="b"> Array list only</label><label><input type="radio" name="q3" value="c"> Doubly linked</label><button onclick="check(this,'q3','c')">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="b"><b>4. A linked-list stack is most efficient when the top is maintained at…</b><label><input type="radio" name="q4" value="a"> The last node with no tail pointer</label><label><input type="radio" name="q4" value="b"> The head</label><label><input type="radio" name="q4" value="c"> A random node</label><button onclick="check(this,'q4','b')">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="a"><b>5. Which structure is especially suitable for round-robin scheduling?</b><label><input type="radio" name="q5" value="a"> Circular linked list</label><label><input type="radio" name="q5" value="b"> Stack</label><label><input type="radio" name="q5" value="c"> Static array only</label><button onclick="check(this,'q5','a')">Check answer</button><div class="feedback"></div></div>
+<div class="callout"><b>Programming safety checklist:</b> check every allocation; never dereference NULL; reconnect links before freeing nodes; handle empty and one-node lists; release all remaining nodes before program exit.</div>
+</section>
+<footer>DSA Learning Hub · 1BCS305 · III Semester CSE (AI) · Prepared and maintained by Prof. Kiran Mudaraddi</footer>
+</div></div></main>
+<script>function check(btn,name,answer){const s=document.querySelector('input[name="'+name+'"]:checked');const f=btn.parentElement.querySelector('.feedback');if(!s){f.textContent='Choose an answer first.';return}f.textContent=s.value===answer?'Correct!':'Not quite. Review the topic and try again.';f.style.color=s.value===answer?'#16834a':'#c44747'}</script>
+</body></html>
