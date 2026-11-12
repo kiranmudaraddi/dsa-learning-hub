@@ -1,0 +1,2323 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Module 3 · Chapter 2: Linked Lists | DSA Learning Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout concept: a lab bench. Left-aligned title, underlined tabs, and on each tab a live
+   diagram stage on a dot grid, the controls beside a pointer-step trace, then the C program. */
+:root{
+  --bg:#EDF2F1; --surface:#FFFFFF; --stage:#F6FAF9; --ink:#14212A; --muted:#556872; --line:#D2DCDD;
+  --accent:#0A7C76; --mark:#C2410C; --on-mark:#FFFFFF; --prev:#6A47BF;
+  --ok:#23804F; --warn:#9A6208; --bad:#BE2F2F; --cell:#E4EEEC; --code-bg:#F6F9F8;
+  --c-kw:#7A3EA8; --c-str:#955700; --c-com:#62767F; --c-fn:#0A6A97; --c-num:#B0401A; --c-pp:#8A4B12;
+  --f-display:'Space Grotesk',system-ui,sans-serif;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1517; --surface:#152024; --stage:#101B1E; --ink:#E5EEF0; --muted:#8EA3AA; --line:#263539;
+    --accent:#3CC4BC; --mark:#FB923C; --on-mark:#1B1206; --prev:#B49BFA;
+    --ok:#5FD08A; --warn:#E6B450; --bad:#F87171; --cell:#1C2C31; --code-bg:#111B1E;
+    --c-kw:#C39BF0; --c-str:#E6B067; --c-com:#7F949C; --c-fn:#6CC4EE; --c-num:#F59A72; --c-pp:#E0A066;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1517; --surface:#152024; --stage:#101B1E; --ink:#E5EEF0; --muted:#8EA3AA; --line:#263539;
+  --accent:#3CC4BC; --mark:#FB923C; --on-mark:#1B1206; --prev:#B49BFA;
+  --ok:#5FD08A; --warn:#E6B450; --bad:#F87171; --cell:#1C2C31; --code-bg:#111B1E;
+  --c-kw:#C39BF0; --c-str:#E6B067; --c-com:#7F949C; --c-fn:#6CC4EE; --c-num:#F59A72; --c-pp:#E0A066;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-body)}
+.page{max-width:1120px;margin:0 auto;padding-block:32px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}.theme-toggle{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:9px 13px;font:600 13px var(--f-body);cursor:pointer}.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+h1{font-size:clamp(32px,6vw,48px);line-height:1.04;font-weight:700}
+h2{font-size:clamp(22px,3.4vw,28px);line-height:1.2;font-weight:600}
+h3{font-size:18px;font-weight:600}
+h4{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+.sub{color:var(--muted);max-width:64ch;margin-top:12px}
+code,pre{font-family:var(--f-mono)}
+
+.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line);margin:28px 0 32px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;
+  color:var(--muted);font:600 15px var(--f-display);padding:11px 16px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible,.btn:focus-visible,.seg button:focus-visible,.copy:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.panel{display:flex;flex-direction:column;gap:32px}
+.lead{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:start}
+.lead p+p{margin-top:12px}
+.lead p{max-width:66ch}
+.pts{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.pts li{position:relative;padding-left:18px}
+.pts li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;background:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{margin-bottom:10px}
+.card p{color:var(--muted);margin-top:10px;font-size:14px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.scroll{overflow-x:auto}
+.sect{display:flex;flex-direction:column;gap:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.tbl th{font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td.m{font-family:var(--f-mono);font-size:13px;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.tblwrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+
+/* lab */
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.lab-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{appearance:none;border:0;background:var(--surface);color:var(--muted);font:600 13px var(--f-body);padding:7px 12px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.stage{overflow-x:auto;padding:4px 10px 8px;background-color:var(--stage);
+  background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:18px 18px}
+.stage svg{display:block}
+.status{padding:11px 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font:500 14px var(--f-body);min-height:44px;color:var(--muted)}
+.status.ok{color:var(--ok)} .status.bad{color:var(--bad)} .status.warn{color:var(--warn)}
+.cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.ctl,.trace{padding:18px;min-width:0}
+.trace{border-left:1px solid var(--line)}
+.sgrid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr)}
+.sgrid .stage{border-right:1px solid var(--line);padding-top:8px}
+.sgrid .sright{min-width:0}
+.sgrid .status{border-top:0}
+.fields{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:5px;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field input{width:96px;font:500 15px var(--f-mono);padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.field input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grp{margin-top:14px}
+.grp h4{margin-bottom:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{appearance:none;font:500 13.5px var(--f-body);padding:8px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;cursor:pointer}
+.btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn[data-kind="del"]:hover:not(:disabled){border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:default}
+.trace ol{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;counter-reset:s}
+.trace li{counter-increment:s;display:flex;gap:10px;padding:7px 10px;border-left:3px solid var(--line);color:var(--muted);transition:color .2s,border-color .2s,background .2s;font-size:13px}
+.trace li::before{content:counter(s);font:500 11px var(--f-mono);padding-top:2px;opacity:.7;min-width:1ch}
+.trace li code{font-size:12.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.trace li.on{color:var(--ink);border-left-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+.trace li.hint{border-left-color:transparent;font-family:var(--f-body)}
+.trace li.hint::before{content:none}
+
+/* svg parts */
+.bx{fill:none;stroke:var(--ink);stroke-width:1.6}
+.c{stroke:var(--line);stroke-width:1}
+.c.d{fill:var(--surface)} .c.p{fill:var(--cell)}
+.cap{font:500 8.5px var(--f-body);fill:var(--muted);text-anchor:middle;letter-spacing:.06em;text-transform:uppercase}
+.val{font:600 17px var(--f-mono);fill:var(--ink);text-anchor:middle}
+.addr{font:400 11px var(--f-mono);fill:var(--muted);text-anchor:middle}
+.addr.l{text-anchor:start}
+.ln{stroke:var(--accent);stroke-width:1.8;fill:none;stroke-linejoin:round}
+.ln.lpv{stroke:var(--prev)} .ln.lm{stroke:var(--mark)}
+.dn{fill:var(--accent)} .dp{fill:var(--prev)}
+.ah-n{fill:var(--accent)} .ah-p{fill:var(--prev)} .ah-m{fill:var(--mark)}
+.pill{fill:var(--mark)} .pilltxt{font:600 11px var(--f-body);fill:var(--on-mark);text-anchor:middle;letter-spacing:.07em}
+.nullbox{fill:none;stroke:var(--muted);stroke-dasharray:3 3}
+.nulltxt{font:500 11px var(--f-mono);fill:var(--muted);text-anchor:middle}
+.nd.new .c{fill:color-mix(in srgb,var(--ok) 22%,var(--surface))} .nd.new .bx{stroke:var(--ok)}
+.nd.visit .c{fill:color-mix(in srgb,var(--warn) 26%,var(--surface))} .nd.visit .bx{stroke:var(--warn)}
+.nd.del .c{fill:color-mix(in srgb,var(--bad) 24%,var(--surface))} .nd.del .bx{stroke:var(--bad)}
+.nd.found .c{fill:color-mix(in srgb,var(--accent) 28%,var(--surface))} .nd.found .bx{stroke:var(--accent)}
+.nd.new{animation:pop .45s ease-out;transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{opacity:0;transform:translateY(-12px) scale(.94)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.nd.new{animation:none}.trace li{transition:none}}
+
+/* code */
+.code{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.code-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.code-bar b{font:600 14px var(--f-mono)}
+.cmd{display:block;font:400 12px var(--f-mono);color:var(--muted);margin-top:2px}
+.copy{appearance:none;font:600 12.5px var(--f-body);padding:7px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;cursor:pointer}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.code pre{margin:0;padding:16px;overflow:auto;max-height:600px;background:var(--code-bg);font-size:13px;line-height:1.6;tab-size:4;color:var(--ink)}
+.t-com{color:var(--c-com);font-style:italic} .t-str{color:var(--c-str)} .t-kw{color:var(--c-kw)}
+.t-fn{color:var(--c-fn)} .t-num{color:var(--c-num)} .t-pp{color:var(--c-pp)} .t-nl{color:var(--c-num);font-weight:600}
+.code details{border-top:1px solid var(--line)}
+.code summary{cursor:pointer;padding:12px 16px;font:600 13px var(--f-body);color:var(--muted)}
+.code summary:hover{color:var(--ink)}
+.code pre.out{border-top:1px solid var(--line);max-height:420px}
+.foot{color:var(--muted);font-size:13px;max-width:70ch}
+
+@media (max-width:820px){
+  .lead,.grid2,.types{grid-template-columns:minmax(0,1fr)}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .trace{border-left:0;border-top:1px solid var(--line)}
+  .sgrid{grid-template-columns:minmax(0,1fr)}
+  .sgrid .stage{border-right:0;border-bottom:1px solid var(--line)}
+}
+</style>
+
+<div class="page">
+  <header>
+    <div class="headrow"><h1>Module 3 · Chapter 2: Linked Lists</h1><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme">☾ Dark mode</button></div>
+    <p class="sub">Singly, doubly and circular lists, then stacks and queues built on top of them. Every diagram on this page runs, and every C program was compiled and tested.</p>
+    <p class="sub"><a href="index.html">← Back to DSA Learning Hub</a> · Module 3 / Chapter 2</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Topics">
+    <button class="tab" role="tab" id="tab-basics" aria-controls="p-basics" data-tab="basics">Basics</button>
+    <button class="tab" role="tab" id="tab-singly" aria-controls="p-singly" data-tab="singly">Singly</button>
+    <button class="tab" role="tab" id="tab-doubly" aria-controls="p-doubly" data-tab="doubly">Doubly</button>
+    <button class="tab" role="tab" id="tab-circular" aria-controls="p-circular" data-tab="circular">Circular</button>
+    <button class="tab" role="tab" id="tab-stack" aria-controls="p-stack" data-tab="stack">Stack</button>
+    <button class="tab" role="tab" id="tab-queue" aria-controls="p-queue" data-tab="queue">Queue</button>
+  </nav>
+
+  <!-- BASICS -->
+  <section class="panel" id="p-basics" role="tabpanel" aria-labelledby="tab-basics" hidden>
+    <div class="lead">
+      <div>
+        <h2>What a linked list is</h2>
+        <p style="margin-top:12px">A linked list keeps its items in separate nodes. Each node holds a value and the address of the next node, so the nodes can sit anywhere in memory. The program stores only the address of the first node, called <code>head</code>. Every other node is reached by following the links until a link holds <code>NULL</code>.</p>
+        <p>Open the other tabs to insert, delete, search and reverse. Each operation shows the exact pointer assignments it performs.</p>
+      </div>
+      <ul class="pts">
+        <li>Size changes at run time. Nodes are created with <code>malloc</code> and returned with <code>free</code>.</li>
+        <li>Inserting or deleting at the front never moves other elements.</li>
+        <li>Reaching the k-th node means walking k links from the head.</li>
+      </ul>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Anatomy of a node</h3>
+        <div class="scroll"><svg id="svg-anat"></svg></div>
+        <p>The hex number above each node is an example heap address. The arrow is the value stored in the <code>next</code> field: the address of the node it points to.</p>
+      </div>
+      <div class="card">
+        <h3>The node in C</h3>
+        <div class="code" style="border:0"><pre id="struct-code" style="border-radius:8px"></pre></div>
+        <p>A self-referential struct: <code>next</code> is a pointer to another <code>struct Node</code>. One node costs the value plus one pointer.</p>
+      </div>
+    </div>
+
+    <div class="sect">
+      <h2>Array versus linked list</h2>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th></th><th>Array</th><th>Linked list</th></tr></thead>
+        <tbody>
+          <tr><td>Memory layout</td><td>One contiguous block</td><td>Separate nodes joined by pointers</td></tr>
+          <tr><td>Size</td><td>Fixed when created</td><td>Grows and shrinks at run time</td></tr>
+          <tr><td>Access by index</td><td class="m">O(1)</td><td class="m">O(n), walk from head</td></tr>
+          <tr><td>Insert or delete at the start</td><td class="m">O(n), shift elements</td><td class="m">O(1)</td></tr>
+          <tr><td>Extra memory per element</td><td>None</td><td>One or two pointers</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="sect">
+      <h2>Four kinds of linked list</h2>
+      <div class="types">
+        <div class="card"><h3>Singly</h3><div class="scroll"><svg id="svg-t1"></svg></div><p>One link per node, forward only. Smallest memory cost. The base for stacks and queues.</p></div>
+        <div class="card"><h3>Doubly</h3><div class="scroll"><svg id="svg-t2"></svg></div><p>Each node also stores <code>prev</code>. You can walk both ways and unlink a node you already hold without searching for its predecessor.</p></div>
+        <div class="card"><h3>Circular singly</h3><div class="scroll"><svg id="svg-t3"></svg></div><p>The last node points back to the first, so no link is NULL. Used for round-robin scheduling and looping playlists.</p></div>
+        <div class="card"><h3>Circular doubly</h3><div class="scroll"><svg id="svg-t4"></svg></div><p>Circular and two-way: <code>head-&gt;prev</code> is the tail and <code>tail-&gt;next</code> is the head.</p></div>
+      </div>
+    </div>
+
+    <div class="sect">
+      <h2>Cost of each operation</h2>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Operation</th><th>Singly (head only)</th><th>Doubly (head + tail)</th><th>Circular singly (last pointer)</th></tr></thead>
+        <tbody>
+          <tr><td>Insert at beginning</td><td class="m">O(1)</td><td class="m">O(1)</td><td class="m">O(1)</td></tr>
+          <tr><td>Insert at end</td><td class="m">O(n)</td><td class="m">O(1)</td><td class="m">O(1)</td></tr>
+          <tr><td>Delete at beginning</td><td class="m">O(1)</td><td class="m">O(1)</td><td class="m">O(1)</td></tr>
+          <tr><td>Delete at end</td><td class="m">O(n)</td><td class="m">O(1)</td><td class="m">O(n)</td></tr>
+          <tr><td>Insert or delete at position</td><td class="m">O(n)</td><td class="m">O(n)</td><td class="m">O(n)</td></tr>
+          <tr><td>Search</td><td class="m">O(n)</td><td class="m">O(n)</td><td class="m">O(n)</td></tr>
+          <tr><td>Traverse backward</td><td>Not possible</td><td class="m">O(n)</td><td>Not possible</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- SINGLY -->
+  <section class="panel" id="p-singly" role="tabpanel" aria-labelledby="tab-singly" hidden>
+    <div class="lead">
+      <div>
+        <h2>Singly linked list</h2>
+        <p style="margin-top:12px">Each node stores a value and one <code>next</code> pointer. You enter at <code>head</code> and can only move forward. The last node's <code>next</code> is <code>NULL</code>.</p>
+      </div>
+      <ul class="pts">
+        <li>Insert at the beginning is two assignments, so it costs O(1).</li>
+        <li>Delete at the end needs a walk to the second-last node, because a node cannot look back.</li>
+        <li>Reverse flips every <code>next</code> pointer in a single pass with three helper pointers.</li>
+      </ul>
+    </div>
+    <div id="lab-singly"></div>
+    <div id="code-singly"></div>
+  </section>
+
+  <!-- DOUBLY -->
+  <section class="panel" id="p-doubly" role="tabpanel" aria-labelledby="tab-doubly" hidden>
+    <div class="lead">
+      <div>
+        <h2>Doubly linked list</h2>
+        <p style="margin-top:12px">Each node adds a <code>prev</code> pointer. <code>head-&gt;prev</code> and <code>tail-&gt;next</code> are <code>NULL</code>. Orange labels mark the two entry points the program stores.</p>
+      </div>
+      <ul class="pts">
+        <li>Every insert and delete repairs two links, not one.</li>
+        <li>With a tail pointer, insert and delete at the end are O(1).</li>
+        <li>The list can be printed backward by starting at <code>tail</code>.</li>
+      </ul>
+    </div>
+    <div id="lab-doubly"></div>
+    <div id="code-doubly"></div>
+  </section>
+
+  <!-- CIRCULAR -->
+  <section class="panel" id="p-circular" role="tabpanel" aria-labelledby="tab-circular" hidden>
+    <div class="lead">
+      <div>
+        <h2>Circular linked list</h2>
+        <p style="margin-top:12px">No link is <code>NULL</code>. The last node points back to the first, so a loop written as <code>while (temp != NULL)</code> would never stop. Traversal uses <code>do { ... } while (temp != head)</code> instead.</p>
+        <p>The singly version stores only <code>last</code>; the head is <code>last-&gt;next</code>, which makes insertion at both ends O(1). Switch the diagram and the program below with the toggle.</p>
+      </div>
+      <ul class="pts">
+        <li>A single node points to itself. Treat that case separately when deleting.</li>
+        <li>Delete at the end of a circular singly list still needs a walk to find the node before <code>last</code>.</li>
+        <li>In the doubly version, <code>head-&gt;prev</code> gives the tail without storing it.</li>
+      </ul>
+    </div>
+    <div id="lab-circular"></div>
+    <div id="code-circ-s"></div>
+    <div id="code-circ-d" hidden></div>
+  </section>
+
+  <!-- STACK -->
+  <section class="panel" id="p-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
+    <div class="lead">
+      <div>
+        <h2>Stack using a linked list</h2>
+        <p style="margin-top:12px">A stack is last in, first out. With a linked list the head is the top: <code>push</code> inserts at the beginning and <code>pop</code> deletes from the beginning. Both are O(1), and there is no fixed capacity. Overflow only happens if <code>malloc</code> fails.</p>
+      </div>
+      <ul class="pts">
+        <li>Underflow means popping when <code>top == NULL</code>.</li>
+        <li>Used for function calls, undo history and expression evaluation.</li>
+        <li>An array stack needs a size limit; this one does not.</li>
+      </ul>
+    </div>
+    <div id="lab-stack"></div>
+    <div id="code-stack"></div>
+  </section>
+
+  <!-- QUEUE -->
+  <section class="panel" id="p-queue" role="tabpanel" aria-labelledby="tab-queue" hidden>
+    <div class="lead">
+      <div>
+        <h2>Queue using a linked list</h2>
+        <p style="margin-top:12px">A queue is first in, first out. <code>dequeue</code> removes from the head (front) and <code>enqueue</code> adds at the tail (rear). Keeping a separate <code>rear</code> pointer avoids walking the whole list on every enqueue.</p>
+      </div>
+      <ul class="pts">
+        <li>When the last element leaves, set <code>rear = NULL</code> as well as <code>front</code>.</li>
+        <li>Used for print jobs, task scheduling and breadth-first search.</li>
+        <li>Both operations are O(1).</li>
+      </ul>
+    </div>
+    <div id="lab-queue"></div>
+    <div id="code-queue"></div>
+  </section>
+
+  <p class="foot" style="margin-top:40px">The C programs are written in plain C89, so they also compile in Dev-C++ and other older compilers. They were checked with gcc using -std=c89 -pedantic-errors -Wall -Wextra and run under the address sanitizer. The sample runs shown under each program are the actual output of those runs. Addresses in the diagrams are illustrative.</p>
+</div>
+
+<script type="text/plain" id="src-singly">/* Singly Linked List - menu driven demonstration
+   Written in plain C89, so it also compiles in Dev-C++ and Turbo-style compilers.
+   Compile: gcc singly.c -o singly
+   Run:     ./singly                                   */
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+struct Node *createNode(int value) {
+    struct Node *n = (struct Node *)malloc(sizeof(struct Node));
+    if (n == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    n->data = value;
+    n->next = NULL;
+    return n;
+}
+
+int length(void) {
+    int count = 0;
+    struct Node *temp = head;
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
+
+/* ---------- insertion ---------- */
+void insertAtBeginning(int value) {
+    struct Node *n = createNode(value);
+    n->next = head;
+    head = n;
+    printf("%d inserted at the beginning\n", value);
+}
+
+void insertAtEnd(int value) {
+    struct Node *n = createNode(value);
+    struct Node *temp;
+    if (head == NULL) {
+        head = n;
+    } else {
+        temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = n;
+    }
+    printf("%d inserted at the end\n", value);
+}
+
+void insertAtPosition(int value, int pos) {
+    int len = length();
+    int i;
+    struct Node *n;
+    struct Node *temp;
+    if (pos < 1 || pos > len + 1) {
+        printf("Invalid position (valid range is 1 to %d)\n", len + 1);
+        return;
+    }
+    if (pos == 1) {
+        insertAtBeginning(value);
+        return;
+    }
+    n = createNode(value);
+    temp = head;
+    for (i = 1; i < pos - 1; i++)       /* stop at the node before pos */
+        temp = temp->next;
+    n->next = temp->next;
+    temp->next = n;
+    printf("%d inserted at position %d\n", value, pos);
+}
+
+/* ---------- deletion ---------- */
+void deleteAtBeginning(void) {
+    struct Node *t;
+    if (head == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    t = head;
+    head = head->next;
+    printf("%d deleted from the beginning\n", t->data);
+    free(t);
+}
+
+void deleteAtEnd(void) {
+    struct Node *temp;
+    if (head == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    if (head->next == NULL) {
+        printf("%d deleted from the end\n", head->data);
+        free(head);
+        head = NULL;
+        return;
+    }
+    temp = head;
+    while (temp->next->next != NULL)    /* stop at the second-last node */
+        temp = temp->next;
+    printf("%d deleted from the end\n", temp->next->data);
+    free(temp->next);
+    temp->next = NULL;
+}
+
+void deleteAtPosition(int pos) {
+    int len = length();
+    int i;
+    struct Node *temp;
+    struct Node *t;
+    if (pos < 1 || pos > len) {
+        printf("Invalid position (valid range is 1 to %d)\n", len);
+        return;
+    }
+    if (pos == 1) {
+        deleteAtBeginning();
+        return;
+    }
+    temp = head;
+    for (i = 1; i < pos - 1; i++)
+        temp = temp->next;
+    t = temp->next;
+    temp->next = t->next;
+    printf("%d deleted from position %d\n", t->data, pos);
+    free(t);
+}
+
+/* ---------- other operations ---------- */
+void search(int key) {
+    struct Node *temp = head;
+    int pos = 1;
+    while (temp != NULL) {
+        if (temp->data == key) {
+            printf("%d found at position %d\n", key, pos);
+            return;
+        }
+        temp = temp->next;
+        pos++;
+    }
+    printf("%d not found\n", key);
+}
+
+void reverse(void) {
+    struct Node *prev = NULL, *curr = head, *next = NULL;
+    while (curr != NULL) {
+        next = curr->next;      /* remember the rest of the list */
+        curr->next = prev;      /* flip the link */
+        prev = curr;
+        curr = next;
+    }
+    head = prev;
+    printf("List reversed\n");
+}
+
+void display(void) {
+    struct Node *t;
+    if (head == NULL) {
+        printf("List: empty\n");
+        return;
+    }
+    printf("List: ");
+    for (t = head; t != NULL; t = t->next)
+        printf("%d -> ", t->data);
+    printf("NULL\n");
+}
+
+void freeAll(void) {
+    struct Node *t;
+    while (head != NULL) {
+        t = head;
+        head = head->next;
+        free(t);
+    }
+}
+
+int main(void) {
+    int choice, value, pos;
+    while (1) {
+        printf("\n1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end\n");
+        printf("6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit\nChoice: ");
+        if (scanf("%d", &choice) != 1)
+            break;
+        switch (choice) {
+            case 1: printf("Value: ");    scanf("%d", &value); insertAtBeginning(value); break;
+            case 2: printf("Value: ");    scanf("%d", &value); insertAtEnd(value);       break;
+            case 3: printf("Value: ");    scanf("%d", &value);
+                    printf("Position: "); scanf("%d", &pos);   insertAtPosition(value, pos); break;
+            case 4: deleteAtBeginning(); break;
+            case 5: deleteAtEnd();       break;
+            case 6: printf("Position: "); scanf("%d", &pos);   deleteAtPosition(pos); break;
+            case 7: printf("Value: ");    scanf("%d", &value); search(value); break;
+            case 8: display();  break;
+            case 9: reverse();  break;
+            case 0: freeAll(); return 0;
+            default: printf("Invalid choice\n");
+        }
+    }
+    freeAll();
+    return 0;
+}
+</script>
+<script type="text/plain" id="out-singly">1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 1
+Value: 10
+10 inserted at the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 1
+Value: 20
+20 inserted at the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 2
+Value: 30
+30 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 3
+Value: 25
+Position: 3
+25 inserted at position 3
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 8
+List: 20 -> 10 -> 25 -> 30 -> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 7
+Value: 30
+30 found at position 4
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 9
+List reversed
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 8
+List: 30 -> 25 -> 10 -> 20 -> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 5
+20 deleted from the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 4
+30 deleted from the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 8
+List: 25 -> 10 -> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  9.Reverse  0.Exit
+Choice: 0
+</script>
+<script type="text/plain" id="src-doubly">/* Doubly Linked List - menu driven demonstration
+   Written in plain C89, so it also compiles in Dev-C++ and Turbo-style compilers.
+   Compile: gcc doubly.c -o doubly
+   Run:     ./doubly                                   */
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+struct Node *tail = NULL;
+
+struct Node *createNode(int value) {
+    struct Node *n = (struct Node *)malloc(sizeof(struct Node));
+    if (n == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    n->data = value;
+    n->prev = NULL;
+    n->next = NULL;
+    return n;
+}
+
+int length(void) {
+    int count = 0;
+    struct Node *t;
+    for (t = head; t != NULL; t = t->next)
+        count++;
+    return count;
+}
+
+/* ---------- insertion ---------- */
+void insertAtBeginning(int value) {
+    struct Node *n = createNode(value);
+    if (head == NULL) {
+        head = tail = n;
+    } else {
+        n->next = head;
+        head->prev = n;
+        head = n;
+    }
+    printf("%d inserted at the beginning\n", value);
+}
+
+void insertAtEnd(int value) {
+    struct Node *n = createNode(value);
+    if (tail == NULL) {
+        head = tail = n;
+    } else {
+        n->prev = tail;
+        tail->next = n;
+        tail = n;
+    }
+    printf("%d inserted at the end\n", value);
+}
+
+void insertAtPosition(int value, int pos) {
+    int len = length();
+    int i;
+    struct Node *n;
+    struct Node *temp;
+    if (pos < 1 || pos > len + 1) {
+        printf("Invalid position (valid range is 1 to %d)\n", len + 1);
+        return;
+    }
+    if (pos == 1) {
+        insertAtBeginning(value);
+        return;
+    }
+    if (pos == len + 1) {
+        insertAtEnd(value);
+        return;
+    }
+    n = createNode(value);
+    temp = head;
+    for (i = 1; i < pos - 1; i++)
+        temp = temp->next;
+    n->next = temp->next;
+    n->prev = temp;
+    temp->next->prev = n;
+    temp->next = n;
+    printf("%d inserted at position %d\n", value, pos);
+}
+
+/* ---------- deletion ---------- */
+void deleteAtBeginning(void) {
+    struct Node *t;
+    if (head == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    t = head;
+    if (head == tail) {
+        head = tail = NULL;
+    } else {
+        head = head->next;
+        head->prev = NULL;
+    }
+    printf("%d deleted from the beginning\n", t->data);
+    free(t);
+}
+
+void deleteAtEnd(void) {
+    struct Node *t;
+    if (tail == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    t = tail;
+    if (head == tail) {
+        head = tail = NULL;
+    } else {
+        tail = tail->prev;
+        tail->next = NULL;
+    }
+    printf("%d deleted from the end\n", t->data);
+    free(t);
+}
+
+void deleteAtPosition(int pos) {
+    int len = length();
+    int i;
+    struct Node *temp;
+    if (pos < 1 || pos > len) {
+        printf("Invalid position (valid range is 1 to %d)\n", len);
+        return;
+    }
+    if (pos == 1) {
+        deleteAtBeginning();
+        return;
+    }
+    if (pos == len) {
+        deleteAtEnd();
+        return;
+    }
+    temp = head;
+    for (i = 1; i < pos; i++)
+        temp = temp->next;
+    temp->prev->next = temp->next;      /* bypass temp going forward  */
+    temp->next->prev = temp->prev;      /* bypass temp going backward */
+    printf("%d deleted from position %d\n", temp->data, pos);
+    free(temp);
+}
+
+/* ---------- other operations ---------- */
+void search(int key) {
+    int pos = 1;
+    struct Node *t;
+    for (t = head; t != NULL; t = t->next, pos++) {
+        if (t->data == key) {
+            printf("%d found at position %d\n", key, pos);
+            return;
+        }
+    }
+    printf("%d not found\n", key);
+}
+
+void reverse(void) {
+    struct Node *curr = head, *tmp = NULL;
+    while (curr != NULL) {
+        tmp = curr->prev;           /* swap the two links of every node */
+        curr->prev = curr->next;
+        curr->next = tmp;
+        curr = curr->prev;          /* old next is now prev */
+    }
+    tmp = head;                     /* swap head and tail */
+    head = tail;
+    tail = tmp;
+    printf("List reversed\n");
+}
+
+void displayForward(void) {
+    struct Node *t;
+    if (head == NULL) {
+        printf("List: empty\n");
+        return;
+    }
+    printf("Forward : NULL <-> ");
+    for (t = head; t != NULL; t = t->next)
+        printf("%d <-> ", t->data);
+    printf("NULL\n");
+}
+
+void displayBackward(void) {
+    struct Node *t;
+    if (tail == NULL) {
+        printf("List: empty\n");
+        return;
+    }
+    printf("Backward: NULL <-> ");
+    for (t = tail; t != NULL; t = t->prev)
+        printf("%d <-> ", t->data);
+    printf("NULL\n");
+}
+
+void freeAll(void) {
+    struct Node *t;
+    while (head != NULL) {
+        t = head;
+        head = head->next;
+        free(t);
+    }
+    tail = NULL;
+}
+
+int main(void) {
+    int choice, value, pos;
+    while (1) {
+        printf("\n1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end\n");
+        printf("6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit\nChoice: ");
+        if (scanf("%d", &choice) != 1)
+            break;
+        switch (choice) {
+            case 1: printf("Value: ");    scanf("%d", &value); insertAtBeginning(value); break;
+            case 2: printf("Value: ");    scanf("%d", &value); insertAtEnd(value);       break;
+            case 3: printf("Value: ");    scanf("%d", &value);
+                    printf("Position: "); scanf("%d", &pos);   insertAtPosition(value, pos); break;
+            case 4: deleteAtBeginning(); break;
+            case 5: deleteAtEnd();       break;
+            case 6: printf("Position: "); scanf("%d", &pos);   deleteAtPosition(pos); break;
+            case 7: printf("Value: ");    scanf("%d", &value); search(value); break;
+            case 8: displayForward();  break;
+            case 9: displayBackward(); break;
+            case 10: reverse();        break;
+            case 0: freeAll(); return 0;
+            default: printf("Invalid choice\n");
+        }
+    }
+    freeAll();
+    return 0;
+}
+</script>
+<script type="text/plain" id="out-doubly">1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 1
+Value: 10
+10 inserted at the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 1
+Value: 20
+20 inserted at the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 2
+Value: 30
+30 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 3
+Value: 25
+Position: 3
+25 inserted at position 3
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 8
+Forward : NULL <-> 20 <-> 10 <-> 25 <-> 30 <-> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 9
+Backward: NULL <-> 30 <-> 25 <-> 10 <-> 20 <-> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 10
+List reversed
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 8
+Forward : NULL <-> 30 <-> 25 <-> 10 <-> 20 <-> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 6
+Position: 2
+25 deleted from position 2
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 8
+Forward : NULL <-> 30 <-> 10 <-> 20 <-> NULL
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  10.Reverse  0.Exit
+Choice: 0
+</script>
+<script type="text/plain" id="src-circular">/* Circular Singly Linked List - menu driven demonstration
+   Written in plain C89, so it also compiles in Dev-C++ and Turbo-style compilers.
+   Only a pointer to the LAST node is kept; the head is last->next.
+   That makes insertion at both ends O(1).
+   Compile: gcc circular.c -o circular
+   Run:     ./circular                                 */
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *last = NULL;       /* last->next is the head */
+
+struct Node *createNode(int value) {
+    struct Node *n = (struct Node *)malloc(sizeof(struct Node));
+    if (n == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    n->data = value;
+    n->next = n;                /* a lone node points to itself */
+    return n;
+}
+
+int length(void) {
+    int count = 0;
+    struct Node *t;
+    if (last == NULL)
+        return 0;
+    t = last->next;
+    do {
+        count++;
+        t = t->next;
+    } while (t != last->next);
+    return count;
+}
+
+/* ---------- insertion ---------- */
+void insertAtBeginning(int value) {
+    struct Node *n = createNode(value);
+    if (last == NULL) {
+        last = n;
+    } else {
+        n->next = last->next;   /* new node points to the old head */
+        last->next = n;         /* last now points to the new head */
+    }
+    printf("%d inserted at the beginning\n", value);
+}
+
+void insertAtEnd(int value) {
+    struct Node *n = createNode(value);
+    if (last == NULL) {
+        last = n;
+    } else {
+        n->next = last->next;
+        last->next = n;
+        last = n;               /* the new node becomes the last node */
+    }
+    printf("%d inserted at the end\n", value);
+}
+
+void insertAtPosition(int value, int pos) {
+    int len = length();
+    int i;
+    struct Node *n;
+    struct Node *temp;
+    if (pos < 1 || pos > len + 1) {
+        printf("Invalid position (valid range is 1 to %d)\n", len + 1);
+        return;
+    }
+    if (pos == 1) {
+        insertAtBeginning(value);
+        return;
+    }
+    if (pos == len + 1) {
+        insertAtEnd(value);
+        return;
+    }
+    n = createNode(value);
+    temp = last->next;
+    for (i = 1; i < pos - 1; i++)
+        temp = temp->next;
+    n->next = temp->next;
+    temp->next = n;
+    printf("%d inserted at position %d\n", value, pos);
+}
+
+/* ---------- deletion ---------- */
+void deleteAtBeginning(void) {
+    struct Node *t;
+    if (last == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    t = last->next;
+    printf("%d deleted from the beginning\n", t->data);
+    if (t == last)
+        last = NULL;            /* it was the only node */
+    else
+        last->next = t->next;
+    free(t);
+}
+
+void deleteAtEnd(void) {
+    struct Node *temp;
+    if (last == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    printf("%d deleted from the end\n", last->data);
+    if (last->next == last) {
+        free(last);
+        last = NULL;
+        return;
+    }
+    temp = last->next;
+    while (temp->next != last)  /* find the node before last */
+        temp = temp->next;
+    temp->next = last->next;
+    free(last);
+    last = temp;
+}
+
+void deleteAtPosition(int pos) {
+    int len = length();
+    int i;
+    struct Node *temp;
+    struct Node *t;
+    if (pos < 1 || pos > len) {
+        printf("Invalid position (valid range is 1 to %d)\n", len);
+        return;
+    }
+    if (pos == 1) {
+        deleteAtBeginning();
+        return;
+    }
+    if (pos == len) {
+        deleteAtEnd();
+        return;
+    }
+    temp = last->next;
+    for (i = 1; i < pos - 1; i++)
+        temp = temp->next;
+    t = temp->next;
+    temp->next = t->next;
+    printf("%d deleted from position %d\n", t->data, pos);
+    free(t);
+}
+
+/* ---------- other operations ---------- */
+void search(int key) {
+    struct Node *t;
+    int pos = 1;
+    if (last == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    t = last->next;
+    do {
+        if (t->data == key) {
+            printf("%d found at position %d\n", key, pos);
+            return;
+        }
+        t = t->next;
+        pos++;
+    } while (t != last->next);
+    printf("%d not found\n", key);
+}
+
+void display(void) {
+    struct Node *t;
+    if (last == NULL) {
+        printf("List: empty\n");
+        return;
+    }
+    t = last->next;
+    printf("List: ");
+    do {
+        printf("%d -> ", t->data);
+        t = t->next;
+    } while (t != last->next);
+    printf("(back to head %d)\n", last->next->data);
+}
+
+void freeAll(void) {
+    while (last != NULL)
+        deleteAtBeginning();
+}
+
+int main(void) {
+    int choice, value, pos;
+    while (1) {
+        printf("\n1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end\n");
+        printf("6.Delete at pos  7.Search  8.Display  0.Exit\nChoice: ");
+        if (scanf("%d", &choice) != 1)
+            break;
+        switch (choice) {
+            case 1: printf("Value: ");    scanf("%d", &value); insertAtBeginning(value); break;
+            case 2: printf("Value: ");    scanf("%d", &value); insertAtEnd(value);       break;
+            case 3: printf("Value: ");    scanf("%d", &value);
+                    printf("Position: "); scanf("%d", &pos);   insertAtPosition(value, pos); break;
+            case 4: deleteAtBeginning(); break;
+            case 5: deleteAtEnd();       break;
+            case 6: printf("Position: "); scanf("%d", &pos);   deleteAtPosition(pos); break;
+            case 7: printf("Value: ");    scanf("%d", &value); search(value); break;
+            case 8: display(); break;
+            case 0: freeAll(); return 0;
+            default: printf("Invalid choice\n");
+        }
+    }
+    freeAll();
+    return 0;
+}
+</script>
+<script type="text/plain" id="out-circular">1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 2
+Value: 10
+10 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 2
+Value: 20
+20 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 2
+Value: 30
+30 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 1
+Value: 5
+5 inserted at the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 8
+List: 5 -> 10 -> 20 -> 30 -> (back to head 5)
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 3
+Value: 15
+Position: 3
+15 inserted at position 3
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 8
+List: 5 -> 10 -> 15 -> 20 -> 30 -> (back to head 5)
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 5
+30 deleted from the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 4
+5 deleted from the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 8
+List: 10 -> 15 -> 20 -> (back to head 10)
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 7
+Value: 20
+20 found at position 3
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Display  0.Exit
+Choice: 0
+10 deleted from the beginning
+15 deleted from the beginning
+20 deleted from the beginning
+</script>
+<script type="text/plain" id="src-circular_doubly">/* Circular Doubly Linked List - menu driven demonstration
+   Written in plain C89, so it also compiles in Dev-C++ and Turbo-style compilers.
+   Only head is stored. head->prev is the tail and tail->next is the head.
+   Compile: gcc circular_doubly.c -o circular_doubly
+   Run:     ./circular_doubly                          */
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+struct Node *createNode(int value) {
+    struct Node *n = (struct Node *)malloc(sizeof(struct Node));
+    if (n == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    n->data = value;
+    n->prev = n;                /* a lone node points to itself both ways */
+    n->next = n;
+    return n;
+}
+
+int length(void) {
+    int count = 0;
+    struct Node *t;
+    if (head == NULL)
+        return 0;
+    t = head;
+    do {
+        count++;
+        t = t->next;
+    } while (t != head);
+    return count;
+}
+
+/* ---------- insertion ---------- */
+void insertAtBeginning(int value) {
+    struct Node *n = createNode(value);
+    struct Node *tail;
+    if (head == NULL) {
+        head = n;
+    } else {
+        tail = head->prev;
+        n->next = head;
+        n->prev = tail;
+        head->prev = n;
+        tail->next = n;
+        head = n;
+    }
+    printf("%d inserted at the beginning\n", value);
+}
+
+void insertAtEnd(int value) {
+    struct Node *n = createNode(value);
+    struct Node *tail;
+    if (head == NULL) {
+        head = n;
+    } else {
+        tail = head->prev;
+        n->next = head;
+        n->prev = tail;
+        tail->next = n;
+        head->prev = n;
+    }
+    printf("%d inserted at the end\n", value);
+}
+
+void insertAtPosition(int value, int pos) {
+    int len = length();
+    int i;
+    struct Node *n;
+    struct Node *temp;
+    if (pos < 1 || pos > len + 1) {
+        printf("Invalid position (valid range is 1 to %d)\n", len + 1);
+        return;
+    }
+    if (pos == 1) {
+        insertAtBeginning(value);
+        return;
+    }
+    if (pos == len + 1) {
+        insertAtEnd(value);
+        return;
+    }
+    n = createNode(value);
+    temp = head;
+    for (i = 1; i < pos - 1; i++)
+        temp = temp->next;
+    n->next = temp->next;
+    n->prev = temp;
+    temp->next->prev = n;
+    temp->next = n;
+    printf("%d inserted at position %d\n", value, pos);
+}
+
+/* ---------- deletion ---------- */
+void deleteAtBeginning(void) {
+    struct Node *t;
+    struct Node *tail;
+    if (head == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    t = head;
+    printf("%d deleted from the beginning\n", t->data);
+    if (head->next == head) {
+        head = NULL;
+    } else {
+        tail = head->prev;
+        head = head->next;
+        head->prev = tail;
+        tail->next = head;
+    }
+    free(t);
+}
+
+void deleteAtEnd(void) {
+    struct Node *t;
+    if (head == NULL) {
+        printf("List is empty (underflow)\n");
+        return;
+    }
+    t = head->prev;
+    printf("%d deleted from the end\n", t->data);
+    if (head->next == head) {
+        head = NULL;
+    } else {
+        t->prev->next = head;
+        head->prev = t->prev;
+    }
+    free(t);
+}
+
+void deleteAtPosition(int pos) {
+    int len = length();
+    int i;
+    struct Node *temp;
+    if (pos < 1 || pos > len) {
+        printf("Invalid position (valid range is 1 to %d)\n", len);
+        return;
+    }
+    if (pos == 1) {
+        deleteAtBeginning();
+        return;
+    }
+    if (pos == len) {
+        deleteAtEnd();
+        return;
+    }
+    temp = head;
+    for (i = 1; i < pos; i++)
+        temp = temp->next;
+    temp->prev->next = temp->next;
+    temp->next->prev = temp->prev;
+    printf("%d deleted from position %d\n", temp->data, pos);
+    free(temp);
+}
+
+/* ---------- other operations ---------- */
+void search(int key) {
+    struct Node *t;
+    int pos = 1;
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    t = head;
+    do {
+        if (t->data == key) {
+            printf("%d found at position %d\n", key, pos);
+            return;
+        }
+        t = t->next;
+        pos++;
+    } while (t != head);
+    printf("%d not found\n", key);
+}
+
+void displayForward(void) {
+    struct Node *t;
+    if (head == NULL) {
+        printf("List: empty\n");
+        return;
+    }
+    t = head;
+    printf("Forward : ");
+    do {
+        printf("%d -> ", t->data);
+        t = t->next;
+    } while (t != head);
+    printf("(back to head %d)\n", head->data);
+}
+
+void displayBackward(void) {
+    struct Node *tail;
+    struct Node *t;
+    if (head == NULL) {
+        printf("List: empty\n");
+        return;
+    }
+    tail = head->prev;
+    t = tail;
+    printf("Backward: ");
+    do {
+        printf("%d -> ", t->data);
+        t = t->prev;
+    } while (t != tail);
+    printf("(back to tail %d)\n", tail->data);
+}
+
+void freeAll(void) {
+    while (head != NULL)
+        deleteAtBeginning();
+}
+
+int main(void) {
+    int choice, value, pos;
+    while (1) {
+        printf("\n1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end\n");
+        printf("6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit\nChoice: ");
+        if (scanf("%d", &choice) != 1)
+            break;
+        switch (choice) {
+            case 1: printf("Value: ");    scanf("%d", &value); insertAtBeginning(value); break;
+            case 2: printf("Value: ");    scanf("%d", &value); insertAtEnd(value);       break;
+            case 3: printf("Value: ");    scanf("%d", &value);
+                    printf("Position: "); scanf("%d", &pos);   insertAtPosition(value, pos); break;
+            case 4: deleteAtBeginning(); break;
+            case 5: deleteAtEnd();       break;
+            case 6: printf("Position: "); scanf("%d", &pos);   deleteAtPosition(pos); break;
+            case 7: printf("Value: ");    scanf("%d", &value); search(value); break;
+            case 8: displayForward();  break;
+            case 9: displayBackward(); break;
+            case 0: freeAll(); return 0;
+            default: printf("Invalid choice\n");
+        }
+    }
+    freeAll();
+    return 0;
+}
+</script>
+<script type="text/plain" id="out-circular_doubly">1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 2
+Value: 10
+10 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 2
+Value: 20
+20 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 2
+Value: 30
+30 inserted at the end
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 1
+Value: 5
+5 inserted at the beginning
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 8
+Forward : 5 -> 10 -> 20 -> 30 -> (back to head 5)
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 9
+Backward: 30 -> 20 -> 10 -> 5 -> (back to tail 30)
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 6
+Position: 2
+10 deleted from position 2
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 8
+Forward : 5 -> 20 -> 30 -> (back to head 5)
+
+1.Insert begin  2.Insert end  3.Insert at pos  4.Delete begin  5.Delete end
+6.Delete at pos  7.Search  8.Show forward  9.Show backward  0.Exit
+Choice: 0
+5 deleted from the beginning
+20 deleted from the beginning
+30 deleted from the beginning
+</script>
+<script type="text/plain" id="src-stack_ll">/* Stack implemented with a singly linked list (LIFO)
+   Written in plain C89, so it also compiles in Dev-C++ and Turbo-style compilers.
+   push and pop both work at the head, so both are O(1).
+   Compile: gcc stack_ll.c -o stack_ll
+   Run:     ./stack_ll                                 */
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *top = NULL;
+
+int isEmpty(void) {
+    return top == NULL;
+}
+
+void push(int value) {
+    struct Node *n = (struct Node *)malloc(sizeof(struct Node));
+    if (n == NULL) {
+        printf("Stack overflow (heap is full)\n");
+        return;
+    }
+    n->data = value;
+    n->next = top;              /* new node sits on top of the old top */
+    top = n;
+    printf("%d pushed\n", value);
+}
+
+void pop(void) {
+    struct Node *t;
+    if (isEmpty()) {
+        printf("Stack underflow (stack is empty)\n");
+        return;
+    }
+    t = top;
+    top = top->next;
+    printf("%d popped\n", t->data);
+    free(t);
+}
+
+void peek(void) {
+    if (isEmpty())
+        printf("Stack is empty\n");
+    else
+        printf("Top element is %d\n", top->data);
+}
+
+void display(void) {
+    struct Node *t;
+    if (isEmpty()) {
+        printf("Stack: empty\n");
+        return;
+    }
+    printf("Stack (top to bottom): ");
+    for (t = top; t != NULL; t = t->next)
+        printf("%d ", t->data);
+    printf("\n");
+}
+
+int main(void) {
+    int choice, value;
+    struct Node *t;
+    while (1) {
+        printf("\n1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit\nChoice: ");
+        if (scanf("%d", &choice) != 1)
+            break;
+        switch (choice) {
+            case 1: printf("Value: "); scanf("%d", &value); push(value); break;
+            case 2: pop();     break;
+            case 3: peek();    break;
+            case 4: display(); break;
+            case 5: printf(isEmpty() ? "Yes, the stack is empty\n" : "No, the stack has elements\n"); break;
+            case 0:
+                while (!isEmpty()) {
+                    t = top;
+                    top = top->next;
+                    free(t);
+                }
+                return 0;
+            default: printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
+</script>
+<script type="text/plain" id="out-stack_ll">1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 1
+Value: 10
+10 pushed
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 1
+Value: 20
+20 pushed
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 1
+Value: 30
+30 pushed
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 4
+Stack (top to bottom): 30 20 10 
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 3
+Top element is 30
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 2
+30 popped
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 2
+20 popped
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 4
+Stack (top to bottom): 10 
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 2
+10 popped
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 2
+Stack underflow (stack is empty)
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 5
+Yes, the stack is empty
+
+1.Push  2.Pop  3.Peek  4.Display  5.Is empty?  0.Exit
+Choice: 0
+</script>
+<script type="text/plain" id="src-queue_ll">/* Queue implemented with a singly linked list (FIFO)
+   Written in plain C89, so it also compiles in Dev-C++ and Turbo-style compilers.
+   enqueue adds at the rear, dequeue removes from the front.
+   Keeping a rear pointer makes both operations O(1).
+   Compile: gcc queue_ll.c -o queue_ll
+   Run:     ./queue_ll                                 */
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *front = NULL;
+struct Node *rear = NULL;
+
+int isEmpty(void) {
+    return front == NULL;
+}
+
+void enqueue(int value) {
+    struct Node *n = (struct Node *)malloc(sizeof(struct Node));
+    if (n == NULL) {
+        printf("Queue overflow (heap is full)\n");
+        return;
+    }
+    n->data = value;
+    n->next = NULL;
+    if (rear == NULL) {
+        front = rear = n;       /* first element is both front and rear */
+    } else {
+        rear->next = n;         /* link behind the old rear */
+        rear = n;
+    }
+    printf("%d enqueued\n", value);
+}
+
+void dequeue(void) {
+    struct Node *t;
+    if (isEmpty()) {
+        printf("Queue underflow (queue is empty)\n");
+        return;
+    }
+    t = front;
+    front = front->next;
+    if (front == NULL)
+        rear = NULL;            /* queue became empty */
+    printf("%d dequeued\n", t->data);
+    free(t);
+}
+
+void peek(void) {
+    if (isEmpty())
+        printf("Queue is empty\n");
+    else
+        printf("Front = %d, Rear = %d\n", front->data, rear->data);
+}
+
+void display(void) {
+    struct Node *t;
+    if (isEmpty()) {
+        printf("Queue: empty\n");
+        return;
+    }
+    printf("Queue (front to rear): ");
+    for (t = front; t != NULL; t = t->next)
+        printf("%d ", t->data);
+    printf("\n");
+}
+
+int main(void) {
+    int choice, value;
+    struct Node *t;
+    while (1) {
+        printf("\n1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit\nChoice: ");
+        if (scanf("%d", &choice) != 1)
+            break;
+        switch (choice) {
+            case 1: printf("Value: "); scanf("%d", &value); enqueue(value); break;
+            case 2: dequeue(); break;
+            case 3: peek();    break;
+            case 4: display(); break;
+            case 5: printf(isEmpty() ? "Yes, the queue is empty\n" : "No, the queue has elements\n"); break;
+            case 0:
+                while (!isEmpty()) {
+                    t = front;
+                    front = front->next;
+                    free(t);
+                }
+                return 0;
+            default: printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
+</script>
+<script type="text/plain" id="out-queue_ll">1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 1
+Value: 10
+10 enqueued
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 1
+Value: 20
+20 enqueued
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 1
+Value: 30
+30 enqueued
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 4
+Queue (front to rear): 10 20 30 
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 3
+Front = 10, Rear = 30
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 2
+10 dequeued
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 2
+20 dequeued
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 4
+Queue (front to rear): 30 
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 2
+30 dequeued
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 2
+Queue underflow (queue is empty)
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 5
+Yes, the queue is empty
+
+1.Enqueue  2.Dequeue  3.Front and rear  4.Display  5.Is empty?  0.Exit
+Choice: 0
+</script>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+var esc=function(s){return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var sleep=function(ms){return new Promise(function(r){setTimeout(r,reduce?Math.min(ms,60):ms);});};
+var MAX=7;
+var used=new Set();
+function addr(){
+  var a;
+  do{ a='0x'+(0x1000+Math.floor(Math.random()*0xE000)).toString(16).toUpperCase(); }while(used.has(a));
+  used.add(a); return a;
+}
+
+/* ---------- syntax highlighting for the C listings ---------- */
+function hl(src){
+  var re=/(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|("(?:\\.|[^"\\])*")|(#[^\n]*)|\b(int|char|void|struct|return|if|else|while|for|switch|case|break|default|do|sizeof)\b|\b(NULL)\b|\b(\d+)\b|\b([A-Za-z_]\w*)(?=\()/g;
+  var out='',last=0,m;
+  while((m=re.exec(src))){
+    out+=esc(src.slice(last,m.index));
+    var cls=m[1]?'com':m[2]?'str':m[3]?'pp':m[4]?'kw':m[5]?'nl':m[6]?'num':'fn';
+    out+='<span class="t-'+cls+'">'+esc(m[0])+'</span>';
+    last=m.index+m[0].length;
+  }
+  return out+esc(src.slice(last));
+}
+
+/* ---------- SVG drawing: horizontal lists ---------- */
+function pill(x,y,text){
+  var w=text.length*7.2+18;
+  return '<rect class="pill" x="'+(x-w/2)+'" y="'+y+'" width="'+w+'" height="18" rx="9"/><text class="pilltxt" x="'+x+'" y="'+(y+12.5)+'">'+esc(text)+'</text>';
+}
+function nullBox(x,ym){
+  return '<rect class="nullbox" x="'+x+'" y="'+(ym-12)+'" width="46" height="24" rx="3"/><text class="nulltxt" x="'+(x+23)+'" y="'+(ym+4)+'">NULL</text>';
+}
+function defs(id){
+  return '<defs>'+['n','p','m'].map(function(k){
+    return '<marker id="'+id+'-a'+k+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah-'+k+'"/></marker>';
+  }).join('')+'</defs>';
+}
+function drawList(svg,o){
+  var items=o.items,n=items.length,dbl=!!o.dbl,circ=!!o.circ,marks=o.marks||{};
+  var W=dbl?168:128,H=50,GAP=58,X0=(dbl&&!circ)?80:32,Y0=74;
+  var stride=W+GAP,cells=dbl?[48,72,48]:[70,58];
+  var depth=circ?(dbl?64:44):14;
+  var tailPad=circ?34:(n?118:260);
+  var width=Math.max(380,X0+Math.max(n,1)*stride-GAP+tailPad);
+  var height=Y0+H+depth+22;
+  var id=svg.id;
+  var xs=function(i){return X0+i*stride;};
+  var yN=dbl?Y0+27:Y0+33,yP=Y0+40;
+  var s=defs(id);
+  if(n===0){
+    var hlab=o.head||'HEAD',w=hlab.length*7.2+18;
+    s+=pill(X0+w/2,Y0+H/2-9,hlab);
+    s+='<line class="ln lm" x1="'+(X0+w)+'" y1="'+(Y0+H/2)+'" x2="'+(X0+w+60)+'" y2="'+(Y0+H/2)+'" marker-end="url(#'+id+'-am)"/>';
+    s+=nullBox(X0+w+62,Y0+H/2);
+  }
+  items.forEach(function(it,i){
+    var st=marks[i]||'',g='<g transform="translate('+xs(i)+','+Y0+')"><g class="nd '+st+'">',cx=0;
+    cells.forEach(function(cw,k){
+      var isData=dbl?k===1:k===0;
+      g+='<rect class="c '+(isData?'d':'p')+'" x="'+cx+'" y="0" width="'+cw+'" height="'+H+'"/>';
+      var cap=dbl?['prev','data','next'][k]:['data','next'][k];
+      g+='<text class="cap" x="'+(cx+cw/2)+'" y="12">'+cap+'</text>';
+      cx+=cw;
+    });
+    g+='<text class="val" x="'+(dbl?84:35)+'" y="40">'+esc(it.v)+'</text>';
+    g+='<rect class="bx" width="'+W+'" height="'+H+'"/></g>';
+    g+='<text class="addr" x="'+(W/2)+'" y="-8">'+it.a+'</text></g>';
+    s+=g;
+  });
+  if(n>0){
+    var lab=function(i,text){
+      var c=xs(i)+W/2;
+      return pill(c,Y0-52,text)+'<line class="ln lm" x1="'+c+'" y1="'+(Y0-34)+'" x2="'+c+'" y2="'+(Y0-22)+'" marker-end="url(#'+id+'-am)"/>';
+    };
+    if(n===1&&o.head&&o.tail) s+=lab(0,o.head+' \u00b7 '+o.tail);
+    else{ if(o.head) s+=lab(0,o.head); if(o.tail) s+=lab(n-1,o.tail); }
+  }
+  items.forEach(function(it,i){
+    var x=xs(i),dx=dbl?x+W-24:x+W-29;
+    s+='<circle class="dn" cx="'+dx+'" cy="'+yN+'" r="3.5"/>';
+    if(i<n-1) s+='<line class="ln" x1="'+dx+'" y1="'+yN+'" x2="'+(xs(i+1)-1)+'" y2="'+yN+'" marker-end="url(#'+id+'-an)"/>';
+    else if(!circ) s+='<line class="ln" x1="'+dx+'" y1="'+yN+'" x2="'+(x+W+GAP-1)+'" y2="'+yN+'" marker-end="url(#'+id+'-an)"/>'+nullBox(x+W+GAP,yN);
+    if(dbl){
+      var px=x+24;
+      s+='<circle class="dp" cx="'+px+'" cy="'+yP+'" r="3.5"/>';
+      if(i>0) s+='<line class="ln lpv" x1="'+px+'" y1="'+yP+'" x2="'+(xs(i-1)+W+1)+'" y2="'+yP+'" marker-end="url(#'+id+'-ap)"/>';
+      else if(!circ) s+='<line class="ln lpv" x1="'+px+'" y1="'+yP+'" x2="'+(x-GAP+47)+'" y2="'+yP+'" marker-end="url(#'+id+'-ap)"/>'+nullBox(x-GAP,yP);
+    }
+  });
+  if(circ&&n>0){
+    var last=xs(n-1),first=xs(0),r=8;
+    var yb=Y0+H+(dbl?28:34),xa=dbl?last+W-24:last+W-29,xe=first+(dbl?W*0.58:W*0.5),top=Y0+H+3;
+    s+='<path class="ln" d="M'+xa+' '+yN+' V'+(yb-r)+' Q'+xa+' '+yb+' '+(xa-r)+' '+yb+' H'+(xe+r)+' Q'+xe+' '+yb+' '+xe+' '+(yb-r)+' V'+top+'" marker-end="url(#'+id+'-an)"/>';
+    if(dbl){
+      var xp=first+24,yb2=Y0+H+54,xe2=last+W*0.42;
+      s+='<path class="ln lpv" d="M'+xp+' '+yP+' V'+(yb2-r)+' Q'+xp+' '+yb2+' '+(xp+r)+' '+yb2+' H'+(xe2-r)+' Q'+xe2+' '+yb2+' '+xe2+' '+(yb2-r)+' V'+top+'" marker-end="url(#'+id+'-ap)"/>';
+    }
+  }
+  svg.setAttribute('width',width);
+  svg.setAttribute('height',height);
+  svg.setAttribute('viewBox','0 0 '+width+' '+height);
+  svg.setAttribute('role','img');
+  svg.innerHTML=s;
+  return {xs:xs,W:W};
+}
+
+/* ---------- SVG drawing: vertical stack ---------- */
+function drawStack(svg,o){
+  var items=o.items,n=items.length,marks=o.marks||{};
+  var W=170,H=48,GAP=36,X0=100,Y0=26,id=svg.id;
+  var width=X0+W+86;
+  var height=n?Y0+n*(H+GAP)+36:Y0+H+30;
+  var s=defs(id);
+  var pw=3*7.2+18;
+  s+=pill(46,Y0+H/2-9,'TOP');
+  s+='<line class="ln lm" x1="'+(46+pw/2+2)+'" y1="'+(Y0+H/2)+'" x2="'+(X0-1)+'" y2="'+(Y0+H/2)+'" marker-end="url(#'+id+'-am)"/>';
+  if(n===0) s+=nullBox(X0+8,Y0+H/2);
+  items.forEach(function(it,i){
+    var y=Y0+i*(H+GAP),st=marks[i]||'';
+    var g='<g transform="translate('+X0+','+y+')"><g class="nd '+st+'">';
+    g+='<rect class="c d" x="0" y="0" width="110" height="'+H+'"/><rect class="c p" x="110" y="0" width="60" height="'+H+'"/>';
+    g+='<text class="cap" x="55" y="12">data</text><text class="cap" x="140" y="12">next</text>';
+    g+='<text class="val" x="55" y="37">'+esc(it.v)+'</text>';
+    g+='<rect class="bx" width="'+W+'" height="'+H+'"/></g>';
+    g+='<text class="addr l" x="'+(W+10)+'" y="'+(H/2+4)+'">'+it.a+'</text></g>';
+    s+=g;
+    var dx=X0+140,dy=y+34;
+    s+='<circle class="dn" cx="'+dx+'" cy="'+dy+'" r="3.5"/>';
+    s+='<line class="ln" x1="'+dx+'" y1="'+dy+'" x2="'+dx+'" y2="'+(y+H+GAP-1)+'" marker-end="url(#'+id+'-an)"/>';
+    if(i===n-1){
+      s+='<rect class="nullbox" x="'+(dx-23)+'" y="'+(y+H+GAP)+'" width="46" height="24" rx="3"/><text class="nulltxt" x="'+dx+'" y="'+(y+H+GAP+16)+'">NULL</text>';
+    }
+  });
+  svg.setAttribute('width',width);
+  svg.setAttribute('height',height);
+  svg.setAttribute('viewBox','0 0 '+width+' '+height);
+  svg.setAttribute('role','img');
+  svg.innerHTML=s;
+}
+
+/* ---------- the pointer steps shown for each operation ---------- */
+function stepsFor(op,c){
+  var dbl=c.dbl,circ=c.circ,n=c.n,p=c.p,empty=n===0,one=n===1;
+  var mk='Node *n = createNode(value);';
+  var temp=function(k){
+    var start=circ&&!dbl?'temp = last->next;':'temp = head;';
+    return start+'   // advance '+k+' time'+(k===1?'':'s')+(k>0?'':' (stay at head)');
+  };
+  switch(op){
+  case 'insBegin':
+    if(!circ&&!dbl) return empty?[mk,'head = n;   // list was empty']:[mk,'n->next = head;','head = n;'];
+    if(!circ&&dbl)  return empty?[mk,'head = tail = n;   // list was empty']:[mk,'n->next = head;','head->prev = n;','head = n;'];
+    if(circ&&!dbl)  return empty?[mk,'last = n;   // n->next already points to n']:[mk,'n->next = last->next;   // old head','last->next = n;         // n is the new head'];
+    return empty?[mk,'head = n;   // n->prev and n->next point to n']:[mk,'tail = head->prev;','n->next = head;  n->prev = tail;','head->prev = n;  tail->next = n;','head = n;'];
+  case 'insEnd':
+    if(!circ&&!dbl) return empty?[mk,'head = n;   // list was empty']:[mk,'temp = head;  while (temp->next != NULL) temp = temp->next;','temp->next = n;'];
+    if(!circ&&dbl)  return empty?[mk,'head = tail = n;   // list was empty']:[mk,'n->prev = tail;','tail->next = n;','tail = n;'];
+    if(circ&&!dbl)  return empty?[mk,'last = n;   // n->next already points to n']:[mk,'n->next = last->next;','last->next = n;','last = n;'];
+    return empty?[mk,'head = n;   // n->prev and n->next point to n']:[mk,'tail = head->prev;','n->next = head;  n->prev = tail;','tail->next = n;  head->prev = n;'];
+  case 'insPos':
+    if(p===1) return stepsFor('insBegin',c);
+    if((dbl||circ)&&p===n+1) return stepsFor('insEnd',c);
+    if(dbl) return [mk,temp(p-2)+'   // node before position '+p,'n->next = temp->next;  n->prev = temp;','temp->next->prev = n;','temp->next = n;'];
+    return [mk,temp(p-2)+'   // node before position '+p,'n->next = temp->next;','temp->next = n;'];
+  case 'delBegin':
+    if(!circ&&!dbl) return ['Node *t = head;','head = head->next;','free(t);'];
+    if(!circ&&dbl)  return one?['free(head);','head = tail = NULL;']:['Node *t = head;','head = head->next;','head->prev = NULL;','free(t);'];
+    if(circ&&!dbl)  return one?['free(last);','last = NULL;']:['Node *t = last->next;   // head','last->next = t->next;','free(t);'];
+    return one?['free(head);','head = NULL;']:['Node *t = head;  tail = head->prev;','head = head->next;','head->prev = tail;  tail->next = head;','free(t);'];
+  case 'delEnd':
+    if(!circ&&!dbl) return one?['free(head);','head = NULL;']:['temp = head;  while (temp->next->next != NULL) temp = temp->next;','free(temp->next);','temp->next = NULL;'];
+    if(!circ&&dbl)  return one?['free(head);','head = tail = NULL;']:['Node *t = tail;','tail = tail->prev;','tail->next = NULL;','free(t);'];
+    if(circ&&!dbl)  return one?['free(last);','last = NULL;']:['temp = last->next;  while (temp->next != last) temp = temp->next;','temp->next = last->next;','free(last);','last = temp;'];
+    return one?['free(head);','head = NULL;']:['Node *t = head->prev;   // tail','t->prev->next = head;','head->prev = t->prev;','free(t);'];
+  case 'delPos':
+    if(p===1) return stepsFor('delBegin',c);
+    if((dbl||circ)&&p===n) return stepsFor('delEnd',c);
+    if(dbl) return ['temp = head;   // advance '+(p-1)+' time'+(p-1===1?'':'s')+' to position '+p,'temp->prev->next = temp->next;','temp->next->prev = temp->prev;','free(temp);'];
+    return [temp(p-2)+'   // node before position '+p,'Node *t = temp->next;','temp->next = t->next;','free(t);'];
+  case 'reverse':
+    if(!dbl) return ['prev = NULL;  curr = head;','while (curr) { next = curr->next;  curr->next = prev;  prev = curr;  curr = next; }','head = prev;'];
+    return ['curr = head;','while (curr) { swap(curr->prev, curr->next);  curr = curr->prev; }','swap(head, tail);'];
+  }
+  return [];
+}
+
+/* ---------- lab: diagram + controls + trace ---------- */
+function groupsFor(mode,dbl,circ){
+  if(mode==='stack') return [{t:'Stack operations',b:[['push','Push'],['pop','Pop','del'],['peek','Peek'],['isEmpty','Is empty?'],['reset','Reset']]}];
+  if(mode==='queue') return [{t:'Queue operations',b:[['enq','Enqueue'],['deq','Dequeue','del'],['peekF','Front'],['peekR','Rear'],['isEmpty','Is empty?'],['reset','Reset']]}];
+  var other=[['search','Search'],['traverse','Traverse']];
+  if(dbl) other.push(['traverseBack','Traverse backward']);
+  if(!circ) other.push(['reverse','Reverse']);
+  other.push(['reset','Reset']);
+  return [
+    {t:'Insert',b:[['insBegin','At beginning'],['insEnd','At end'],['insPos','At position']]},
+    {t:'Delete',b:[['delBegin','From beginning','del'],['delEnd','From end','del'],['delPos','At position','del']]},
+    {t:'Other',b:other}
+  ];
+}
+
+function Lab(root,cfg){
+  var mode=cfg.mode,dbl=!!cfg.dbl,circ=!!cfg.circ;
+  var items=cfg.seed.map(function(v){return {v:v,a:addr()};});
+  var marks={},busy=false;
+  var title=cfg.title;
+  var toggle=cfg.toggle?'<div class="seg" role="group" aria-label="List type"><button type="button" data-t="s" aria-pressed="true">Circular singly</button><button type="button" data-t="d" aria-pressed="false">Circular doubly</button></div>':'';
+  var head='<div class="lab-head"><h3>'+title+'</h3>'+toggle+'</div>';
+  var ctl='<div class="ctl"></div>',trace='<div class="trace"><h4>Pointer steps</h4><ol></ol></div>';
+  if(mode==='stack'){
+    root.innerHTML='<div class="lab">'+head+'<div class="sgrid"><div class="stage"><svg id="'+cfg.id+'-svg"></svg></div><div class="sright"><div class="status" aria-live="polite"></div>'+ctl+trace.replace('class="trace"','class="trace" style="border-left:0;border-top:1px solid var(--line)"')+'</div></div></div>';
+  }else{
+    root.innerHTML='<div class="lab">'+head+'<div class="stage"><svg id="'+cfg.id+'-svg"></svg></div><div class="status" aria-live="polite"></div><div class="cols">'+ctl+trace+'</div></div>';
+  }
+  var svg=$('svg',root),wrap=$('.stage',root),sayEl=$('.status',root),traceEl=$('.trace ol',root),ctlEl=$('.ctl',root);
+
+  function tailLabel(){ return (circ&&!dbl)?'LAST':cfg.tail; }
+  function draw(focus){
+    if(mode==='stack') drawStack(svg,{items:items,marks:marks});
+    else{
+      var r=drawList(svg,{items:items,dbl:dbl,circ:circ,marks:marks,head:cfg.head,tail:tailLabel()});
+      if(focus!=null&&wrap.clientWidth){
+        var left=Math.max(0,r.xs(focus)+r.W/2-wrap.clientWidth/2);
+        wrap.scrollTo({left:left,behavior:reduce?'auto':'smooth'});
+      }
+    }
+    svg.setAttribute('aria-label',(items.length?'Nodes: '+items.map(function(i){return i.v;}).join(', '):'Empty list')+'.');
+  }
+  function say(msg,kind){ sayEl.textContent=msg; sayEl.className='status'+(kind?' '+kind:''); }
+  function showTrace(lines){
+    traceEl.innerHTML=lines.length?lines.map(function(l){return '<li><code>'+esc(l)+'</code></li>';}).join(''):'<li class="hint">Press an operation to see the pointer assignments it performs.</li>';
+  }
+  function addTrace(line){
+    var hint=$('.hint',traceEl); if(hint) hint.remove();
+    var li=document.createElement('li'); li.className='on'; li.innerHTML='<code>'+esc(line)+'</code>'; traceEl.appendChild(li);
+  }
+  function renderCtl(){
+    var fields='<div class="fields"><label class="field">Value<input class="v" type="number" inputmode="numeric" placeholder="random" id="'+cfg.id+'-v"></label>';
+    if(mode==='list') fields+='<label class="field">Position<input class="pos" type="number" inputmode="numeric" min="1" value="2" id="'+cfg.id+'-pos"></label>';
+    fields+='</div>';
+    var g=groupsFor(mode,dbl,circ).map(function(grp){
+      return '<div class="grp"><h4>'+grp.t+'</h4><div class="btns">'+grp.b.map(function(b){
+        return '<button type="button" class="btn" data-op="'+b[0]+'"'+(b[2]?' data-kind="'+b[2]+'"':'')+'>'+b[1]+'</button>';
+      }).join('')+'</div></div>';
+    }).join('');
+    ctlEl.innerHTML=fields+g;
+  }
+  function setBusy(v){ busy=v; $$('button',root).forEach(function(b){b.disabled=v;}); }
+  function readVal(required){
+    var raw=$('.v',root).value.trim();
+    if(raw===''){
+      if(required){ say('Type the value to look for.','bad'); return null; }
+      return Math.floor(Math.random()*90)+10;
+    }
+    if(!/^-?\d+$/.test(raw)){ say('Enter a whole number for the value.','bad'); return null; }
+    return parseInt(raw,10);
+  }
+  function readPos(){
+    var raw=$('.pos',root).value.trim();
+    if(!/^\d+$/.test(raw)){ say('Enter a whole number for the position.','bad'); return null; }
+    return parseInt(raw,10);
+  }
+  function full(){
+    if(items.length>=MAX){ say('The demo holds up to '+MAX+' nodes so the diagram stays readable. Delete one first.','warn'); return true; }
+    return false;
+  }
+  function ctx(p){ return {dbl:dbl,circ:circ,n:items.length,p:p}; }
+  async function walk(to){
+    for(var i=0;i<=to;i++){ marks={}; marks[i]='visit'; draw(i); await sleep(280); }
+    marks={}; draw();
+  }
+  async function play(lines,walkTo){
+    showTrace(lines);
+    if(walkTo!=null&&walkTo>=0) await walk(walkTo);
+    var lis=$$('li',traceEl);
+    for(var k=0;k<lis.length;k++){ lis[k].classList.add('on'); await sleep(340); }
+  }
+  async function settle(m,focus,msg,kind){
+    marks=m; draw(focus); say(msg,kind||'ok'); await sleep(950); marks={}; draw();
+  }
+  async function removeAt(idx,msg){
+    var m={}; m[idx]='del'; marks=m; draw(idx); await sleep(700);
+    items.splice(idx,1); marks={}; draw(); say(msg,'ok');
+  }
+  var QMK='Node *n = createNode(value);';
+
+  var ops={
+    async insBegin(){
+      var v=readVal(); if(v===null||full()) return;
+      await play(stepsFor('insBegin',ctx()));
+      items.unshift({v:v,a:addr()});
+      await settle({0:'new'},0,'Inserted '+v+' at the beginning.');
+    },
+    async insEnd(){
+      var v=readVal(); if(v===null||full()) return;
+      var n=items.length;
+      await play(stepsFor('insEnd',ctx()),(!dbl&&!circ&&n)?n-1:null);
+      items.push({v:v,a:addr()});
+      var m={}; m[n]='new';
+      await settle(m,n,'Inserted '+v+' at the end.');
+    },
+    async insPos(){
+      var v=readVal(); if(v===null) return;
+      var p=readPos(); if(p===null||full()) return;
+      var n=items.length;
+      if(p<1||p>n+1){ say('Position must be between 1 and '+(n+1)+'.','bad'); return; }
+      var wt=(p===1||((dbl||circ)&&p===n+1))?null:p-2;
+      await play(stepsFor('insPos',ctx(p)),wt);
+      items.splice(p-1,0,{v:v,a:addr()});
+      var m={}; m[p-1]='new';
+      await settle(m,p-1,'Inserted '+v+' at position '+p+'.');
+    },
+    async delBegin(){
+      if(!items.length){ say('The list is empty, so there is nothing to delete (underflow).','bad'); showTrace([]); return; }
+      await play(stepsFor('delBegin',ctx()));
+      await removeAt(0,'Deleted '+items[0].v+' from the beginning.');
+    },
+    async delEnd(){
+      var n=items.length;
+      if(!n){ say('The list is empty, so there is nothing to delete (underflow).','bad'); showTrace([]); return; }
+      await play(stepsFor('delEnd',ctx()),(!dbl&&n>1)?n-2:null);
+      await removeAt(n-1,'Deleted '+items[n-1].v+' from the end.');
+    },
+    async delPos(){
+      var n=items.length;
+      if(!n){ say('The list is empty, so there is nothing to delete (underflow).','bad'); showTrace([]); return; }
+      var p=readPos(); if(p===null) return;
+      if(p<1||p>n){ say('Position must be between 1 and '+n+'.','bad'); return; }
+      var wt=p===1?null:(dbl?(p===n?null:p-1):p-2);
+      await play(stepsFor('delPos',ctx(p)),wt);
+      await removeAt(p-1,'Deleted '+items[p-1].v+' from position '+p+'.');
+    },
+    async search(){
+      if(!items.length){ say('The list is empty.','warn'); showTrace([]); return; }
+      var v=readVal(true); if(v===null) return;
+      showTrace([circ&&!dbl?'temp = last->next;   // head':'temp = head;']);
+      for(var i=0;i<items.length;i++){
+        var hit=items[i].v===v,m={}; m[i]=hit?'found':'visit';
+        marks=m; draw(i);
+        addTrace('temp->data == '+v+' ?  '+items[i].v+(hit?'  yes':'  no, temp = temp->next;'));
+        if(hit){ say(v+' found at position '+(i+1)+'.','ok'); await sleep(1100); marks={}; draw(); return; }
+        await sleep(520);
+      }
+      marks={}; draw();
+      say(v+' is not in the list. '+(circ?'The walk returned to the head.':'temp reached NULL.'),'warn');
+    },
+    async traverse(){
+      if(!items.length){ say('The list is empty.','warn'); showTrace([]); return; }
+      showTrace(circ?[(dbl?'temp = head;':'temp = last->next;   // head'),'do { print(temp->data);  temp = temp->next; } while (temp != head);']:['temp = head;','while (temp != NULL) { print(temp->data);  temp = temp->next; }']);
+      var out=[];
+      for(var i=0;i<items.length;i++){
+        var m={}; m[i]='visit'; marks=m; draw(i); out.push(items[i].v); say('Printed so far: '+out.join(' \u2192 '),''); await sleep(520);
+      }
+      marks={}; draw();
+      say(out.join(' \u2192 ')+(circ?' \u2192 (back to '+out[0]+')':' \u2192 NULL'),'ok');
+    },
+    async traverseBack(){
+      if(!items.length){ say('The list is empty.','warn'); showTrace([]); return; }
+      showTrace(circ?['temp = head->prev;   // tail','do { print(temp->data);  temp = temp->prev; } while (temp != tail);']:['temp = tail;','while (temp != NULL) { print(temp->data);  temp = temp->prev; }']);
+      var out=[];
+      for(var i=items.length-1;i>=0;i--){
+        var m={}; m[i]='visit'; marks=m; draw(i); out.push(items[i].v); say('Printed so far: '+out.join(' \u2192 '),''); await sleep(520);
+      }
+      marks={}; draw();
+      say(out.join(' \u2192 ')+(circ?' \u2192 (back to '+out[0]+')':' \u2192 NULL'),'ok');
+    },
+    async reverse(){
+      if(items.length<2){ say('Reversing needs at least two nodes.','warn'); return; }
+      await play(stepsFor('reverse',ctx()));
+      items.reverse();
+      var m={}; items.forEach(function(_,i){m[i]='visit';});
+      await settle(m,0,'Reversed. Every node kept its address; only the links changed direction.');
+    },
+    async reset(){
+      items=cfg.seed.map(function(v){return {v:v,a:addr()};}); marks={}; showTrace([]); draw(0); say('Reset to the sample '+(mode==='list'?'list':mode)+'.','');
+    },
+    /* stack */
+    async push(){
+      var v=readVal(); if(v===null||full()) return;
+      await play([QMK,'n->next = top;','top = n;']);
+      items.unshift({v:v,a:addr()});
+      await settle({0:'new'},0,'Pushed '+v+'. It is now the top.');
+    },
+    async pop(){
+      if(!items.length){ say('Stack underflow: the stack is empty, so there is nothing to pop.','bad'); showTrace([]); return; }
+      await play(['Node *t = top;','top = top->next;','free(t);']);
+      await removeAt(0,'Popped '+items[0].v+'.');
+    },
+    async peek(){
+      if(!items.length){ say('The stack is empty.','warn'); return; }
+      showTrace(['return top->data;   // nothing is removed']);
+      await settle({0:'found'},0,'Top element is '+items[0].v+'. The stack is unchanged.');
+    },
+    async isEmpty(){
+      var e=!items.length;
+      say(e?'Yes. '+(mode==='stack'?'top':'front')+' == NULL.':'No. It holds '+items.length+' element'+(items.length===1?'':'s')+'.',e?'warn':'ok');
+    },
+    /* queue */
+    async enq(){
+      var v=readVal(); if(v===null||full()) return;
+      var n=items.length;
+      await play(n?[QMK,'rear->next = n;','rear = n;']:[QMK,'front = rear = n;   // queue was empty']);
+      items.push({v:v,a:addr()});
+      var m={}; m[n]='new';
+      await settle(m,n,'Enqueued '+v+' at the rear.');
+    },
+    async deq(){
+      if(!items.length){ say('Queue underflow: the queue is empty, so there is nothing to dequeue.','bad'); showTrace([]); return; }
+      await play(['Node *t = front;','front = front->next;','if (front == NULL) rear = NULL;','free(t);']);
+      await removeAt(0,'Dequeued '+items[0].v+' from the front.');
+    },
+    async peekF(){
+      if(!items.length){ say('The queue is empty.','warn'); return; }
+      showTrace(['return front->data;   // nothing is removed']);
+      await settle({0:'found'},0,'Front element is '+items[0].v+'.');
+    },
+    async peekR(){
+      if(!items.length){ say('The queue is empty.','warn'); return; }
+      showTrace(['return rear->data;   // nothing is removed']);
+      var m={}; m[items.length-1]='found';
+      await settle(m,items.length-1,'Rear element is '+items[items.length-1].v+'.');
+    }
+  };
+
+  root.addEventListener('click',async function(e){
+    var t=e.target.closest('.seg button');
+    if(t&&!busy){
+      var d=t.dataset.t==='d';
+      if(d!==dbl){
+        dbl=d;
+        $$('.seg button',root).forEach(function(b){b.setAttribute('aria-pressed',String((b.dataset.t==='d')===dbl));});
+        renderCtl(); showTrace([]); draw(0); say(dbl?'Circular doubly: head->prev is the tail, tail->next is the head.':'Circular singly: only last is stored; the head is last->next.','');
+        if(cfg.onToggle) cfg.onToggle(dbl);
+      }
+      return;
+    }
+    var b=e.target.closest('[data-op]');
+    if(!b||busy) return;
+    var fn=ops[b.dataset.op]; if(!fn) return;
+    setBusy(true);
+    try{ await fn(); }finally{ setBusy(false); }
+  });
+  renderCtl(); showTrace([]); draw(); say(mode==='stack'?'Pushed 10, then 20, then 30. The last one in is on top.':mode==='queue'?'Enqueued 10, then 20, then 30. The first one in is at the front.':'Sample list. Try an operation, or type your own value first.','');
+}
+
+/* ---------- code cards ---------- */
+function codeCard(host,name,file){
+  var src=$('#src-'+name).textContent.replace(/^\n+/,'').replace(/\s+$/,'')+'\n';
+  var out=$('#out-'+name).textContent.replace(/^\n+/,'').replace(/\s+$/,'')+'\n';
+  host.innerHTML='<div class="code"><div class="code-bar"><div><b>'+file+'</b><span class="cmd">gcc '+file+' -o '+file.replace('.c','')+' &amp;&amp; ./'+file.replace('.c','')+'</span></div><button type="button" class="copy">Copy program</button></div><pre><code>'+hl(src)+'</code></pre><details><summary>Sample run (real output)</summary><pre class="out">'+esc(out)+'</pre></details></div>';
+  var btn=$('.copy',host),pre=$('pre',host);
+  btn.addEventListener('click',function(){
+    function fallback(){
+      var r=document.createRange(); r.selectNodeContents(pre);
+      var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      var ok=false; try{ ok=document.execCommand('copy'); }catch(err){}
+      btn.textContent=ok?'Copied':'Selected, press Ctrl+C';
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(src).then(function(){btn.textContent='Copied';}).catch(fallback);
+    }else fallback();
+    setTimeout(function(){btn.textContent='Copy program';},1800);
+  });
+}
+
+/* ---------- basics diagrams ---------- */
+(function(){
+  var three=[{v:10,a:'0x1A40'},{v:20,a:'0x3C98'},{v:30,a:'0x2E10'}];
+  drawList($('#svg-anat'),{items:[{v:10,a:'0x1A40'},{v:20,a:'0x3C98'}],head:'HEAD'});
+  drawList($('#svg-t1'),{items:three,head:'HEAD'});
+  drawList($('#svg-t2'),{items:three,dbl:true,head:'HEAD',tail:'TAIL'});
+  drawList($('#svg-t3'),{items:three,circ:true,head:'HEAD',tail:'LAST'});
+  drawList($('#svg-t4'),{items:three,dbl:true,circ:true,head:'HEAD',tail:'TAIL'});
+  $('#struct-code').innerHTML=hl('struct Node {\n    int data;\n    struct Node *next;\n};\n\nstruct Node *head = NULL;\n');
+})();
+
+/* ---------- mount ---------- */
+Lab($('#lab-singly'),{id:'singly',mode:'list',title:'Singly linked list',seed:[10,20,30],head:'HEAD'});
+Lab($('#lab-doubly'),{id:'doubly',mode:'list',title:'Doubly linked list',seed:[10,20,30],dbl:true,head:'HEAD',tail:'TAIL'});
+Lab($('#lab-circular'),{id:'circ',mode:'list',title:'Circular linked list',seed:[10,20,30],circ:true,toggle:true,head:'HEAD',tail:'TAIL',
+  onToggle:function(d){ $('#code-circ-s').hidden=d; $('#code-circ-d').hidden=!d; }});
+Lab($('#lab-stack'),{id:'stack',mode:'stack',title:'Stack as a linked list',seed:[30,20,10],head:'TOP'});
+Lab($('#lab-queue'),{id:'queue',mode:'queue',title:'Queue as a linked list',seed:[10,20,30],head:'FRONT',tail:'REAR'});
+codeCard($('#code-singly'),'singly','singly.c');
+codeCard($('#code-doubly'),'doubly','doubly.c');
+codeCard($('#code-circ-s'),'circular','circular.c');
+codeCard($('#code-circ-d'),'circular_doubly','circular_doubly.c');
+codeCard($('#code-stack'),'stack_ll','stack_ll.c');
+codeCard($('#code-queue'),'queue_ll','queue_ll.c');
+
+/* ---------- tabs (hash routed) ---------- */
+var TABS=['basics','singly','doubly','circular','stack','queue'];
+function show(id){
+  if(TABS.indexOf(id)<0) id='basics';
+  TABS.forEach(function(t){
+    $('#p-'+t).hidden=t!==id;
+    var b=$('#tab-'+t); b.setAttribute('aria-selected',String(t===id)); b.tabIndex=t===id?0:-1;
+  });
+}
+$('.tabs').addEventListener('click',function(e){
+  var b=e.target.closest('[data-tab]'); if(!b) return;
+  if(location.hash==='#'+b.dataset.tab) show(b.dataset.tab); else location.hash=b.dataset.tab;
+});
+$('.tabs').addEventListener('keydown',function(e){
+  var i=TABS.indexOf(document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.tab:'');
+  if(i<0) return;
+  var j=e.key==='ArrowRight'?(i+1)%TABS.length:e.key==='ArrowLeft'?(i+TABS.length-1)%TABS.length:-1;
+  if(j<0) return;
+  e.preventDefault(); $('#tab-'+TABS[j]).focus(); location.hash=TABS[j];
+});
+window.addEventListener('hashchange',function(){show(location.hash.slice(1));});
+show(location.hash.slice(1));
+})();
+</script>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeToggle');
+  if(!btn) return;
+  var saved=null;
+  try{saved=localStorage.getItem('dsa-theme')}catch(e){}
+  if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved);
+  function sync(){
+    var dark=root.getAttribute('data-theme')==='dark' ||
+      (!root.getAttribute('data-theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    btn.textContent=dark?'☀ Light mode':'☾ Dark mode';
+    btn.setAttribute('aria-pressed',String(dark));
+  }
+  btn.addEventListener('click',function(){
+    var current=root.getAttribute('data-theme');
+    var dark=current ? current==='dark' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next=dark?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('dsa-theme',next)}catch(e){}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body></html>
