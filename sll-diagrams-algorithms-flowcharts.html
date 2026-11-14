@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Singly Linked List - Diagrams, Algorithms, Flowcharts</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--text:#1d2330;--muted:#5d6678;--line:#3b4458;--accent:#2563eb;--accent-soft:#e0e9ff;--new:#16a34a;--new-soft:#dcfce7;--del:#dc2626;--del-soft:#fee2e2;--hl:#d97706;--hl-soft:#fef3c7;--node:#eef2ff;--border:#dde2ea;--code:#eef0f5}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1218;--card:#181d27;--text:#e6e9f0;--muted:#9aa4b8;--line:#aab4c8;--accent:#6b9bff;--accent-soft:#1f2f55;--new:#4ade80;--new-soft:#14351f;--del:#f87171;--del-soft:#3d1a1a;--hl:#fbbf24;--hl-soft:#3a2d10;--node:#202840;--border:#2a3142;--code:#232a3a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header{padding:32px 0 12px}
+h1{font-size:28px;margin:0 0 6px}
+header p{margin:0;color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:6px}
+nav a{font:13px ui-monospace,Consolas,monospace;text-decoration:none;color:var(--accent);background:var(--card);border:1px solid var(--border);padding:3px 9px;border-radius:999px}
+nav a:hover{background:var(--accent-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0 0;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:3px;border:2px solid;display:inline-block}
+section{margin-top:44px;scroll-margin-top:60px}
+h2{font-size:22px;margin:0 0 4px;display:flex;flex-wrap:wrap;align-items:baseline;gap:10px}
+.sig{font:14px ui-monospace,Consolas,monospace;color:var(--muted);font-weight:400}
+.desc{margin:0 0 14px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+ol{margin:0;padding-left:22px}
+li{margin:4px 0}
+code{font:13.5px ui-monospace,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+.cx{margin:12px 0 0;font-size:14px;color:var(--muted)}
+.cx b{color:var(--text)}
+.frame{margin:0 0 16px}
+.frame:last-child{margin-bottom:0}
+figcaption{font-size:14.5px;margin-bottom:4px}
+.step{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;margin-right:6px}
+.scroll{overflow-x:auto}
+svg text{font-family:system-ui,sans-serif}
+.f-shape{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.f-term{fill:var(--accent-soft);stroke:var(--accent)}
+.f-io{fill:var(--hl-soft);stroke:var(--hl)}
+.f-dec{fill:var(--new-soft);stroke:var(--new)}
+.f-text{fill:var(--text);text-anchor:middle}
+.f-line{stroke:var(--line);stroke-width:1.5;fill:none}
+.f-lbl{fill:var(--muted);font-size:12px;font-weight:700}
+.d-node{fill:var(--node);stroke:var(--line);stroke-width:1.5}
+.d-node.new{fill:var(--new-soft);stroke:var(--new)}
+.d-node.del{fill:var(--del-soft);stroke:var(--del);stroke-dasharray:5 3}
+.d-node.hl{fill:var(--hl-soft);stroke:var(--hl)}
+.d-ptr{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.d-null{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:3 3}
+.d-txt{fill:var(--text);text-anchor:middle;font-size:14px;font-weight:600}
+.d-small{font-size:11px;font-weight:500}
+.d-mark{fill:var(--accent);text-anchor:middle;font-size:13px;font-weight:700}
+.d-link{stroke:var(--line);stroke-width:1.8;fill:none}
+.d-link.new{stroke:var(--new);stroke-width:2.4}
+.d-link.mark{stroke:var(--accent);stroke-width:1.5}
+.d-dot{fill:var(--line)}
+.d-lbl{fill:var(--muted);font-size:12px}
+@media print{nav{display:none}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--line)"/></marker>
+<marker id="ahN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--new)"/></marker>
+<marker id="ahM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker>
+</defs></svg>
+<div class="wrap">
+<header>
+<h1>Singly Linked List in C</h1>
+<p>Diagram, algorithm and flowchart for every function in <code>SLL.c</code>.</p>
+<div class="legend">
+<span><i style="border-color:var(--accent);background:var(--accent-soft)"></i>pointer (head / temp / ...)</span>
+<span><i style="border-color:var(--new);background:var(--new-soft)"></i>new node / changed link</span>
+<span><i style="border-color:var(--del);background:var(--del-soft);border-style:dashed"></i>node being deleted</span>
+<span><i style="border-color:var(--hl);background:var(--hl-soft)"></i>match found</span>
+</div>
+</header>
+<nav id="nav"></nav>
+<div id="app"></div>
+</div>
+<script>
+/* ---------------- helpers ---------------- */
+var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+var fmt=function(s){return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>');};
+function wrap(t,n){var w=t.split(' '),L=[],c='';w.forEach(function(x){if((c+' '+x).trim().length>n&&c){L.push(c);c=x;}else c=(c+' '+x).trim();});if(c)L.push(c);return L;}
+function txt(x,y,lines,fs){var lh=fs+3,y0=y-(lines.length-1)*lh/2+fs*0.35;return lines.map(function(l,i){return '<text class="f-text" x="'+x+'" y="'+(y0+i*lh)+'" style="font-size:'+fs+'px">'+esc(l)+'</text>';}).join('');}
+
+/* ---------------- flowchart engine ---------------- */
+function flow(spec){
+  var s=[],minX=1e9,maxX=-1e9,maxY=0;
+  var W=200,H=40,DW=230,SIDE=300,GAP=30;
+  function T(x,y){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y>maxY)maxY=y;}
+  function line(pts,arrow){pts.forEach(function(p){T(p[0],p[1]);});
+    s.push('<path class="f-line" d="M'+pts.map(function(p){return p[0]+' '+p[1];}).join(' L')+'"'+(arrow?' marker-end="url(#ah)"':'')+'/>');}
+  function lab(x,y,t,a){T(x,y);s.push('<text class="f-lbl" x="'+x+'" y="'+y+'" text-anchor="'+(a||'start')+'">'+t+'</text>');}
+  function node(k,cx,top,text){
+    var lines,h,hw;
+    if(k==='dec'){
+      lines=wrap(text,19);h=Math.max(76,lines.length*16+44);hw=DW/2;var cy=top+h/2;
+      s.push('<polygon class="f-shape f-dec" points="'+cx+','+top+' '+(cx+hw)+','+cy+' '+cx+','+(top+h)+' '+(cx-hw)+','+cy+'"/>');
+      s.push(txt(cx,cy,lines,12));
+    }else if(k==='term'){
+      h=36;hw=80;s.push('<rect class="f-shape f-term" x="'+(cx-hw)+'" y="'+top+'" width="160" height="36" rx="18"/>');
+      s.push(txt(cx,top+18,[text],13));
+    }else if(k==='io'){
+      lines=wrap(text,25);h=Math.max(H,lines.length*16+14);hw=100;
+      s.push('<polygon class="f-shape f-io" points="'+(cx-hw+16)+','+top+' '+(cx+hw)+','+top+' '+(cx+hw-16)+','+(top+h)+' '+(cx-hw)+','+(top+h)+'"/>');
+      s.push(txt(cx,top+h/2,lines,13));
+    }else{
+      lines=wrap(text,27);h=Math.max(H,lines.length*16+14);hw=100;
+      s.push('<rect class="f-shape" x="'+(cx-hw)+'" y="'+top+'" width="200" height="'+h+'"/>');
+      s.push(txt(cx,top+h/2,lines,13));
+    }
+    T(cx-hw,top);T(cx+hw,top+h);
+    return {h:h,hw:hw};
+  }
+  function seq(items,cx,y,o){
+    o=o||{};var cur=y,label=o.label||null,term=false;
+    items.forEach(function(it,idx){
+      var top;
+      if(idx===0&&o.noArrow){top=cur;}
+      else{top=cur+GAP;line([[cx,cur],[cx,top]],true);if(label)lab(cx+8,cur+18,label,'start');}
+      label=null;
+      var r=draw(it,cx,top);cur=r.y;term=r.term;label=r.label||null;
+    });
+    return {y:cur,term:term,label:label};
+  }
+  function draw(it,cx,top){
+    var n;
+    if(it.t==='start'||it.t==='end'){n=node('term',cx,top,it.x);return {y:top+n.h,term:it.t==='end'};}
+    if(it.t==='p'||it.t==='io'){n=node(it.t,cx,top,it.x);return {y:top+n.h,term:false};}
+    if(it.t==='if'){
+      n=node('dec',cx,top,it.x);var cy=top+n.h/2,bot=top+n.h,sx=cx+SIDE;
+      var f=it.side[0],fhw=(f.t==='start'||f.t==='end')?80:100;
+      line([[cx+n.hw,cy],[sx-fhw,cy]],true);lab(cx+n.hw+8,cy-6,it.sl||'Yes','start');
+      var sr=seq(it.side,sx,cy-20,{noArrow:true});
+      var mr;
+      if(it.main){mr=seq(it.main,cx,bot,{label:it.ml||'No'});}
+      else mr={y:bot,term:false,label:it.ml||'No'};
+      if(it.merge&&!sr.term){
+        var j=Math.max(mr.y,sr.y)+22;
+        line([[cx,mr.y],[cx,j]],false);
+        line([[sx,sr.y],[sx,j],[cx,j]],false);
+        return {y:j,term:false};
+      }
+      return mr;
+    }
+    if(it.t==='while'){
+      n=node('dec',cx,top,it.x);var cy2=top+n.h/2,bot2=top+n.h;
+      var hasSide=JSON.stringify(it.body).indexOf('"side"')>=0;
+      var ex=cx+(hasSide?430:175);
+      var br=seq(it.body,cx,bot2,{label:'Yes'});
+      var lx=cx-155,by=br.y+24;
+      line([[cx,br.y],[cx,by],[lx,by],[lx,cy2],[cx-n.hw,cy2]],true);
+      var out=by+34;
+      line([[cx+n.hw,cy2],[ex,cy2],[ex,out],[cx,out]],false);
+      lab(cx+n.hw+8,cy2-6,'No','start');
+      return {y:out,term:false};
+    }
+    throw new Error('bad item '+it.t);
+  }
+  seq(spec,200,10,{noArrow:true});
+  var w=maxX-minX+30,h=maxY+20;
+  return '<div class="scroll"><svg viewBox="'+(minX-15)+' 0 '+w+' '+h+'" style="width:100%;max-width:'+w+'px;height:auto;display:block;margin:0 auto" role="img">'+s.join('')+'</svg></div>';
+}
+
+/* ---------------- linked-list diagram engine ---------------- */
+var SL=112,NW=80,NH=36,DWc=42;
+function renderFrame(fr){
+  var o=fr.o||{},vals=fr.vals,n=vals.length,nodes={};
+  if(!o.bare){
+    nodes.H={x:-1,y:0,k:'ptr',v:'head'};
+    vals.forEach(function(v,i){nodes[i]={x:i,y:0,k:'node',v:v,cls:(o.cls||{})[i]||''};});
+    if(!o.hideN)nodes.N={x:n,y:0,k:'null',v:'NULL'};
+  }
+  (o.extra||[]).forEach(function(e,i){nodes['e'+i]={x:e.x,y:e.y,k:'node',v:e.v,nx:e.nx,cls:e.cls===undefined?'new':e.cls};});
+  var links;
+  if(o.links){links=o.links.slice();}
+  else{
+    links=[];
+    if(!o.bare){links.push(['H',n?0:'N']);for(var i=0;i<n;i++)links.push([i,i+1<n?i+1:'N']);}
+    if(o.cut)links=links.filter(function(l){return o.cut.indexOf(l[0])<0;});
+  }
+  (o.add||[]).forEach(function(a){links.push(a);});
+  links=links.filter(function(l){return nodes[l[0]]&&nodes[l[1]];});
+
+  var minx=1e9,hasRow1=false;
+  Object.keys(nodes).forEach(function(k){minx=Math.min(minx,nodes[k].x);if(nodes[k].y>0)hasRow1=true;});
+  var anyBack=false,anyArc=false;
+  links.forEach(function(l){var a=nodes[l[0]],b=nodes[l[1]];if(a.y===b.y){if(b.x<a.x)anyBack=true;else if(b.x-a.x>1.01)anyArc=true;}});
+  var topM=(anyArc||o.mtop)?92:34;
+  var pos=function(x){return 16+(x-minx)*SL;},rowTop=function(y){return topM+y*104;};
+  function geo(k){var nd=nodes[k],w=nd.k==='node'?NW:54,left=pos(nd.x)+(NW-w)/2,top=rowTop(nd.y);
+    return {nd:nd,w:w,left:left,top:top,cx:left+w/2,cy:top+NH/2,dot:nd.k==='node'?left+DWc+(NW-DWc)/2:left+w/2};}
+  var out=[],maxRight=0;
+  Object.keys(nodes).forEach(function(k){var g=geo(k);maxRight=Math.max(maxRight,g.left+g.w);});
+
+  links.forEach(function(l){
+    var a=geo(l[0]),b=geo(l[1]),cls=l[2]==='new'?'new':'',d,
+        same=a.nd.y===b.nd.y,dx=b.nd.x-a.nd.x,sx=a.dot;
+    if(same&&dx>1.01){
+      var hgt=26+12*Math.min(dx,4),ex=b.nd.k==='node'?b.left+DWc/2:b.cx;
+      d='M'+sx+' '+a.top+' Q'+(sx+ex)/2+' '+(a.top-2*hgt)+' '+ex+' '+b.top;
+    }else if(same&&dx<0){
+      var hg=26+12*Math.min(-dx,4),ex2=b.nd.k==='node'?b.left+DWc/2:b.cx;
+      d='M'+sx+' '+(a.top+NH)+' Q'+(sx+ex2)/2+' '+(a.top+NH+2*hg)+' '+ex2+' '+(b.top+NH);
+    }else{
+      var vx=sx-b.cx,vy=a.cy-b.cy,t=Math.min(vx?(b.w/2)/Math.abs(vx):1e9,vy?(NH/2)/Math.abs(vy):1e9);
+      d='M'+sx+' '+a.cy+' L'+(b.cx+vx*t)+' '+(b.cy+vy*t);
+    }
+    out.push('<path class="d-link '+cls+'" d="'+d+'" marker-end="url(#'+(cls?'ahN':'ah')+')"/>');
+  });
+
+  Object.keys(nodes).forEach(function(k){
+    var g=geo(k),nd=g.nd;
+    if(nd.k==='ptr'){out.push('<rect class="d-ptr" x="'+g.left+'" y="'+g.top+'" width="54" height="'+NH+'" rx="6"/><text class="d-txt" style="font-size:13px" x="'+g.cx+'" y="'+(g.cy+5)+'">head</text>');return;}
+    if(nd.k==='null'){out.push('<rect class="d-null" x="'+g.left+'" y="'+g.top+'" width="54" height="'+NH+'" rx="6"/><text class="d-txt d-small" x="'+g.cx+'" y="'+(g.cy+4)+'">NULL</text>');return;}
+    out.push('<rect class="d-node '+nd.cls+'" x="'+g.left+'" y="'+g.top+'" width="'+DWc+'" height="'+NH+'"/>');
+    out.push('<rect class="d-node '+nd.cls+'" x="'+(g.left+DWc)+'" y="'+g.top+'" width="'+(NW-DWc)+'" height="'+NH+'"/>');
+    out.push('<text class="d-txt" x="'+(g.left+DWc/2)+'" y="'+(g.cy+5)+'">'+esc(nd.v)+'</text>');
+    if(nd.nx!==undefined)out.push('<text class="d-txt d-small" x="'+g.dot+'" y="'+(g.cy+4)+'">'+esc(nd.nx)+'</text>');
+    else if(links.some(function(l){return String(l[0])===String(k);}))out.push('<circle class="d-dot" cx="'+g.dot+'" cy="'+g.cy+'" r="3.5"/>');
+  });
+
+  var anyMarkBelow=false;
+  Object.keys(o.marks||{}).forEach(function(k){
+    var g=geo(k),t=o.marks[k],above=o.mtop&&g.nd.y===0;
+    if(above){
+      out.push('<line class="d-link mark" x1="'+g.cx+'" y1="'+(g.top-18)+'" x2="'+g.cx+'" y2="'+(g.top-2)+'" marker-end="url(#ahM)"/><text class="d-mark" x="'+g.cx+'" y="'+(g.top-23)+'">'+esc(t)+'</text>');
+    }else{
+      anyMarkBelow=true;
+      out.push('<line class="d-link mark" x1="'+g.cx+'" y1="'+(g.top+NH+18)+'" x2="'+g.cx+'" y2="'+(g.top+NH+2)+'" marker-end="url(#ahM)"/><text class="d-mark" x="'+g.cx+'" y="'+(g.top+NH+33)+'">'+esc(t)+'</text>');
+    }
+  });
+  var below=anyBack?100:(anyMarkBelow?50:18);
+  var Wd=maxRight+16,Ht=rowTop(hasRow1?1:0)+NH+below;
+  return '<figure class="frame"><figcaption><span class="step">'+fr.n+'</span>'+fmt(fr.cap)+'</figcaption><svg viewBox="0 0 '+Wd+' '+Ht+'" style="width:100%;max-width:'+Wd+'px;height:auto;display:block" role="img">'+out.join('')+'</svg></figure>';
+}
+
+/* call graph used for main() */
+function callGraph(){
+  var ch=[['1','insertAtBeginning'],['2','insertAtEnd'],['3','insertAtPosition'],['4','deleteAtBeginning'],['5','deleteAtEnd'],['6','deleteAtPosition'],['7','search'],['8','display'],['9','reverse'],['0','freeAll  (then exit)']];
+  var s=[],y0=30,gap=46,bh=34,mx=20,cx=250,hx=560;
+  var midY=y0+(ch.length*gap-gap+bh)/2;
+  s.push('<rect class="d-ptr" x="'+mx+'" y="'+(midY-24)+'" width="130" height="48" rx="8"/><text class="d-txt" x="'+(mx+65)+'" y="'+(midY-3)+'">main()</text><text class="d-txt d-small" x="'+(mx+65)+'" y="'+(midY+13)+'">while(1) menu loop</text>');
+  var yc={};
+  ch.forEach(function(c,i){
+    var y=y0+i*gap;yc[c[0]]=y+bh/2;
+    s.push('<path class="d-link" d="M'+(mx+130)+' '+midY+' L'+cx+' '+(y+bh/2)+'" marker-end="url(#ah)"/>');
+  });
+  var helpers={createNode:y0+1*gap+bh/2,length:y0+4.5*gap+bh/2};
+  var calls=[['1','createNode'],['2','createNode'],['3','createNode'],['3','length'],['6','length']];
+  calls.forEach(function(c){
+    s.push('<path class="d-link new" d="M'+(cx+200)+' '+yc[c[0]]+' L'+hx+' '+helpers[c[1]]+'" marker-end="url(#ahN)"/>');
+  });
+  ch.forEach(function(c,i){
+    var y=y0+i*gap;
+    s.push('<rect class="d-node" x="'+cx+'" y="'+y+'" width="200" height="'+bh+'" rx="6"/><text class="d-txt" style="font-size:13px" x="'+(cx+100)+'" y="'+(y+bh/2+5)+'">'+c[0]+'  '+esc(c[1])+'</text>');
+  });
+  Object.keys(helpers).forEach(function(k){
+    var y=helpers[k]-bh/2;
+    s.push('<rect class="d-node hl" x="'+hx+'" y="'+y+'" width="150" height="'+bh+'" rx="6"/><text class="d-txt" style="font-size:13px" x="'+(hx+75)+'" y="'+(y+bh/2+5)+'">'+k+'()</text>');
+  });
+  s.push('<text class="d-lbl" x="'+hx+'" y="'+(y0+gap*7.2)+'">helper functions</text>');
+  s.push('<text class="d-lbl" x="'+hx+'" y="'+(y0+gap*7.2+16)+'">(green arrows = "calls")</text>');
+  s.push('<text class="d-lbl" x="'+hx+'" y="'+(y0+gap*7.2+40)+'">Also: insertAtPosition(pos==1) calls</text>');
+  s.push('<text class="d-lbl" x="'+hx+'" y="'+(y0+gap*7.2+56)+'">insertAtBeginning, and deleteAtPosition</text>');
+  s.push('<text class="d-lbl" x="'+hx+'" y="'+(y0+gap*7.2+72)+'">(pos==1) calls deleteAtBeginning.</text>');
+  var Wd=740,Ht=y0+ch.length*gap+20;
+  return '<figure class="frame"><figcaption>Which function each menu choice runs. All of them work on the one global pointer <code>head</code>.</figcaption><svg viewBox="0 0 '+Wd+' '+Ht+'" style="width:100%;max-width:'+Wd+'px;height:auto;display:block" role="img">'+s.join('')+'</svg></figure>';
+}
+
+/* ---------------- data ---------------- */
+var F=function(cap,vals,o){return {cap:cap,vals:vals,o:o||{}};};
+var A=[10,20,30];
+var DATA=[
+{id:'createNode',name:'createNode',sig:'struct Node *createNode(int value)',
+ desc:'Allocates one new node on the heap, fills it in and returns its address. Every insertion uses it.',
+ frames:[
+  F('`malloc()` reserves memory for one node; `n` holds its address. The contents are still garbage.',[],{bare:true,extra:[{v:'?',nx:'?',x:0,y:0,cls:''}],marks:{e0:'n'}}),
+  F('`n->data = value; n->next = NULL;` The node is ready (here value = 25). `return n;` hands it to the caller.',[],{bare:true,extra:[{v:25,nx:'NULL',x:0,y:0,cls:'new'}],marks:{e0:'n'}})
+ ],
+ algo:['Allocate memory for one node: `n = malloc(sizeof(struct Node))`.','If `n == NULL`, print "Memory allocation failed" and `exit(1)`.','Store the value: `n->data = value`.','Make the node a standalone one: `n->next = NULL`.','Return `n`.'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'n = malloc(sizeof(struct Node))'},
+  {t:'if',x:'n == NULL ?',side:[{t:'io',x:'Print "Memory allocation failed"'},{t:'p',x:'exit(1)'},{t:'end',x:'Terminate'}]},
+  {t:'p',x:'n->data = value'},{t:'p',x:'n->next = NULL'},{t:'p',x:'return n'},{t:'end',x:'End'}]},
+
+{id:'length',name:'length',sig:'int length(void)',
+ desc:'Counts the nodes by walking from head to NULL. Used to validate positions.',
+ frames:[
+  F('`temp = head; count = 0;`',A,{marks:{0:'temp'}}),
+  F('Node 10 counted, `temp = temp->next;` so `count = 1`.',A,{marks:{1:'temp'}}),
+  F('Node 20 counted, so `count = 2`.',A,{marks:{2:'temp'}}),
+  F('Node 30 counted, so `count = 3`. Now `temp == NULL`, the loop ends and `return count` gives 3.',A,{marks:{N:'temp'}})
+ ],
+ algo:['Set `count = 0` and `temp = head`.','While `temp != NULL`: increase `count` by 1, then move `temp = temp->next`.','Return `count`.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'count = 0'},{t:'p',x:'temp = head'},
+  {t:'while',x:'temp != NULL ?',body:[{t:'p',x:'count++'},{t:'p',x:'temp = temp->next'}]},
+  {t:'p',x:'return count'},{t:'end',x:'End'}]},
+
+{id:'insertAtBeginning',name:'insertAtBeginning',sig:'void insertAtBeginning(int value)',
+ desc:'Makes the new node the first node. Link the new node first, then move head.',
+ frames:[
+  F('Initial list. We insert 5 at the beginning.',A),
+  F('`n = createNode(5); n->next = head;` The new node points to the old first node.',A,{extra:[{v:5,x:-1,y:1}],add:[['e0',0,'new']],marks:{e0:'n'}}),
+  F('`head = n;` head now points to the new node.',A,{extra:[{v:5,x:-1,y:1}],cut:['H'],add:[['e0',0,'new'],['H','e0','new']],marks:{e0:'n'}}),
+  F('Final list.',[5,10,20,30],{cls:{0:'new'}})
+ ],
+ algo:['Create a new node: `n = createNode(value)`.','Point it at the current first node: `n->next = head`.','Move the head: `head = n`.','Print the "inserted at the beginning" message.'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'n = createNode(value)'},{t:'p',x:'n->next = head'},{t:'p',x:'head = n'},{t:'io',x:'Print "value inserted at the beginning"'},{t:'end',x:'End'}]},
+
+{id:'insertAtEnd',name:'insertAtEnd',sig:'void insertAtEnd(int value)',
+ desc:'Appends a node after the last one. An empty list is a special case.',
+ frames:[
+  F('Initial list. We insert 40 at the end.',[10,20]),
+  F('`temp` walks until `temp->next == NULL`, so it stops at the last node.',[10,20],{marks:{1:'temp'}}),
+  F('`n = createNode(40);` its `next` is already NULL.',[10,20],{extra:[{v:40,x:1,y:1,nx:'NULL'}],marks:{1:'temp',e0:'n'}}),
+  F('`temp->next = n;` The last node now points to the new node.',[10,20],{hideN:true,extra:[{v:40,x:1,y:1,nx:'NULL'}],cut:[1],add:[[1,'e0','new']],marks:{1:'temp',e0:'n'}}),
+  F('Final list.',[10,20,40],{cls:{2:'new'}}),
+  F('Special case: list is empty (`head == NULL`), so just `head = n;`',[],{hideN:true,extra:[{v:40,x:-1,y:1,nx:'NULL'}],cut:['H'],add:[['H','e0','new']],marks:{e0:'n'}})
+ ],
+ algo:['Create the node: `n = createNode(value)`.','If `head == NULL` (empty list): `head = n`.','Otherwise: set `temp = head`.','While `temp->next != NULL`: `temp = temp->next` (stops at the last node).','Link the new node: `temp->next = n`.','Print the "inserted at the end" message.'],
+ cx:['O(n) (walks the whole list)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'n = createNode(value)'},
+  {t:'if',x:'head == NULL ?',merge:true,side:[{t:'p',x:'head = n'}],
+   main:[{t:'p',x:'temp = head'},{t:'while',x:'temp->next != NULL ?',body:[{t:'p',x:'temp = temp->next'}]},{t:'p',x:'temp->next = n'}]},
+  {t:'io',x:'Print "value inserted at the end"'},{t:'end',x:'End'}]},
+
+{id:'insertAtPosition',name:'insertAtPosition',sig:'void insertAtPosition(int value, int pos)',
+ desc:'Inserts so the new node ends up at position pos (1-based). Valid range is 1 to length+1.',
+ frames:[
+  F('Initial list. We insert 25 at position 3.',[10,20,30,40]),
+  F('`temp` moves to the node before position 3 (the loop runs while `i < pos-1`).',[10,20,30,40],{marks:{1:'temp'}}),
+  F('`n = createNode(25); n->next = temp->next;` n now points to the node that is currently at position 3.',[10,20,30,40],{extra:[{v:25,x:1.5,y:1}],add:[['e0',2,'new']],marks:{1:'temp',e0:'n'}}),
+  F('`temp->next = n;` Node 20 now points to n, so n is linked in. (Do this step second, otherwise the rest of the list is lost.)',[10,20,30,40],{extra:[{v:25,x:1.5,y:1}],cut:[1],add:[['e0',2,'new'],[1,'e0','new']],marks:{1:'temp',e0:'n'}}),
+  F('Final list.',[10,20,25,30,40],{cls:{2:'new'}})
+ ],
+ algo:['`len = length()`.','If `pos < 1` or `pos > len + 1`: print "Invalid position" and return.','If `pos == 1`: call `insertAtBeginning(value)` and return.','Create the node: `n = createNode(value)`; set `temp = head`.','Repeat `pos - 2` times (`i = 1; i < pos-1`): `temp = temp->next`. Now `temp` is the node before the target position.','`n->next = temp->next` (new node points to the node that follows).','`temp->next = n` (previous node points to the new node).','Print the "inserted at position" message.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'len = length()'},
+  {t:'if',x:'pos < 1 OR pos > len + 1 ?',side:[{t:'io',x:'Print "Invalid position"'},{t:'end',x:'return'}]},
+  {t:'if',x:'pos == 1 ?',side:[{t:'p',x:'insertAtBeginning(value)'},{t:'end',x:'return'}]},
+  {t:'p',x:'n = createNode(value)'},{t:'p',x:'temp = head, i = 1'},
+  {t:'while',x:'i < pos - 1 ?',body:[{t:'p',x:'temp = temp->next'},{t:'p',x:'i++'}]},
+  {t:'p',x:'n->next = temp->next'},{t:'p',x:'temp->next = n'},
+  {t:'io',x:'Print "value inserted at position pos"'},{t:'end',x:'End'}]},
+
+{id:'deleteAtBeginning',name:'deleteAtBeginning',sig:'void deleteAtBeginning(void)',
+ desc:'Removes the first node. Remember it in t before moving head, so it can be freed.',
+ frames:[
+  F('Initial list.',A),
+  F('`t = head;` t remembers the node to delete.',A,{marks:{0:'t'},cls:{0:'del'}}),
+  F('`head = head->next;` head skips the first node.',A,{cut:['H'],add:[['H',1,'new']],marks:{0:'t'},cls:{0:'del'}}),
+  F('`free(t);` The old first node is released.',[20,30])
+ ],
+ algo:['If `head == NULL`: print "List is empty (underflow)" and return.','Save the first node: `t = head`.','Move the head: `head = head->next`.','Print `t->data` as deleted.','Release the memory: `free(t)`.'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'if',x:'head == NULL ?',side:[{t:'io',x:'Print "List is empty (underflow)"'},{t:'end',x:'return'}]},
+  {t:'p',x:'t = head'},{t:'p',x:'head = head->next'},{t:'io',x:'Print t->data deleted from the beginning'},{t:'p',x:'free(t)'},{t:'end',x:'End'}]},
+
+{id:'deleteAtEnd',name:'deleteAtEnd',sig:'void deleteAtEnd(void)',
+ desc:'Removes the last node. We need the second-last node so that its next can be set to NULL.',
+ frames:[
+  F('Initial list.',A),
+  F('`temp` stops at the second-last node (loop: `while temp->next->next != NULL`).',A,{marks:{1:'temp'},cls:{2:'del'}}),
+  F('`free(temp->next); temp->next = NULL;` The last node is released and the list now ends at 20.',A,{cut:[1],add:[[1,'N','new']],marks:{1:'temp'},cls:{2:'del'}}),
+  F('Final list.',[10,20]),
+  F('Special case: only one node (`head->next == NULL`): `free(head); head = NULL;`',[10],{cut:['H'],add:[['H','N','new']],cls:{0:'del'}})
+ ],
+ algo:['If `head == NULL`: print "List is empty (underflow)" and return.','If `head->next == NULL` (only one node): print it, `free(head)`, set `head = NULL`, return.','Set `temp = head`.','While `temp->next->next != NULL`: `temp = temp->next` (stops at the second-last node).','Print `temp->next->data` as deleted.','`free(temp->next)`.','`temp->next = NULL` (the new last node).'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'if',x:'head == NULL ?',side:[{t:'io',x:'Print "List is empty (underflow)"'},{t:'end',x:'return'}]},
+  {t:'if',x:'head->next == NULL ? (one node)',side:[{t:'io',x:'Print head->data deleted'},{t:'p',x:'free(head)'},{t:'p',x:'head = NULL'},{t:'end',x:'return'}]},
+  {t:'p',x:'temp = head'},
+  {t:'while',x:'temp->next->next != NULL ?',body:[{t:'p',x:'temp = temp->next'}]},
+  {t:'io',x:'Print temp->next->data deleted'},{t:'p',x:'free(temp->next)'},{t:'p',x:'temp->next = NULL'},{t:'end',x:'End'}]},
+
+{id:'deleteAtPosition',name:'deleteAtPosition',sig:'void deleteAtPosition(int pos)',
+ desc:'Removes the node at position pos (1-based, valid range 1 to length).',
+ frames:[
+  F('Initial list. We delete position 3 (value 30).',[10,20,30,40]),
+  F('`temp` stops at the node before position 3. `t = temp->next` marks the node to delete.',[10,20,30,40],{marks:{1:'temp',2:'t'},cls:{2:'del'}}),
+  F('`temp->next = t->next;` The previous node bypasses t.',[10,20,30,40],{cut:[1],add:[[1,3,'new']],marks:{1:'temp',2:'t'},cls:{2:'del'}}),
+  F('`free(t);` The node is released.',[10,20,40])
+ ],
+ algo:['`len = length()`.','If `pos < 1` or `pos > len`: print "Invalid position" and return.','If `pos == 1`: call `deleteAtBeginning()` and return.','Set `temp = head`; repeat `pos - 2` times: `temp = temp->next` (stops at the node before the target).','`t = temp->next` (the node to delete).','`temp->next = t->next` (bypass t).','Print `t->data` as deleted, then `free(t)`.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'len = length()'},
+  {t:'if',x:'pos < 1 OR pos > len ?',side:[{t:'io',x:'Print "Invalid position"'},{t:'end',x:'return'}]},
+  {t:'if',x:'pos == 1 ?',side:[{t:'p',x:'deleteAtBeginning()'},{t:'end',x:'return'}]},
+  {t:'p',x:'temp = head, i = 1'},
+  {t:'while',x:'i < pos - 1 ?',body:[{t:'p',x:'temp = temp->next'},{t:'p',x:'i++'}]},
+  {t:'p',x:'t = temp->next'},{t:'p',x:'temp->next = t->next'},{t:'io',x:'Print t->data deleted from position pos'},{t:'p',x:'free(t)'},{t:'end',x:'End'}]},
+
+{id:'search',name:'search',sig:'void search(int key)',
+ desc:'Linear search: compares every node with key and reports the 1-based position.',
+ frames:[
+  F('Search 30. `pos = 1`: 10 is not 30, move on.',[10,20,30,40],{marks:{0:'temp'}}),
+  F('`pos = 2`: 20 is not 30, move on.',[10,20,30,40],{marks:{1:'temp'}}),
+  F('`pos = 3`: 30 equals 30, so print "30 found at position 3" and return.',[10,20,30,40],{marks:{2:'temp'},cls:{2:'hl'}}),
+  F('If the key is missing (say 99), `temp` reaches NULL and "99 not found" is printed.',[10,20,30,40],{marks:{N:'temp'}})
+ ],
+ algo:['Set `temp = head` and `pos = 1`.','While `temp != NULL`: if `temp->data == key`, print "key found at position pos" and return; otherwise `temp = temp->next` and `pos++`.','The loop ended without a match: print "key not found".'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'temp = head, pos = 1'},
+  {t:'while',x:'temp != NULL ?',body:[
+    {t:'if',x:'temp->data == key ?',side:[{t:'io',x:'Print "key found at position pos"'},{t:'end',x:'return'}]},
+    {t:'p',x:'temp = temp->next'},{t:'p',x:'pos++'}]},
+  {t:'io',x:'Print "key not found"'},{t:'end',x:'End'}]},
+
+{id:'reverse',name:'reverse',sig:'void reverse(void)',
+ desc:'Reverses the list in place by flipping every link, using three pointers: prev, curr and next.',
+ frames:[
+  F('Start: `prev = NULL; curr = head; next = NULL;`',A,{mtop:true,marks:{N:'prev',0:'curr'}}),
+  F('Pass 1: `next = curr->next; curr->next = prev;` (10 now points to NULL), then `prev = curr; curr = next;`',A,{mtop:true,links:[['H',0],[0,'N','new'],[1,2],[2,'N']],marks:{0:'prev',1:'curr'}}),
+  F('Pass 2: 20 now points back to 10.',A,{mtop:true,links:[['H',0],[0,'N'],[1,0,'new'],[2,'N']],marks:{1:'prev',2:'curr'}}),
+  F('Pass 3: 30 now points back to 20. `curr` is NULL, so the loop stops.',A,{mtop:true,links:[['H',0],[0,'N'],[1,0],[2,1,'new']],marks:{2:'prev',N:'curr'}}),
+  F('`head = prev;` head now points to 30, the old last node.',A,{mtop:true,links:[['H',2,'new'],[0,'N'],[1,0],[2,1]],marks:{2:'prev'}}),
+  F('Resulting list.',[30,20,10])
+ ],
+ algo:['Set `prev = NULL`, `curr = head`, `next = NULL`.','While `curr != NULL`:','(a) `next = curr->next` (remember the rest of the list).','(b) `curr->next = prev` (flip the link).','(c) `prev = curr` (step `prev` forward).','(d) `curr = next` (step `curr` forward).','After the loop `prev` is the old last node: set `head = prev`.','Print "List reversed".'],
+ cx:['O(n)','O(1) (done in place, no new nodes)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'prev = NULL, curr = head, next = NULL'},
+  {t:'while',x:'curr != NULL ?',body:[{t:'p',x:'next = curr->next'},{t:'p',x:'curr->next = prev'},{t:'p',x:'prev = curr'},{t:'p',x:'curr = next'}]},
+  {t:'p',x:'head = prev'},{t:'io',x:'Print "List reversed"'},{t:'end',x:'End'}]},
+
+{id:'display',name:'display',sig:'void display(void)',
+ desc:'Prints every value from head to the end, followed by NULL.',
+ frames:[
+  F('`t = head;` prints 10. Output so far: `List: 10 -> `',A,{marks:{0:'t'}}),
+  F('`t = t->next;` prints 20. Output: `List: 10 -> 20 -> `',A,{marks:{1:'t'}}),
+  F('`t = t->next;` prints 30. Output: `List: 10 -> 20 -> 30 -> `',A,{marks:{2:'t'}}),
+  F('`t == NULL`, so the loop ends and "NULL" is printed. Output: `List: 10 -> 20 -> 30 -> NULL`',A,{marks:{N:'t'}})
+ ],
+ algo:['If `head == NULL`: print "List: empty" and return.','Print "List: ".','For `t = head; t != NULL; t = t->next`: print `t->data` followed by " -> ".','Print "NULL" and a newline.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'if',x:'head == NULL ?',side:[{t:'io',x:'Print "List: empty"'},{t:'end',x:'return'}]},
+  {t:'io',x:'Print "List: "'},{t:'p',x:'t = head'},
+  {t:'while',x:'t != NULL ?',body:[{t:'io',x:'Print t->data and " -> "'},{t:'p',x:'t = t->next'}]},
+  {t:'io',x:'Print "NULL"'},{t:'end',x:'End'}]},
+
+{id:'freeAll',name:'freeAll',sig:'void freeAll(void)',
+ desc:'Releases every node before the program ends, so no memory leaks.',
+ frames:[
+  F('Initial list.',A),
+  F('Pass 1: `t = head; head = head->next;` then `free(t)` releases 10.',A,{cut:['H'],add:[['H',1,'new']],marks:{0:'t'},cls:{0:'del'}}),
+  F('Pass 2: the same steps free 20.',[20,30],{cut:['H'],add:[['H',1,'new']],marks:{0:'t'},cls:{0:'del'}}),
+  F('Pass 3: the same steps free 30.',[30],{cut:['H'],add:[['H','N','new']],marks:{0:'t'},cls:{0:'del'}}),
+  F('`head == NULL`: the loop ends. All nodes are freed.',[])
+ ],
+ algo:['While `head != NULL`:','(a) `t = head` (remember the first node).','(b) `head = head->next` (move head forward).','(c) `free(t)` (release the old first node).','When the loop ends, `head` is NULL and every node has been freed.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'while',x:'head != NULL ?',body:[{t:'p',x:'t = head'},{t:'p',x:'head = head->next'},{t:'p',x:'free(t)'}]},
+  {t:'end',x:'End'}]},
+
+{id:'main',name:'main',sig:'int main(void)',
+ desc:'Menu-driven driver: shows the menu, reads a choice and calls the matching function until the user exits.',
+ custom:callGraph,
+ algo:['Start with the global `head = NULL` (empty list).','Repeat forever:','(a) Print the menu and read `choice` with `scanf`.','(b) If `scanf` fails (input is not a number): leave the loop.','(c) `switch (choice)`: 1 insertAtBeginning, 2 insertAtEnd, 3 insertAtPosition, 4 deleteAtBeginning, 5 deleteAtEnd, 6 deleteAtPosition, 7 search, 8 display, 9 reverse. Each case first reads the value / position it needs.','(d) Choice 0: `freeAll()` and `return 0`.','(e) Any other number: print "Invalid choice".','After the loop: `freeAll()` and `return 0`.'],
+ cx:['Depends on the operations chosen','O(n) (the list itself)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'head = NULL (global)'},
+  {t:'while',x:'1 (loop forever)',body:[
+    {t:'io',x:'Print menu and "Choice:"'},{t:'io',x:'scanf("%d", &choice)'},
+    {t:'if',x:'scanf failed ?',side:[{t:'p',x:'break, then freeAll()'},{t:'end',x:'return 0'}]},
+    {t:'if',x:'choice == 0 ?',side:[{t:'p',x:'freeAll()'},{t:'end',x:'return 0'}]},
+    {t:'if',x:'choice is 1 to 9 ?',merge:true,side:[{t:'io',x:'Read value / position if needed'},{t:'p',x:'Call the matching function'}],main:[{t:'io',x:'Print "Invalid choice"'}]}
+  ]},
+  {t:'p',x:'freeAll()'},{t:'end',x:'return 0'}]}
+];
+
+/* ---------------- build page ---------------- */
+function section(d){
+  var frames=d.custom?d.custom():d.frames.map(function(f,i){f.n=i+1;return renderFrame(f);}).join('');
+  return '<section id="'+d.id+'"><h2>'+d.name+'<span class="sig">'+esc(d.sig)+'</span></h2><p class="desc">'+fmt(d.desc)+'</p>'+
+   '<div class="card"><h3>Diagram</h3>'+frames+'</div>'+
+   '<div class="card"><h3>Algorithm</h3><ol>'+d.algo.map(function(a){return '<li>'+fmt(a)+'</li>';}).join('')+'</ol><p class="cx"><b>Time:</b> '+esc(d.cx[0])+' &nbsp;&middot;&nbsp; <b>Extra space:</b> '+esc(d.cx[1])+'</p></div>'+
+   '<div class="card"><h3>Flowchart</h3>'+flow(d.flow)+'</div></section>';
+}
+document.getElementById('nav').innerHTML=DATA.map(function(d){return '<a href="#'+d.id+'">'+d.name+'</a>';}).join('');
+document.getElementById('app').innerHTML=DATA.map(section).join('');
+</script>
+</body>
+</html>
