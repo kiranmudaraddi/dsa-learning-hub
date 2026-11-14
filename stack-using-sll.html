@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stack (Linked List) - Diagrams, Algorithms, Flowcharts</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--text:#1d2330;--muted:#5d6678;--line:#3b4458;--accent:#2563eb;--accent-soft:#e0e9ff;--new:#16a34a;--new-soft:#dcfce7;--del:#dc2626;--del-soft:#fee2e2;--hl:#d97706;--hl-soft:#fef3c7;--node:#eef2ff;--border:#dde2ea;--code:#eef0f5}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1218;--card:#181d27;--text:#e6e9f0;--muted:#9aa4b8;--line:#aab4c8;--accent:#6b9bff;--accent-soft:#1f2f55;--new:#4ade80;--new-soft:#14351f;--del:#f87171;--del-soft:#3d1a1a;--hl:#fbbf24;--hl-soft:#3a2d10;--node:#202840;--border:#2a3142;--code:#232a3a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 60px}
+header{padding:32px 0 12px}
+h1{font-size:28px;margin:0 0 6px}
+header p{margin:0;color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:6px}
+nav a{font:13px ui-monospace,Consolas,monospace;text-decoration:none;color:var(--accent);background:var(--card);border:1px solid var(--border);padding:3px 9px;border-radius:999px}
+nav a:hover{background:var(--accent-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0 0;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:3px;border:2px solid;display:inline-block}
+section{margin-top:44px;scroll-margin-top:60px}
+h2{font-size:22px;margin:0 0 4px;display:flex;flex-wrap:wrap;align-items:baseline;gap:10px}
+.sig{font:14px ui-monospace,Consolas,monospace;color:var(--muted);font-weight:400}
+.desc{margin:0 0 14px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+ol{margin:0;padding-left:22px}
+li{margin:4px 0}
+code{font:13.5px ui-monospace,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+.cx{margin:12px 0 0;font-size:14px;color:var(--muted)}
+.cx b{color:var(--text)}
+.frame{margin:0 0 16px}
+.frame:last-child{margin-bottom:0}
+figcaption{font-size:14.5px;margin-bottom:4px}
+.step{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;margin-right:6px}
+.scroll{overflow-x:auto}
+svg text{font-family:system-ui,sans-serif}
+.f-shape{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.f-term{fill:var(--accent-soft);stroke:var(--accent)}
+.f-io{fill:var(--hl-soft);stroke:var(--hl)}
+.f-dec{fill:var(--new-soft);stroke:var(--new)}
+.f-text{fill:var(--text);text-anchor:middle}
+.f-line{stroke:var(--line);stroke-width:1.5;fill:none}
+.f-lbl{fill:var(--muted);font-size:12px;font-weight:700}
+.d-node{fill:var(--node);stroke:var(--line);stroke-width:1.5}
+.d-node.new{fill:var(--new-soft);stroke:var(--new)}
+.d-node.del{fill:var(--del-soft);stroke:var(--del);stroke-dasharray:5 3}
+.d-node.hl{fill:var(--hl-soft);stroke:var(--hl)}
+.d-ptr{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.d-null{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:3 3}
+.d-txt{fill:var(--text);text-anchor:middle;font-size:14px;font-weight:600}
+.d-small{font-size:11px;font-weight:500}
+.d-mark{fill:var(--accent);text-anchor:middle;font-size:13px;font-weight:700}
+.d-link{stroke:var(--line);stroke-width:1.8;fill:none}
+.d-link.new{stroke:var(--new);stroke-width:2.4}
+.d-link.mark{stroke:var(--accent);stroke-width:1.5}
+.d-dot{fill:var(--line)}
+.d-lbl{fill:var(--muted);font-size:12px}
+@media print{nav{display:none}section{break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--line)"/></marker>
+<marker id="ahN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--new)"/></marker>
+<marker id="ahM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker>
+</defs></svg>
+<div class="wrap">
+<header>
+<h1>Stack using a Singly Linked List in C</h1>
+<p>Diagram, algorithm and flowchart for every function in <code>SLL_STACK.c</code>.</p>
+<div class="legend">
+<span><i style="border-color:var(--accent);background:var(--accent-soft)"></i>pointer (top / temp)</span>
+<span><i style="border-color:var(--new);background:var(--new-soft)"></i>new node / changed link</span>
+<span><i style="border-color:var(--del);background:var(--del-soft);border-style:dashed"></i>node being deleted</span>
+<span><i style="border-color:var(--hl);background:var(--hl-soft)"></i>match found</span>
+</div>
+</header>
+<nav id="nav"></nav>
+<div id="app"></div>
+</div>
+<script>
+/* ---------------- helpers ---------------- */
+var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+var fmt=function(s){return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>');};
+function wrap(t,n){var w=t.split(' '),L=[],c='';w.forEach(function(x){if((c+' '+x).trim().length>n&&c){L.push(c);c=x;}else c=(c+' '+x).trim();});if(c)L.push(c);return L;}
+function txt(x,y,lines,fs){var lh=fs+3,y0=y-(lines.length-1)*lh/2+fs*0.35;return lines.map(function(l,i){return '<text class="f-text" x="'+x+'" y="'+(y0+i*lh)+'" style="font-size:'+fs+'px">'+esc(l)+'</text>';}).join('');}
+
+/* ---------------- flowchart engine ---------------- */
+function flow(spec){
+  var s=[],minX=1e9,maxX=-1e9,maxY=0;
+  var W=200,H=40,DW=230,SIDE=300,GAP=30;
+  function T(x,y){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y>maxY)maxY=y;}
+  function line(pts,arrow){pts.forEach(function(p){T(p[0],p[1]);});
+    s.push('<path class="f-line" d="M'+pts.map(function(p){return p[0]+' '+p[1];}).join(' L')+'"'+(arrow?' marker-end="url(#ah)"':'')+'/>');}
+  function lab(x,y,t,a){T(x,y);s.push('<text class="f-lbl" x="'+x+'" y="'+y+'" text-anchor="'+(a||'start')+'">'+t+'</text>');}
+  function node(k,cx,top,text){
+    var lines,h,hw;
+    if(k==='dec'){
+      lines=wrap(text,19);h=Math.max(76,lines.length*16+44);hw=DW/2;var cy=top+h/2;
+      s.push('<polygon class="f-shape f-dec" points="'+cx+','+top+' '+(cx+hw)+','+cy+' '+cx+','+(top+h)+' '+(cx-hw)+','+cy+'"/>');
+      s.push(txt(cx,cy,lines,12));
+    }else if(k==='term'){
+      h=36;hw=80;s.push('<rect class="f-shape f-term" x="'+(cx-hw)+'" y="'+top+'" width="160" height="36" rx="18"/>');
+      s.push(txt(cx,top+18,[text],13));
+    }else if(k==='io'){
+      lines=wrap(text,25);h=Math.max(H,lines.length*16+14);hw=100;
+      s.push('<polygon class="f-shape f-io" points="'+(cx-hw+16)+','+top+' '+(cx+hw)+','+top+' '+(cx+hw-16)+','+(top+h)+' '+(cx-hw)+','+(top+h)+'"/>');
+      s.push(txt(cx,top+h/2,lines,13));
+    }else{
+      lines=wrap(text,27);h=Math.max(H,lines.length*16+14);hw=100;
+      s.push('<rect class="f-shape" x="'+(cx-hw)+'" y="'+top+'" width="200" height="'+h+'"/>');
+      s.push(txt(cx,top+h/2,lines,13));
+    }
+    T(cx-hw,top);T(cx+hw,top+h);
+    return {h:h,hw:hw};
+  }
+  function seq(items,cx,y,o){
+    o=o||{};var cur=y,label=o.label||null,term=false;
+    items.forEach(function(it,idx){
+      var top;
+      if(idx===0&&o.noArrow){top=cur;}
+      else{top=cur+GAP;line([[cx,cur],[cx,top]],true);if(label)lab(cx+8,cur+18,label,'start');}
+      label=null;
+      var r=draw(it,cx,top);cur=r.y;term=r.term;label=r.label||null;
+    });
+    return {y:cur,term:term,label:label};
+  }
+  function draw(it,cx,top){
+    var n;
+    if(it.t==='start'||it.t==='end'){n=node('term',cx,top,it.x);return {y:top+n.h,term:it.t==='end'};}
+    if(it.t==='p'||it.t==='io'){n=node(it.t,cx,top,it.x);return {y:top+n.h,term:false};}
+    if(it.t==='if'){
+      n=node('dec',cx,top,it.x);var cy=top+n.h/2,bot=top+n.h,sx=cx+SIDE;
+      var f=it.side[0],fhw=(f.t==='start'||f.t==='end')?80:100;
+      line([[cx+n.hw,cy],[sx-fhw,cy]],true);lab(cx+n.hw+8,cy-6,it.sl||'Yes','start');
+      var sr=seq(it.side,sx,cy-20,{noArrow:true});
+      var mr;
+      if(it.main){mr=seq(it.main,cx,bot,{label:it.ml||'No'});}
+      else mr={y:bot,term:false,label:it.ml||'No'};
+      if(it.merge&&!sr.term){
+        var j=Math.max(mr.y,sr.y)+22;
+        line([[cx,mr.y],[cx,j]],false);
+        line([[sx,sr.y],[sx,j],[cx,j]],false);
+        return {y:j,term:false};
+      }
+      return mr;
+    }
+    if(it.t==='while'){
+      n=node('dec',cx,top,it.x);var cy2=top+n.h/2,bot2=top+n.h;
+      var hasSide=JSON.stringify(it.body).indexOf('"side"')>=0;
+      var ex=cx+(hasSide?430:175);
+      var br=seq(it.body,cx,bot2,{label:'Yes'});
+      var lx=cx-155,by=br.y+24;
+      line([[cx,br.y],[cx,by],[lx,by],[lx,cy2],[cx-n.hw,cy2]],true);
+      var out=by+34;
+      line([[cx+n.hw,cy2],[ex,cy2],[ex,out],[cx,out]],false);
+      lab(cx+n.hw+8,cy2-6,'No','start');
+      return {y:out,term:false};
+    }
+    throw new Error('bad item '+it.t);
+  }
+  seq(spec,200,10,{noArrow:true});
+  var w=maxX-minX+30,h=maxY+20;
+  return '<div class="scroll"><svg viewBox="'+(minX-15)+' 0 '+w+' '+h+'" style="width:100%;max-width:'+w+'px;height:auto;display:block;margin:0 auto" role="img">'+s.join('')+'</svg></div>';
+}
+
+/* ---------------- linked-list diagram engine ---------------- */
+var SL=112,NW=80,NH=36,DWc=42;
+function renderFrame(fr){
+  var o=fr.o||{},vals=fr.vals,n=vals.length,nodes={};
+  if(!o.bare){
+    nodes.H={x:-1,y:0,k:'ptr',v:'head'};
+    vals.forEach(function(v,i){nodes[i]={x:i,y:0,k:'node',v:v,cls:(o.cls||{})[i]||''};});
+    if(!o.hideN)nodes.N={x:n,y:0,k:'null',v:'NULL'};
+  }
+  (o.extra||[]).forEach(function(e,i){nodes['e'+i]={x:e.x,y:e.y,k:'node',v:e.v,nx:e.nx,cls:e.cls===undefined?'new':e.cls};});
+  var links;
+  if(o.links){links=o.links.slice();}
+  else{
+    links=[];
+    if(!o.bare){links.push(['H',n?0:'N']);for(var i=0;i<n;i++)links.push([i,i+1<n?i+1:'N']);}
+    if(o.cut)links=links.filter(function(l){return o.cut.indexOf(l[0])<0;});
+  }
+  (o.add||[]).forEach(function(a){links.push(a);});
+  links=links.filter(function(l){return nodes[l[0]]&&nodes[l[1]];});
+
+  var minx=1e9,hasRow1=false;
+  Object.keys(nodes).forEach(function(k){minx=Math.min(minx,nodes[k].x);if(nodes[k].y>0)hasRow1=true;});
+  var anyBack=false,anyArc=false;
+  links.forEach(function(l){var a=nodes[l[0]],b=nodes[l[1]];if(a.y===b.y){if(b.x<a.x)anyBack=true;else if(b.x-a.x>1.01)anyArc=true;}});
+  var topM=(anyArc||o.mtop||o.marks2)?92:34;
+  var pos=function(x){return 16+(x-minx)*SL;},rowTop=function(y){return topM+y*104;};
+  function geo(k){var nd=nodes[k],w=nd.k==='node'?NW:54,left=pos(nd.x)+(NW-w)/2,top=rowTop(nd.y);
+    return {nd:nd,w:w,left:left,top:top,cx:left+w/2,cy:top+NH/2,dot:nd.k==='node'?left+DWc+(NW-DWc)/2:left+w/2};}
+  var out=[],maxRight=0;
+  Object.keys(nodes).forEach(function(k){var g=geo(k);maxRight=Math.max(maxRight,g.left+g.w);});
+
+  links.forEach(function(l){
+    var a=geo(l[0]),b=geo(l[1]),cls=l[2]==='new'?'new':'',d,
+        same=a.nd.y===b.nd.y,dx=b.nd.x-a.nd.x,sx=a.dot;
+    if(same&&dx>1.01){
+      var hgt=26+12*Math.min(dx,4),ex=b.nd.k==='node'?b.left+DWc/2:b.cx;
+      d='M'+sx+' '+a.top+' Q'+(sx+ex)/2+' '+(a.top-2*hgt)+' '+ex+' '+b.top;
+    }else if(same&&dx<0){
+      var hg=26+12*Math.min(-dx,4),ex2=b.nd.k==='node'?b.left+DWc/2:b.cx;
+      d='M'+sx+' '+(a.top+NH)+' Q'+(sx+ex2)/2+' '+(a.top+NH+2*hg)+' '+ex2+' '+(b.top+NH);
+    }else{
+      var vx=sx-b.cx,vy=a.cy-b.cy,t=Math.min(vx?(b.w/2)/Math.abs(vx):1e9,vy?(NH/2)/Math.abs(vy):1e9);
+      d='M'+sx+' '+a.cy+' L'+(b.cx+vx*t)+' '+(b.cy+vy*t);
+    }
+    out.push('<path class="d-link '+cls+'" d="'+d+'" marker-end="url(#'+(cls?'ahN':'ah')+')"/>');
+  });
+
+  Object.keys(nodes).forEach(function(k){
+    var g=geo(k),nd=g.nd;
+    if(nd.k==='ptr'){out.push('<rect class="d-ptr" x="'+g.left+'" y="'+g.top+'" width="54" height="'+NH+'" rx="6"/><text class="d-txt" style="font-size:13px" x="'+g.cx+'" y="'+(g.cy+5)+'">'+PTR+'</text>');return;}
+    if(nd.k==='null'){out.push('<rect class="d-null" x="'+g.left+'" y="'+g.top+'" width="54" height="'+NH+'" rx="6"/><text class="d-txt d-small" x="'+g.cx+'" y="'+(g.cy+4)+'">NULL</text>');return;}
+    out.push('<rect class="d-node '+nd.cls+'" x="'+g.left+'" y="'+g.top+'" width="'+DWc+'" height="'+NH+'"/>');
+    out.push('<rect class="d-node '+nd.cls+'" x="'+(g.left+DWc)+'" y="'+g.top+'" width="'+(NW-DWc)+'" height="'+NH+'"/>');
+    out.push('<text class="d-txt" x="'+(g.left+DWc/2)+'" y="'+(g.cy+5)+'">'+esc(nd.v)+'</text>');
+    if(nd.nx!==undefined)out.push('<text class="d-txt d-small" x="'+g.dot+'" y="'+(g.cy+4)+'">'+esc(nd.nx)+'</text>');
+    else if(links.some(function(l){return String(l[0])===String(k);}))out.push('<circle class="d-dot" cx="'+g.dot+'" cy="'+g.cy+'" r="3.5"/>');
+  });
+
+  var anyMarkBelow=false;
+  Object.keys(o.marks||{}).forEach(function(k){
+    var g=geo(k),t=o.marks[k],above=o.mtop&&g.nd.y===0;
+    if(above){
+      out.push('<line class="d-link mark" x1="'+g.cx+'" y1="'+(g.top-18)+'" x2="'+g.cx+'" y2="'+(g.top-2)+'" marker-end="url(#ahM)"/><text class="d-mark" x="'+g.cx+'" y="'+(g.top-23)+'">'+esc(t)+'</text>');
+    }else{
+      anyMarkBelow=true;
+      out.push('<line class="d-link mark" x1="'+g.cx+'" y1="'+(g.top+NH+18)+'" x2="'+g.cx+'" y2="'+(g.top+NH+2)+'" marker-end="url(#ahM)"/><text class="d-mark" x="'+g.cx+'" y="'+(g.top+NH+33)+'">'+esc(t)+'</text>');
+    }
+  });
+  Object.keys(o.marks2||{}).forEach(function(k){var g=geo(k),t=o.marks2[k];out.push('<line class="d-link mark" x1="'+g.cx+'" y1="'+(g.top-18)+'" x2="'+g.cx+'" y2="'+(g.top-2)+'" marker-end="url(#ahM)"/><text class="d-mark" x="'+g.cx+'" y="'+(g.top-23)+'">'+esc(t)+'</text>');});
+  var below=anyBack?100:(anyMarkBelow?50:18);
+  var Wd=maxRight+16,Ht=rowTop(hasRow1?1:0)+NH+below;
+  return '<figure class="frame"><figcaption><span class="step">'+fr.n+'</span>'+fmt(fr.cap)+'</figcaption><svg viewBox="0 0 '+Wd+' '+Ht+'" style="width:100%;max-width:'+Wd+'px;height:auto;display:block" role="img">'+out.join('')+'</svg></figure>';
+}
+
+/* ---------------- shared helpers for stack / queue pages ---------------- */
+var F=function(cap,vals,o){return {cap:cap,vals:vals,o:o||{}};};
+function menuGraph(ch,cap){
+  var s=[],y0=20,gap=46,bh=34,mx=20,cx=250,bw=250;
+  var midY=y0+((ch.length-1)*gap+bh)/2;
+  s.push('<rect class="d-ptr" x="'+mx+'" y="'+(midY-26)+'" width="130" height="52" rx="8"/><text class="d-txt" x="'+(mx+65)+'" y="'+(midY-4)+'">main()</text><text class="d-txt d-small" x="'+(mx+65)+'" y="'+(midY+14)+'">while(1) menu loop</text>');
+  ch.forEach(function(c,i){
+    var y=y0+i*gap;
+    s.push('<path class="d-link" d="M'+(mx+130)+' '+midY+' L'+cx+' '+(y+bh/2)+'" marker-end="url(#ah)"/>');
+    s.push('<rect class="d-node'+(c[2]?' '+c[2]:'')+'" x="'+cx+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="6"/><text class="d-txt" style="font-size:13px" x="'+(cx+bw/2)+'" y="'+(y+bh/2+5)+'">'+esc(c[0]+'   '+c[1])+'</text>');
+  });
+  var Wd=cx+bw+20,Ht=y0+ch.length*gap+10;
+  return '<figure class="frame"><figcaption>'+fmt(cap)+'</figcaption><svg viewBox="0 0 '+Wd+' '+Ht+'" style="width:100%;max-width:'+Wd+'px;height:auto;display:block" role="img">'+s.join('')+'</svg></figure>';
+}
+
+var PTR='top';
+var S3=[30,20,10];
+var DATA=[
+{id:'push',name:'push',sig:'void push(int value)',
+ desc:'Puts a new node on top of the stack. The new node points at the old top, then top moves to it.',
+ frames:[
+  F('Initial stack (top points to the first node). We push 40.',S3),
+  F('A node is allocated, `n->data = 40;` and `n->next = top;` The new node points to the current top node.',S3,{extra:[{v:40,x:-1,y:1}],add:[['e0',0,'new']],marks:{e0:'n'}}),
+  F('`top = n;` top now points to the new node, which is the new top of the stack.',S3,{extra:[{v:40,x:-1,y:1}],cut:['H'],add:[['e0',0,'new'],['H','e0','new']],marks:{e0:'n'}}),
+  F('Final stack.',[40,30,20,10],{cls:{0:'new'}}),
+  F('Pushing onto an empty stack: `top` is NULL, so `n->next = top` gives NULL, then `top = n;`',[],{hideN:true,extra:[{v:5,x:0,y:0,nx:'NULL'}],cut:['H'],add:[['H','e0','new']]})
+ ],
+ algo:['Allocate a node: `n = malloc(sizeof(struct Node))`.','If `n == NULL`: print "Memory allocation failed" and return (the stack is unchanged).','Store the value: `n->data = value`.','Point the node at the current top: `n->next = top`.','Move the top: `top = n`.','Print "value pushed onto stack".'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'n = malloc(sizeof(struct Node))'},
+  {t:'if',x:'n == NULL ?',side:[{t:'io',x:'Print "Memory allocation failed"'},{t:'end',x:'return'}]},
+  {t:'p',x:'n->data = value'},{t:'p',x:'n->next = top'},{t:'p',x:'top = n'},
+  {t:'io',x:'Print "value pushed onto stack"'},{t:'end',x:'End'}]},
+
+{id:'pop',name:'pop',sig:'void pop(void)',
+ desc:'Removes the top node. It is remembered in temp before top moves, so it can be freed.',
+ frames:[
+  F('Initial stack.',S3),
+  F('`temp = top;` temp remembers the node to remove (30).',S3,{marks:{0:'temp'},cls:{0:'del'}}),
+  F('The value is printed, then `top = top->next;` top moves down to the next node.',S3,{cut:['H'],add:[['H',1,'new']],marks:{0:'temp'},cls:{0:'del'}}),
+  F('`free(temp);` The old top node is released.',[20,10]),
+  F('If the stack is empty (`top == NULL`), nothing is removed and "Stack Underflow" is printed.',[])
+ ],
+ algo:['If `top == NULL`: print "Stack Underflow" and return.','Save the top node: `temp = top`.','Print `temp->data` as popped.','Move the top down: `top = top->next`.','Release the memory: `free(temp)`.'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'if',x:'top == NULL ?',side:[{t:'io',x:'Print "Stack Underflow"'},{t:'end',x:'return'}]},
+  {t:'p',x:'temp = top'},{t:'io',x:'Print temp->data popped from stack'},{t:'p',x:'top = top->next'},{t:'p',x:'free(temp)'},{t:'end',x:'End'}]},
+
+{id:'peek',name:'peek',sig:'void peek(void)',
+ desc:'Shows the top element without removing it. The stack is never changed.',
+ frames:[
+  F('Non-empty stack: prints "Top element: 30". Nothing is changed.',S3,{cls:{0:'hl'}}),
+  F('Empty stack (`top == NULL`): prints "Stack is empty".',[])
+ ],
+ algo:['If `top == NULL`: print "Stack is empty".','Otherwise: print "Top element: " followed by `top->data`.'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'if',x:'top == NULL ?',merge:true,side:[{t:'io',x:'Print "Stack is empty"'}],main:[{t:'io',x:'Print "Top element: top->data"'}]},
+  {t:'end',x:'End'}]},
+
+{id:'displayStack',name:'displayStack',sig:'void displayStack(void)',
+ desc:'Prints the stack from the top down to the bottom, followed by NULL.',
+ frames:[
+  F('`temp = top;` prints "TOP -> " and then 30. Output so far: `TOP -> 30 -> `',S3,{marks:{0:'temp'}}),
+  F('`temp = temp->next;` prints 20. Output: `TOP -> 30 -> 20 -> `',S3,{marks:{1:'temp'}}),
+  F('`temp = temp->next;` prints 10. Output: `TOP -> 30 -> 20 -> 10 -> `',S3,{marks:{2:'temp'}}),
+  F('`temp == NULL`, so the loop ends and "NULL" is printed. Output: `TOP -> 30 -> 20 -> 10 -> NULL`',S3,{marks:{N:'temp'}})
+ ],
+ algo:['Set `temp = top`.','If `top == NULL`: print "Stack is empty" and return.','Print "TOP -> ".','While `temp != NULL`: print `temp->data` followed by " -> ", then `temp = temp->next`.','Print "NULL" and a newline.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'temp = top'},
+  {t:'if',x:'top == NULL ?',side:[{t:'io',x:'Print "Stack is empty"'},{t:'end',x:'return'}]},
+  {t:'io',x:'Print "TOP -> "'},
+  {t:'while',x:'temp != NULL ?',body:[{t:'io',x:'Print temp->data and " -> "'},{t:'p',x:'temp = temp->next'}]},
+  {t:'io',x:'Print "NULL"'},{t:'end',x:'End'}]},
+
+{id:'isEmpty',name:'isEmpty',sig:'int isEmpty(void)',
+ desc:'Returns 1 if the stack has no nodes and 0 otherwise. The expression `top == NULL` itself gives the 1 or 0. main() prints the message.',
+ frames:[
+  F('`top` is not NULL, so `top == NULL` is false and the function returns 0. main() prints "Stack is not empty".',S3),
+  F('`top` is NULL, so the comparison is true and the function returns 1. main() prints "Stack is empty".',[])
+ ],
+ algo:['Evaluate `top == NULL`.','If it is true (no nodes), the result is 1; otherwise it is 0.','Return the result.'],
+ cx:['O(1)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'if',x:'top == NULL ?',merge:true,side:[{t:'p',x:'result = 1'}],main:[{t:'p',x:'result = 0'}]},
+  {t:'p',x:'return result'},{t:'end',x:'End'}]},
+
+{id:'freeStack',name:'freeStack',sig:'void freeStack(void)',
+ desc:'Releases every node before the program ends, so no memory leaks.',
+ frames:[
+  F('Initial stack.',S3),
+  F('Pass 1: `temp = top; top = top->next;` then `free(temp)` releases 30.',S3,{cut:['H'],add:[['H',1,'new']],marks:{0:'temp'},cls:{0:'del'}}),
+  F('Pass 2: the same steps free 20.',[20,10],{cut:['H'],add:[['H',1,'new']],marks:{0:'temp'},cls:{0:'del'}}),
+  F('Pass 3: the same steps free 10.',[10],{cut:['H'],add:[['H','N','new']],marks:{0:'temp'},cls:{0:'del'}}),
+  F('`top == NULL`: the loop ends. Every node is freed.',[])
+ ],
+ algo:['While `top != NULL`:','(a) `temp = top` (remember the top node).','(b) `top = top->next` (move top down).','(c) `free(temp)` (release the old top node).','When the loop ends, `top` is NULL and every node has been freed.'],
+ cx:['O(n)','O(1)'],
+ flow:[{t:'start',x:'Start'},
+  {t:'while',x:'top != NULL ?',body:[{t:'p',x:'temp = top'},{t:'p',x:'top = top->next'},{t:'p',x:'free(temp)'}]},
+  {t:'end',x:'End'}]},
+
+{id:'main',name:'main',sig:'int main(void)',
+ desc:'Menu-driven driver: shows the menu, reads a choice and calls the matching function until the user exits.',
+ custom:function(){return menuGraph([['1','push'],['2','pop'],['3','peek'],['4','displayStack'],['5','isEmpty (then prints a message)'],['0','freeStack (then exit)']],'Which function each menu choice runs. All of them work on the one global pointer `top`.');},
+ algo:['Start with the global `top = NULL` (empty stack).','Repeat forever:','(a) Print the menu and read `choice` with `scanf`.','(b) If `scanf` fails (input is not a number): leave the loop.','(c) `switch (choice)`: 1 reads a value (if that read fails: `freeStack()` and `return 0`) and calls `push`; 2 `pop`; 3 `peek`; 4 `displayStack`; 5 calls `isEmpty` and prints "Stack is empty" or "Stack is not empty".','(d) Choice 0: `freeStack()` and `return 0`.','(e) Any other number: print "Invalid choice".','After the loop: `freeStack()` and `return 0`.'],
+ cx:['Depends on the operations chosen','O(n) (the stack itself)'],
+ flow:[{t:'start',x:'Start'},{t:'p',x:'top = NULL (global)'},
+  {t:'while',x:'1 (loop forever)',body:[
+    {t:'io',x:'Print menu and "Enter choice:"'},{t:'io',x:'scanf("%d", &choice)'},
+    {t:'if',x:'scanf failed ?',side:[{t:'p',x:'break, then freeStack()'},{t:'end',x:'return 0'}]},
+    {t:'if',x:'choice == 0 ?',side:[{t:'p',x:'freeStack()'},{t:'end',x:'return 0'}]},
+    {t:'if',x:'choice is 1 to 5 ?',merge:true,side:[{t:'io',x:'Read value if needed (push)'},{t:'p',x:'Call the matching function'}],main:[{t:'io',x:'Print "Invalid choice"'}]}
+  ]},
+  {t:'p',x:'freeStack()'},{t:'end',x:'return 0'}]}
+];
+
+/* ---------------- build page ---------------- */
+function section(d){
+  var frames=d.custom?d.custom():d.frames.map(function(f,i){f.n=i+1;return renderFrame(f);}).join('');
+  return '<section id="'+d.id+'"><h2>'+d.name+'<span class="sig">'+esc(d.sig)+'</span></h2><p class="desc">'+fmt(d.desc)+'</p>'+
+   '<div class="card"><h3>Diagram</h3>'+frames+'</div>'+
+   '<div class="card"><h3>Algorithm</h3><ol>'+d.algo.map(function(a){return '<li>'+fmt(a)+'</li>';}).join('')+'</ol><p class="cx"><b>Time:</b> '+esc(d.cx[0])+' &nbsp;&middot;&nbsp; <b>Extra space:</b> '+esc(d.cx[1])+'</p></div>'+
+   '<div class="card"><h3>Flowchart</h3>'+flow(d.flow)+'</div></section>';
+}
+document.getElementById('nav').innerHTML=DATA.map(function(d){return '<a href="#'+d.id+'">'+d.name+'</a>';}).join('');
+document.getElementById('app').innerHTML=DATA.map(section).join('');
+</script>
+</body>
+</html>
